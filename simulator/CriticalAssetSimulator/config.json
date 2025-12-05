@@ -1,0 +1,17 @@
+{
+  "simulation": {
+    "assetCount": 5,
+    "updateIntervalMs": 1000,
+    "latitude": 39.0000,
+    "longitude": 35.0000,
+    "AltitudeMeters": 50,
+    "SpeedMetersPerSecond": 1.5,
+    "HeadingDegrees": 90.0
+  },
+  "output": {
+    "type": "console"
+  },
+  "security": {
+    "classification": "UNCLASSIFIED"
+  }
+}
