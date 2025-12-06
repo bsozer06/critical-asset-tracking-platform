@@ -13,3 +13,4 @@ C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSim
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\obj\Debug\net9.0\CriticalAssetSimulator.genruntimeconfig.cache
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\obj\Debug\net9.0\ref\CriticalAssetSimulator.dll
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\bin\Debug\net9.0\config.json
+C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\obj\Debug\net9.0\CriticalAssetSimulator.sourcelink.json

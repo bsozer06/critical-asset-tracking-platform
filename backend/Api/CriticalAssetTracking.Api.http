@@ -1,0 +1,6 @@
+@CriticalAssetTracking.Api_HostAddress = http://localhost:5073
+
+GET {{CriticalAssetTracking.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
