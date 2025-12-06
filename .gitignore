@@ -1,8 +1,8 @@
 backend/.vs/
-backend/Api/bin/Debug
-backend/Api/obj
-backend/Application/bin
-backend/Application/obj
+backend/Api/bin/
+backend/Api/obj/
+backend/Application/bin/
+backend/Application/obj/
 backend/Domain/bin/
 backend/Domain/obj/
 backend/Infrastructure/bin/
