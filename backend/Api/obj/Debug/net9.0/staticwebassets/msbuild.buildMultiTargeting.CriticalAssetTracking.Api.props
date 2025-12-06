@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\CriticalAssetTracking.Api.props" />
+</Project>

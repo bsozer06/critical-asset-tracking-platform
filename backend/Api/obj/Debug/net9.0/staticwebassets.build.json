@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "rI+Qyx5OilYxmUc3cOVXpV0fnEzmz7FbUADcjj1nkKE=",
+  "Source": "CriticalAssetTracking.Api",
+  "BasePath": "_content/CriticalAssetTracking.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

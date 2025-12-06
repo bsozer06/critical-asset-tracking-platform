@@ -1,0 +1,12 @@
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\bin\Debug\net9.0\CriticalAssetTracking.Domain.deps.json
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\bin\Debug\net9.0\CriticalAssetTracking.Domain.dll
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\bin\Debug\net9.0\CriticalAssetTracking.Domain.pdb
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.AssemblyInfoInputs.cache
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.AssemblyInfo.cs
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.csproj.CoreCompileInputs.cache
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.sourcelink.json
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.dll
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\refint\CriticalAssetTracking.Domain.dll
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\CriticalAssetTracking.Domain.pdb
+C:\_burhan\_projects\critical-asset-tracking-platform\backend\Domain\obj\Debug\net9.0\ref\CriticalAssetTracking.Domain.dll
