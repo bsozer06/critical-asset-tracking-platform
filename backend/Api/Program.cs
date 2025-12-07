@@ -1,4 +1,6 @@
+using CriticalAssetTracking.Api.Adapters;
 using CriticalAssetTracking.Api.BackgroundServices;
+using CriticalAssetTracking.Api.Hubs;
 using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Processors;
@@ -6,12 +8,13 @@ using CriticalAssetTracking.Application.Processors;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.Configure<RabbitMqSettings>(
     builder.Configuration.GetSection("RabbitMq"));
 
-// TEMP (will replace in Step A.5)
-builder.Services.AddSingleton<ITelemetryProcessor, DummyTelemetryProcessor>();
+//builder.Services.AddSingleton<ITelemetryProcessor, DummyTelemetryProcessor>();
+builder.Services.AddScoped<ITelemetryProcessor, TelemetryProcessor>();
+builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
 builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 
 builder.Services.AddControllers();
@@ -31,5 +34,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<TelemetryHub>("/hubs/telemetry");
 
 app.Run();

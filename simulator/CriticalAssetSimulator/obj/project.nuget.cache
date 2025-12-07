@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "NMSFlLPCUGs=",
+  "dgSpecHash": "v7N/t44U9UI=",
   "success": true,
   "projectFilePath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\CriticalAssetSimulator.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Burhan\\.nuget\\packages\\rabbitmq.client\\7.2.0\\rabbitmq.client.7.2.0.nupkg.sha512",
+    "C:\\Users\\Burhan\\.nuget\\packages\\system.io.hashing\\10.0.0\\system.io.hashing.10.0.0.nupkg.sha512",
     "C:\\Users\\Burhan\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\Burhan\\.nuget\\packages\\system.threading.ratelimiting\\8.0.0\\system.threading.ratelimiting.8.0.0.nupkg.sha512"
   ],

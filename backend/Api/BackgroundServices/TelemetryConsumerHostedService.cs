@@ -8,34 +8,50 @@ namespace CriticalAssetTracking.Api.BackgroundServices
     public class TelemetryConsumerHostedService : BackgroundService
     {
         private readonly RabbitMqSettings _settings;
-        private readonly ITelemetryProcessor _processor;
+        //private readonly ITelemetryProcessor _processor;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILoggerFactory _loggerFactory;
 
         public TelemetryConsumerHostedService(
-          IOptions<RabbitMqSettings> options,
-          ITelemetryProcessor processor)
+            IOptions<RabbitMqSettings> options,
+            IServiceScopeFactory scopeFactory,
+            ILoggerFactory loggerFactory)
         {
             _settings = options.Value;
-            _processor = processor;
+            //_processor = processor;
+            _loggerFactory = loggerFactory;
+            _scopeFactory = scopeFactory;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var connection = RabbitMqConnectionFactory.Create(
-                _settings.HostName,
-                _settings.Port,
-                _settings.UserName,
-                _settings.Password);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                using var scope = _scopeFactory.CreateScope();
 
-            var consumer = new TelemetryConsumer(
-               connection,
-               _settings.ExchangeName,
-               _settings.TelemetryQueue,
-               _settings.TelemetryRoutingKey,
-               _processor);
+                var processor = scope.ServiceProvider.GetRequiredService<ITelemetryProcessor>();
 
-            consumer.Start(stoppingToken);
-            
-            return Task.CompletedTask;
+                var connection = RabbitMqConnectionFactory.Create(
+                   _settings.HostName,
+                   _settings.Port,
+                   _settings.UserName,
+                   _settings.Password);
+
+                var consumerLogger = _loggerFactory.CreateLogger<TelemetryConsumer>();
+
+                var consumer = new TelemetryConsumer(
+                   connection,
+                   _settings.ExchangeName,
+                   _settings.TelemetryQueue,
+                   _settings.TelemetryRoutingKey,
+                   processor,
+                   consumerLogger);
+
+                consumer.Start(stoppingToken);
+                
+                await Task.Delay(100, stoppingToken);
+            }
+            //return Task.CompletedTask;
         }
     }
 }

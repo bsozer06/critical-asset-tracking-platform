@@ -62,16 +62,11 @@ public static class TelemetryMessage
 
     private static string ComputeChecksum(string input)
     {
-        // Simple non-cryptographic checksum (MVP)
-        unchecked
-        {
-            uint hash = 2166136261;
-            foreach (byte b in Encoding.UTF8.GetBytes(input))
-            {
-                hash ^= b;
-                hash *= 16777619;
-            }
-            return hash.ToString("X8");
-        }
+        var bytes = Encoding.UTF8.GetBytes(input);
+        var crc = new System.IO.Hashing.Crc32();
+        crc.Append(bytes);
+        return BitConverter
+            .ToString(crc.GetCurrentHash())
+            .Replace("-", "");
     }
 }

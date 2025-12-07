@@ -18,3 +18,4 @@ C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSim
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\bin\Debug\net9.0\System.Threading.RateLimiting.dll
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\obj\Debug\net9.0\CriticalAssetSimulator.csproj.AssemblyReference.cache
 C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\obj\Debug\net9.0\Critical.EE230268.Up2Date
+C:\_burhan\_projects\critical-asset-tracking-platform\simulator\CriticalAssetSimulator\bin\Debug\net9.0\System.IO.Hashing.dll

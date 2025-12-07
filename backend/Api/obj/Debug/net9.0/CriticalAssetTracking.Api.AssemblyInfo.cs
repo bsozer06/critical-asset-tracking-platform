@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CriticalAssetTracking.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7caecb545c5e0573d764dac1308e04f4bcb796e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f327748857ca82b646fcd06ac38b9a6f39abb52d")]
 [assembly: System.Reflection.AssemblyProductAttribute("CriticalAssetTracking.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CriticalAssetTracking.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
