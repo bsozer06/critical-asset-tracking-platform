@@ -6,11 +6,14 @@ namespace CriticalAssetTracking.Application.Processors
     public class DummyTelemetryProcessor : ITelemetryProcessor
     {
         public Task ProcessAsync(
-            TelemetryMessageContract message,
+            TelemetryEnvelope envelope,
             CancellationToken ct = default)
         {
-            Console.WriteLine(
-                $"[Telemetry] {message.AssetId} @ {message.Latitude},{message.Longitude}");
+            var header = envelope.Message.Header;
+            var body = envelope.Message.Body;
+
+            Console.WriteLine($"[Telemetry] {header.AssetId} @ {body.Latitude},{body.Longitude}");
+            Console.WriteLine($" classification={header.Classification} checksum={envelope.Integrity.Checksum}");
 
             return Task.CompletedTask;
         }

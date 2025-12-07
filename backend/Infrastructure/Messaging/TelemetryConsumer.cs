@@ -23,7 +23,7 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
             _processor = processor;
             _queue = queue;
 
-            // Await the asynchronous channel creation  
+            // Await the asynchronous channel creation    
             _channel = connection.CreateChannelAsync().GetAwaiter().GetResult();
 
             _channel.ExchangeDeclareAsync(
@@ -51,25 +51,25 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
                 {
                     var json = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-                    var message = JsonSerializer.Deserialize<TelemetryMessageContract>(
+                    var envelope = JsonSerializer.Deserialize<TelemetryEnvelope>(
                         json,
                         new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
                         });
 
-                    if (message != null)
+                    if (envelope != null)
                     {
-                        await _processor.ProcessAsync(message, cancellationToken);
+                        await _processor.ProcessAsync(envelope, cancellationToken);
                     }
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, multiple: false);
                 }
                 catch
                 {
-                    // MVP: reject and requeue  
+                    // MVP: reject and requeue    
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
-                    //_channel.BasicAckAsync(ea.DeliveryTag, false, requeue: true);
+                    //_channel.BasicAckAsync(ea.DeliveryTag, false, requeue: true);  
                 }
             };
 

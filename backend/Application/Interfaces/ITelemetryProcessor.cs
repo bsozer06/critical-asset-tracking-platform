@@ -8,6 +8,6 @@ namespace CriticalAssetTracking.Application.Interfaces
         /// Process incoming telemetry contract from RabbitMQ:
         /// validate + transform to DTO + forward to consumers (SignalR etc).
         /// </summary>
-        Task ProcessAsync(TelemetryMessageContract message, CancellationToken ct = default);
+        Task ProcessAsync(TelemetryEnvelope message, CancellationToken ct = default);
     }
 }
