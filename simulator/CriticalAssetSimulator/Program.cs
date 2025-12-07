@@ -29,6 +29,13 @@ class Program
 
         IOutput output = config.Output.Type.ToLower() switch
         {
+            "rabbitmq" => new RabbitMqOutput(
+                        config.Output.Host!,
+                        config.Output.Port!.Value,
+                        config.Output.User!,
+                        config.Output.Password!,
+                        config.Output.Exchange!,
+                        config.Output.RoutingKey!),
             "udp" => new UdpOutput(
                         config.Output.Host!,
                         config.Output.Port!.Value),
@@ -40,11 +47,7 @@ class Program
         // --- Main loop ---
         while (true)
         {
-            // Console.WriteLine("Loop tick...");
-
             var telemetry = simulator.Step(intervalMs);
-            Console.WriteLine($"Telemetry count: {telemetry.Count()}");
-
             foreach (var t in telemetry)
             {
                 var msg = TelemetryMessage.Build(t, classification);

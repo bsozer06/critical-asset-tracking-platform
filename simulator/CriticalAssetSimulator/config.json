@@ -8,8 +8,14 @@
     "SpeedMetersPerSecond": 1.5,
     "HeadingDegrees": 90.0
   },
-  "output": {
-    "type": "console"
+   "output": {
+      "type": "rabbitmq",
+      "host": "localhost",
+      "port": 5672,
+      "user": "guest",
+      "password": "guest",
+      "exchange": "catp.exchange",
+      "routingKey": "telemetry"
   },
   "security": {
     "classification": "UNCLASSIFIED"
