@@ -18,16 +18,14 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "node_modules/cesium/Build/Cesium",
-                "output": "assets/cesium"
-              }
+             "assets": [
+              "src/assets"
             ],
             "styles": [
+              "./node_modules/cesium/Build/Cesium/Widgets/widgets.css",
+              "src/custom-theme.scss",
               "src/styles.css"
-            ]
+            ]          
           },
           "configurations": {
             "production": {
