@@ -29,20 +29,19 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       animation: false,
       baseLayerPicker: true,
       shadows: false,
-      // terrainProvider: Cesium.createWorldTerrain ? Cesium.createWorldTerrain() : undefined
+      terrainProvider: new Cesium.EllipsoidTerrainProvider()
     });
-    // this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement);
 
     // // optionally set Ion token (if provided)
     // if (environment.cesiumIonToken) {
     //   Cesium.Ion.defaultAccessToken = environment.cesiumIonToken;
     // }
 
-    // // subscribe to telemetry stream
-    // this.subscription = this.signalRService.telemetry$.subscribe((pt) => {
-    //   if (!pt) { return; }
-    //   this.upsertEntity(pt);
-    // });
+    // subscribe to telemetry stream
+    this.subscription = this.signalRService.telemetry$.subscribe((pt) => {
+      if (!pt) { return; }
+      this.upsertEntity(pt);
+    });
   }
 
   upsertEntity(pt: TelemetryPoint) {
