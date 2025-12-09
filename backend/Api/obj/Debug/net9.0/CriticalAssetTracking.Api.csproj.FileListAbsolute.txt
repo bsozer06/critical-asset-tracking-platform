@@ -39,6 +39,5 @@ C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\obj\Debug\net9
 C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.CriticalAssetTracking.Api.props
 C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\obj\Debug\net9.0\staticwebassets.pack.json
 C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\obj\Debug\net9.0\CriticalAssetTracking.Api.genruntimeconfig.cache
-C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\bin\Debug\net9.0\Newtonsoft.Json.dll
 C:\_burhan\_projects\critical-asset-tracking-platform\backend\Api\bin\Debug\net9.0\System.IO.Hashing.dll

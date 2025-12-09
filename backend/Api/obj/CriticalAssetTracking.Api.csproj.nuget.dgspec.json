@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\Api\\CriticalAssetTracking.Api.csproj": {}
+    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\api\\CriticalAssetTracking.Api.csproj": {}
   },
   "projects": {
-    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\Api\\CriticalAssetTracking.Api.csproj": {
+    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\api\\CriticalAssetTracking.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\Api\\CriticalAssetTracking.Api.csproj",
+        "projectUniqueName": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\api\\CriticalAssetTracking.Api.csproj",
         "projectName": "CriticalAssetTracking.Api",
-        "projectPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\Api\\CriticalAssetTracking.Api.csproj",
+        "projectPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\api\\CriticalAssetTracking.Api.csproj",
         "packagesPath": "C:\\Users\\Burhan\\.nuget\\packages\\",
-        "outputPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\Api\\obj\\",
+        "outputPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\backend\\api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
