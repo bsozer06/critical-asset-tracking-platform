@@ -29,7 +29,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       animation: false,
       baseLayerPicker: true,
       shadows: false,
-      terrainProvider: new Cesium.EllipsoidTerrainProvider()
+      terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+      skyAtmosphere: false,
     });
 
     // // optionally set Ion token (if provided)
