@@ -24,13 +24,14 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     // configure baseUrl for static assets
     // (Cesium as any).buildModuleUrl.setBaseUrl(environment.cesiumBaseUrl);
 
-    // this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement, {
-    //   timeline: false,
-    //   animation: false,
-    //   baseLayerPicker: true
-    //   // terrainProvider: Cesium.createWorldTerrain ? Cesium.createWorldTerrain() : undefined
-    // });
-    this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement);
+    this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement, {
+      timeline: false,
+      animation: false,
+      baseLayerPicker: true,
+      shadows: false,
+      // terrainProvider: Cesium.createWorldTerrain ? Cesium.createWorldTerrain() : undefined
+    });
+    // this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement);
 
     // // optionally set Ion token (if provided)
     // if (environment.cesiumIonToken) {
