@@ -61,25 +61,39 @@ public class RabbitMqOutput : IOutput, IDisposable
     private readonly IChannel _channel;
     private readonly string _exchange;
     private readonly string _routingKey;
+    private readonly bool _autoDelete;
+    private readonly bool _exclusive;
 
     public RabbitMqOutput(string hostName, int port, string userName, string password,
-        string exchange, string routingKey)
+        string exchange, string routingKey, bool autoDelete = false, bool exclusive = false, string? vhost = null, bool useSsl = false)
     {
         _exchange = exchange;
         _routingKey = routingKey;
+        _autoDelete = autoDelete;
+        _exclusive = exclusive;
 
         var factory = new ConnectionFactory()
         {
             HostName = hostName,
             Port = port,
             UserName = userName,
-            Password = password
+            Password = password,
+            VirtualHost = vhost ?? "/"
         };
+
+        if (useSsl)
+        {
+            factory.Ssl.Enabled = true;
+            factory.Ssl.ServerName = hostName;
+            // factory.Ssl.Version = System.Security.Authentication.SslProtocols.Tls12; 
+        }
 
         _connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
         _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
 
-        _channel.ExchangeDeclareAsync(exchange, ExchangeType.Direct, durable: true);
+        _channel.ExchangeDeclareAsync(exchange, ExchangeType.Direct, durable: true, autoDelete: _autoDelete);
+        // If Queue declare is needed, uncomment the following line:
+        // _channel.QueueDeclareAsync(routingKey, durable: true, exclusive: _exclusive, autoDelete: _autoDelete);
     }
 
     public void Send(string message)
@@ -102,5 +116,4 @@ public class RabbitMqOutput : IOutput, IDisposable
         _connection?.CloseAsync();
         _connection?.Dispose();
     }
-
 }

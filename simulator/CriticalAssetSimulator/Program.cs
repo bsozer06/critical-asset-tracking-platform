@@ -35,7 +35,11 @@ class Program
                         config.Output.User!,
                         config.Output.Password!,
                         config.Output.Exchange!,
-                        config.Output.RoutingKey!),
+                        config.Output.RoutingKey!,
+                        config.Output.AutoDelete ?? false,
+                        config.Output.Exclusive ?? false,
+                        config.Output.VHost,
+                        config.Output.UseSsl ?? false),
             "udp" => new UdpOutput(
                         config.Output.Host!,
                         config.Output.Port!.Value),

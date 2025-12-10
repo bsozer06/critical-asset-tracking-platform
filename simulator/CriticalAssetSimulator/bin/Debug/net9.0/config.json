@@ -1,6 +1,6 @@
 {
   "simulation": {
-    "assetCount": 5,
+    "assetCount": 2,
     "updateIntervalMs": 1000,
     "pointIntervalSec": 2,
     "latitude": 39.0000,
@@ -9,14 +9,18 @@
     "SpeedMetersPerSecond": 2,
     "HeadingDegrees": 90.0
   },
-   "output": {
-      "type": "rabbitmq",
-      "host": "localhost",
-      "port": 5673,
-      "user": "guest",
-      "password": "guest",
-      "exchange": "catp.exchange",
-      "routingKey": "telemetry"
+  "output": {
+    "type": "rabbitmq",
+    "host": "collie.lmq.cloudamqp.com",
+    "port": 5671,
+    "user": "qoxzqsec",
+    "password": "52Yw3Ax4e2B2E5IH4uGCv6yCea3xZZTc",
+    "exchange": "catp.exchange",
+    "routingKey": "telemetry",
+    "autoDelete": true,
+    "exclusive": false,
+    "vhost": "qoxzqsec",
+    "useSsl": true
   },
   "security": {
     "classification": "UNCLASSIFIED"
