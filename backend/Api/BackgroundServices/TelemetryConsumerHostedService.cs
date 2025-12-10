@@ -25,31 +25,33 @@ namespace CriticalAssetTracking.Api.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // Tek connection ve consumer
+            var connection = RabbitMqConnectionFactory.Create(
+                _settings.HostName,
+                _settings.Port,
+                _settings.UserName,
+                _settings.Password,
+                _settings.VHost,
+                _settings.UseSsl);
+
+            var consumerLogger = _loggerFactory.CreateLogger<TelemetryConsumer>();
+
+            using var scope = _scopeFactory.CreateScope();
+            var processor = scope.ServiceProvider.GetRequiredService<ITelemetryProcessor>();
+
+            var consumer = new TelemetryConsumer(
+                connection,
+                _settings.ExchangeName,
+                _settings.TelemetryQueue,
+                _settings.TelemetryRoutingKey,
+                processor,
+                consumerLogger);
+
+            consumer.Start(stoppingToken);
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                using var scope = _scopeFactory.CreateScope();
-
-                var processor = scope.ServiceProvider.GetRequiredService<ITelemetryProcessor>();
-
-                var connection = RabbitMqConnectionFactory.Create(
-                   _settings.HostName,
-                   _settings.Port,
-                   _settings.UserName,
-                   _settings.Password);
-
-                var consumerLogger = _loggerFactory.CreateLogger<TelemetryConsumer>();
-
-                var consumer = new TelemetryConsumer(
-                   connection,
-                   _settings.ExchangeName,
-                   _settings.TelemetryQueue,
-                   _settings.TelemetryRoutingKey,
-                   processor,
-                   consumerLogger);
-
-                consumer.Start(stoppingToken);
-                
-                await Task.Delay(100, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
             //return Task.CompletedTask;
         }
