@@ -45,15 +45,22 @@ class Program
         Console.WriteLine("Simulator started using config.json\n");
 
         // --- Main loop ---
+        var lastPointTime = DateTime.UtcNow;
+        var pointIntervalSec = config.Simulation.PointIntervalSec;
+
         while (true)
         {
-            var telemetry = simulator.Step(intervalMs);
-            foreach (var t in telemetry)
+            var now = DateTime.UtcNow;
+            if ((now - lastPointTime).TotalSeconds >= pointIntervalSec)
             {
-                var msg = TelemetryMessage.Build(t, classification);
-                output.Send(msg);
+                var telemetry = simulator.Step(intervalMs);
+                foreach (var t in telemetry)
+                {
+                    var msg = TelemetryMessage.Build(t, classification);
+                    output.Send(msg);
+                }
+                lastPointTime = now;
             }
-
             await Task.Delay(intervalMs);
         }
     }

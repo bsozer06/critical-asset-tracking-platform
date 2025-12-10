@@ -2,10 +2,11 @@
   "simulation": {
     "assetCount": 5,
     "updateIntervalMs": 1000,
+    "pointIntervalSec": 2,
     "latitude": 39.0000,
     "longitude": 35.0000,
     "AltitudeMeters": 50,
-    "SpeedMetersPerSecond": 1.5,
+    "SpeedMetersPerSecond": 2,
     "HeadingDegrees": 90.0
   },
    "output": {

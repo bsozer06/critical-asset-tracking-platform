@@ -7,14 +7,49 @@ public class AppConfig
     public SecurityConfig Security { get; set; } = new();
 }
 
+/// <summary>
+/// Configuration settings for the asset simulation.
+/// </summary>
 public class SimulationConfig
 {
+    /// <summary>
+    /// Gets or sets the number of assets to simulate.
+    /// </summary>
     public int AssetCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the interval, in milliseconds, between asset updates.
+    /// </summary>
     public int UpdateIntervalMs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the interval, in seconds, between generated points for each asset.
+    /// </summary>
+    public int PointIntervalSec { get; set; }
+
+    /// <summary>
+    /// Gets or sets the initial latitude for asset simulation.
+    /// </summary>
     public double Latitude { get; set; }
+
+    /// <summary>
+    /// Gets or sets the initial longitude for asset simulation.
+    /// </summary>
     public double Longitude { get; set; }
+
+    /// <summary>
+    /// Gets or sets the initial altitude, in meters, for asset simulation.
+    /// </summary>
     public double AltitudeMeters { get; set; }
+
+    /// <summary>
+    /// Gets or sets the speed of the asset, in meters per second.
+    /// </summary>
     public double SpeedMetersPerSecond { get; set; }
+
+    /// <summary>
+    /// Gets or sets the heading of the asset, in degrees.
+    /// </summary>
     public double HeadingDegrees { get; set; }
 }
 
