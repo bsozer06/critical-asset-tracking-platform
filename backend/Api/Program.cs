@@ -6,6 +6,17 @@ using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Processors;
 
 var builder = WebApplication.CreateBuilder(args);
+// CORS for frontend
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 // Add services to the container.
 builder.Services.AddSignalR();
@@ -28,6 +39,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
