@@ -68,7 +68,8 @@ public class RabbitMqOutput : IOutput, IDisposable
         string exchange, string routingKey, bool autoDelete = false, bool exclusive = false, string? vhost = null, bool useSsl = false)
     {
         _exchange = exchange;
-        _routingKey = routingKey;
+        // Her yerde catp.telemetry.queue kullanılacak
+        _routingKey = "catp.telemetry.queue";
         _autoDelete = autoDelete;
         _exclusive = exclusive;
 
@@ -87,25 +88,37 @@ public class RabbitMqOutput : IOutput, IDisposable
             factory.Ssl.ServerName = hostName;
             // factory.Ssl.Version = System.Security.Authentication.SslProtocols.Tls12; 
         }
-
         _connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
         _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
 
-        _channel.ExchangeDeclareAsync(exchange, ExchangeType.Direct, durable: true, autoDelete: _autoDelete);
-        // If Queue declare is needed, uncomment the following line:
+        // _channel.ExchangeDeclareAsync(exchange, ExchangeType.Direct, durable: true, autoDelete: _autoDelete);
+        _channel.ExchangeDeclareAsync(exchange, ExchangeType.Direct, durable: true, autoDelete: false);
+        // Queue declare: backend ile birebir aynı parametrelerle
+        _channel.QueueDeclareAsync(routingKey, durable: true, exclusive: _exclusive, autoDelete: false);
         // _channel.QueueDeclareAsync(routingKey, durable: true, exclusive: _exclusive, autoDelete: _autoDelete);
+        // Queue bind: exchange ve routingKey ile
+        _channel.QueueBindAsync(routingKey, exchange, routingKey);
     }
 
     public void Send(string message)
     {
         var body = Encoding.UTF8.GetBytes(message);
         var props = new BasicProperties();
-         _channel.BasicPublishAsync(
-            exchange: _exchange, 
-            routingKey: _routingKey, 
-            body: body, 
-            mandatory: true, 
-            basicProperties: props).GetAwaiter();
+        try
+        {
+            Console.WriteLine($"[RabbitMQ] Publishing to exchange '{_exchange}' with routingKey 'catp.telemetry.queue'...");
+            _channel.BasicPublishAsync(
+                exchange: _exchange,
+                routingKey: "catp.telemetry.queue",
+                body: body,
+                mandatory: true,
+                basicProperties: props).GetAwaiter().GetResult();
+            Console.WriteLine("[RabbitMQ] Publish SUCCESS");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[RabbitMQ] Publish ERROR: {ex.Message}");
+        }
         Console.WriteLine(Encoding.UTF8.GetString(body));
     }
 

@@ -29,25 +29,34 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
             _logger = logger;
 
             // Await the asynchronous channel creation    
+            _logger.LogInformation("Creating channel...");
             _channel = connection.CreateChannelAsync().GetAwaiter().GetResult();
+            _logger.LogInformation("Channel created.");
 
+            _logger.LogInformation("Declaring exchange: {Exchange}", exchange);
             _channel.ExchangeDeclareAsync(
                 exchange: exchange,
                 type: ExchangeType.Direct,
                 durable: true,
                 autoDelete: false);
+            _logger.LogInformation("Exchange declared: {Exchange}", exchange);
 
+            _logger.LogInformation("Declaring queue: {Queue}", queue);
             _channel.QueueDeclareAsync(
                 queue: queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false);
+            _logger.LogInformation("Queue declared: {Queue}", queue);
 
+            _logger.LogInformation("Binding queue {Queue} to exchange {Exchange} with routing key {RoutingKey}", queue, exchange, routingKey);
             _channel.QueueBindAsync(queue, exchange, routingKey);
+            _logger.LogInformation("Queue bound.");
         }
 
         public void Start(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Starting consumer for queue: {Queue}", _queue);
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
             consumer.ReceivedAsync += async (_, ea) =>
@@ -111,10 +120,12 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
                 }
             };
 
+            _logger.LogInformation("Registering consumer to queue: {Queue}", _queue);
             _channel.BasicConsumeAsync(
                 queue: _queue,
                 autoAck: false,
-                consumer: consumer);
+                consumer: consumer).GetAwaiter().GetResult();
+            _logger.LogInformation("Consumer registered successfully to queue: {Queue}", _queue);
         }
 
         public void Dispose()

@@ -16,8 +16,8 @@
     "user": "qoxzqsec",
     "password": "52Yw3Ax4e2B2E5IH4uGCv6yCea3xZZTc",
     "exchange": "catp.exchange",
-    "routingKey": "telemetry",
-    "autoDelete": true,
+    "routingKey": "catp.telemetry.queue",
+    "autoDelete": false,
     "exclusive": false,
     "vhost": "qoxzqsec",
     "useSsl": true
