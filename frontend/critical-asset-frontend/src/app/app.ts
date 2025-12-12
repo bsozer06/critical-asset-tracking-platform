@@ -6,10 +6,11 @@ import { SignalRService } from './services/signalr.service';
 import { environment } from '../environments/environment';
 import { CesiumMapComponent } from "./components/cesium-map/cesium-map.component";
 import { ConnectionStatusBadgeComponent } from './components/connection-status-badge/connection-status-badge.component';
+import { TelemetryPanelComponent } from "./components/telemetry-panel/telemetry-panel.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CesiumMapComponent, ConnectionStatusBadgeComponent, NgIf],
+  imports: [RouterOutlet, CesiumMapComponent, ConnectionStatusBadgeComponent, NgIf, TelemetryPanelComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

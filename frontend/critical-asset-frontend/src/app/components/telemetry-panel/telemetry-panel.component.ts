@@ -24,11 +24,23 @@ export class TelemetryPanelComponent implements OnInit {
 
   constructor(private signalR: SignalRService) {}
 
+  /**
+   * Initializes the component by subscribing to the SignalR telemetry stream.
+   * 
+   * On receiving a new telemetry point, updates the asset list in the data source:
+   * - If the asset already exists, its data is updated.
+   * - If the asset does not exist, it is added to the list.
+   * 
+   * Each asset entry includes its ID, formatted location, speed, timestamp, and the raw telemetry data.
+   * After updating the data source, applies the internal filter to refresh the displayed list.
+   * 
+   * Also initializes the filtered assets list with the current data source.
+   */
   ngOnInit() {
     this.signalR.telemetry$.subscribe((pt: TelemetryPoint | null) => {
       if (!pt) return;
-      // Asset listte varsa güncelle, yoksa ekle
-      const idx = this.dataSource.data.findIndex((a: any) => a.id === pt.assetId);
+      const currentData = [...this.dataSource.data];
+      const idx = currentData.findIndex((a: any) => a.id === pt.assetId);
       const asset = {
         id: pt.assetId,
         location: `${pt.latitude.toFixed(5)}, ${pt.longitude.toFixed(5)}`,
@@ -37,14 +49,14 @@ export class TelemetryPanelComponent implements OnInit {
         raw: pt
       };
       if (idx > -1) {
-        this.dataSource.data[idx] = asset;
+        currentData[idx] = asset;
       } else {
-        this.dataSource.data.push(asset);
+        currentData.push(asset);
       }
-      this.dataSource._updateChangeSubscription();
+      this.dataSource.data = currentData;
       this.applyFilterInternal();
     });
-    this.filteredAssets = this.dataSource.data;
+    this.filteredAssets = [...this.dataSource.data];
   }
 
   applyFilter(event: Event) {
@@ -55,7 +67,7 @@ export class TelemetryPanelComponent implements OnInit {
 
   applyFilterInternal() {
     if (!this.filterValue) {
-      this.filteredAssets = this.dataSource.data;
+      this.filteredAssets = [...this.dataSource.data];
     } else {
       this.filteredAssets = this.dataSource.data.filter(asset =>
         asset.id.toLowerCase().includes(this.filterValue) ||
