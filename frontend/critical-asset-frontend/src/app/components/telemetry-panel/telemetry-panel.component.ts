@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SignalRService } from '../../services/signalr.service';
 import { TelemetryPoint } from '../../models/telemetry-point.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -13,13 +14,20 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule,MatIconModule, MatTableModule, MatExpansionModule, MatInputModule, ScrollingModule],
   templateUrl: './telemetry-panel.component.html',
-  styleUrls: ['./telemetry-panel.component.css']
+  styleUrls: ['./telemetry-panel.component.css'],
+  animations: [
+    trigger('rowExpandAnimation', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
+      state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
 export class TelemetryPanelComponent implements OnInit {
   displayedColumns: string[] = ['id', 'location', 'speed', 'date', 'expand'];
   dataSource = new MatTableDataSource<any>([]);
   filteredAssets: any[] = [];
-  expandedAsset: any = null;
+  expandedAssetId: string | null = null;
   filterValue = '';
 
   constructor(private signalR: SignalRService) {}
@@ -77,6 +85,13 @@ export class TelemetryPanelComponent implements OnInit {
   }
 
   toggleRow(asset: any) {
-    this.expandedAsset = this.expandedAsset === asset ? null : asset;
+    this.expandedAssetId = this.expandedAssetId === asset.id ? null : asset.id;
+    console.log('expandedAssetId', this.expandedAssetId);
   }
+
+  isExpanded(asset: any) {
+    return this.expandedAssetId === asset.id;
+  }
+
+  isExpansionDetailRow = (_: number, row: any) => this.isExpanded(row);
 }
