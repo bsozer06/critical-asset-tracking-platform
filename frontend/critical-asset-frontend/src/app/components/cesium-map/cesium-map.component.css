@@ -1,6 +1,7 @@
 .cesium-container {
   width: 100%;
-  height: calc(100vh - 48px);
+  height: 100%;
+  min-height: 0;
 }
 /* Ensure Cesium overlay widgets show on top of map and are not clipped by other UI */
 .cesium-container .cesium-viewer .cesium-widget, .cesium-container .cesium-viewer .cesium-viewer-toolbar {
