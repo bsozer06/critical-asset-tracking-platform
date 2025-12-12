@@ -11,7 +11,6 @@ simulator/CriticalAssetSimulator/bin/
 simulator/CriticalAssetSimulator/obj/
 frontend/critical-asset-frontend/dist/
 frontend/critical-asset-frontend/node_modules/
-frontend/critical-asset-frontend/
 *.log
 *.tmp
 *.swp

@@ -1,0 +1,20 @@
+.telemetry-panel {
+  padding: 16px;
+}
+.filter-field {
+  width: 100%;
+  margin-bottom: 12px;
+}
+.table-viewport {
+  height: 400px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+.detail-row {
+  background: #f5f5f5;
+}
+.asset-detail {
+  padding: 12px;
+}
