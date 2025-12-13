@@ -1,0 +1,126 @@
+.telemetry-panel {
+  padding: 0 0 16px 0;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: #f7f9fa;
+}
+
+.telemetry-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 24px 8px 24px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2a3a4a;
+  letter-spacing: 0.5px;
+}
+.telemetry-icon {
+  color: #1976d2;
+  font-size: 2rem;
+}
+.telemetry-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.filter-field {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 0 24px;
+  margin-top: 4px;
+}
+
+.table-viewport {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  border-radius: 8px;
+  margin: 0 0 16px 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0 8px;
+}
+
+.asset-table th, .asset-table td {
+  padding: 8px 12px;
+  font-size: 0.98rem;
+}
+.asset-table th {
+  background: #f0f4f8;
+  color: #2a3a4a;
+  font-weight: 600;
+}
+.asset-table tr.selected-row {
+  background: #e3f2fd !important;
+}
+.asset-id { font-weight: 500; color: #1976d2; }
+.asset-location { color: #455a64; }
+.asset-speed { color: #388e3c; font-weight: 500; }
+.asset-date { color: #757575; }
+
+.detail-row {
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+.asset-detail-card {
+  margin: 8px 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #f7f9fa;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.asset-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+.asset-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #263238;
+  font-size: 1rem;
+}
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #b0b0b0;
+  font-size: 1.1rem;
+  margin-top: 32px;
+  gap: 8px;
+}
+
+.example-element-detail-wrapper {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  grid-template-columns: 100%;
+}
+
+.example-element-detail-wrapper-expanded {
+  grid-template-rows: 1fr;
+}
+
+/* .detail-wrapper {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  grid-template-columns: 100%;
+} */
+ .detail-wrapper {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  grid-template-columns: 100%;
+}
+.detail-box {
+  padding: 8px 12px;
+}

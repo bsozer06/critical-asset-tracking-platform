@@ -1,1 +1,18 @@
-<app-cesium-map></app-cesium-map>
+<div class="app-root">
+	<div class="topbar" style="display: flex; align-items: center; padding: 8px 16px; background: #222; color: #fff;">
+	<connection-status-badge [status]="connectionStatus"></connection-status-badge>
+	<span style="font-weight: bold; font-size: 18px;">Critical Asset Tracking Platform</span>
+</div>
+
+	<div class="main-layout">
+	<div class="map-area">
+		<app-cesium-map></app-cesium-map>
+	</div>
+	<div class="panel-area">
+		<app-telemetry-panel></app-telemetry-panel>
+	</div>
+</div>
+<div *ngIf="snackbarVisible" style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+	{{ snackbarMessage }}
+	</div>
+</div>

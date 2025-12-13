@@ -1,0 +1,9 @@
+<span [ngClass]="{
+      'badge': true,
+      'connected': status === 'connected',
+      'disconnected': status === 'disconnected',
+      'reconnecting': status === 'reconnecting',
+      'error': status === 'error'
+    }">
+      {{ status | uppercase }}
+    </span>
