@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CriticalAssetSimulator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2ec93b08543c9dca30d48b74d194fa0d9ac98c3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38d3969911bc0455c65e7b7b616669d2c8d4a905")]
 [assembly: System.Reflection.AssemblyProductAttribute("CriticalAssetSimulator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CriticalAssetSimulator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

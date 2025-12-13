@@ -71,10 +71,7 @@
         <td mat-cell *matCellDef="let asset" 
             [attr.colspan]="displayedColumns.length">
 
-          <div class="detail-wrapper" 
-              [@rowExpandAnimation]="isExpanded(asset) ? 'expanded' : 'collapsed'">
-          <!-- <div class="example-element-detail-wrapper"
-                  [class.example-element-detail-wrapper-expanded]="isExpanded(element)"> -->
+          <div class="detail-wrapper">
             <div class="detail-box">
               <div><strong>ID:</strong> {{asset.id}}</div>
               <div><strong>Location:</strong> {{asset.location}}</div>

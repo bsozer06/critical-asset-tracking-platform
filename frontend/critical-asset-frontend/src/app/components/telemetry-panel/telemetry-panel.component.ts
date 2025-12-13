@@ -15,13 +15,13 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule,MatIconModule, MatTableModule, MatExpansionModule, MatInputModule, ScrollingModule],
   templateUrl: './telemetry-panel.component.html',
   styleUrls: ['./telemetry-panel.component.css'],
-  animations: [
-    trigger('rowExpandAnimation', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
-      state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-    ])
-  ]
+  // animations: [
+  //   trigger('rowExpandAnimation', [
+  //     state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
+  //     state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
+  //     transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+  //   ])
+  // ]
 })
 export class TelemetryPanelComponent implements OnInit {
   displayedColumns: string[] = ['id', 'location', 'speed', 'date', 'expand'];
