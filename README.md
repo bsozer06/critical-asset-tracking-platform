@@ -43,6 +43,13 @@ dotnet restore
 dotnet build
 dotnet run
 ```
+
+Run with Docker Compose (backend + RabbitMQ)
+```bash
+cd backend
+docker compose up --build
+```
+The API will then be available at `http://localhost:5073` and RabbitMQ management at `http://localhost:15672` (user/password: `rabbitmq`).
 - The SignalR hub is registered at `/hubs/telemetry` (`Program.cs` maps hub at `/hubs/telemetry`) — see [`CriticalAssetTracking.Api.Hubs.TelemetryHub`](backend/Api/Hubs/TelemetryHub.cs).
 - The RabbitMQ background consumer is implemented by [`CriticalAssetTracking.Api.BackgroundServices.TelemetryConsumerHostedService`](backend/Api/BackgroundServices/TelemetryConsumerHostedService.cs) and uses [`CriticalAssetTracking.Infrastructure.Messaging.TelemetryConsumer`](backend/Infrastructure/Messaging/TelemetryConsumer.cs) to receive messages and pass them to the registered [`CriticalAssetTracking.Application.Processors.TelemetryProcessor`](backend/Application/Processors/TelemetryProcessor.cs).
 

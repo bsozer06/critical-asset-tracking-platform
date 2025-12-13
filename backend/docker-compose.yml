@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: catp-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+    container_name: catp-api
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: rabbitmq
+      RabbitMq__Password: rabbitmq
+      RabbitMq__UseSsl: "false"
+      RabbitMq__VHost: "/"
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+    ports:
+      - "5073:80"
+  simulator:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: catp-simulator
+    volumes:
+      - "..:/src:cached"
+    working_dir: /src/simulator/CriticalAssetSimulator
+    command: dotnet run --project CriticalAssetSimulator.csproj --configuration Release
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
