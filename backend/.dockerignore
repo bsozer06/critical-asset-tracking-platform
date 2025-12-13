@@ -1,0 +1,9 @@
+# Ignore root build artifacts and IDE files
+bin/
+obj/
+.vs/
+.git/
+*.log
+node_modules/
+**/bin/
+**/obj/

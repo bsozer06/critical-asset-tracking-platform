@@ -11,16 +11,16 @@
   },
   "output": {
     "type": "rabbitmq",
-    "host": "collie.lmq.cloudamqp.com",
-    "port": 5671,
-    "user": "qoxzqsec",
-    "password": "52Yw3Ax4e2B2E5IH4uGCv6yCea3xZZTc",
+    "host": "rabbitmq",
+    "port": 5672,
+    "user": "rabbitmq",
+    "password": "rabbitmq",
     "exchange": "catp.exchange",
     "routingKey": "catp.telemetry.queue",
     "autoDelete": false,
     "exclusive": false,
-    "vhost": "qoxzqsec",
-    "useSsl": true
+    "vhost": "/",
+    "useSsl": false
   },
   "security": {
     "classification": "UNCLASSIFIED"
