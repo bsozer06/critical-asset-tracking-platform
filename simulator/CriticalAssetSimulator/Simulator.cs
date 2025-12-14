@@ -45,6 +45,20 @@ public class Simulator
         var rawHeading = _config.Simulation.HeadingDegrees + _random.NextDouble() * 360.0;
         var heading = ((rawHeading % 360.0) + 360.0) % 360.0;
 
+        // determine asset type: config default (if valid) else random
+        AssetType type;
+        if (!string.IsNullOrWhiteSpace(_config.Simulation.DefaultAssetType) &&
+            Enum.TryParse<AssetType>(_config.Simulation.DefaultAssetType, true, out var parsed))
+        {
+            type = parsed;
+        }
+        else
+        {
+            // pick a random type from enum
+            var values = Enum.GetValues<AssetType>();
+            type = values[_random.Next(values.Length)];
+        }
+
         return new Asset
         {
             AssetId = $"ASSET-{index:D3}",
@@ -52,7 +66,8 @@ public class Simulator
             Longitude = _config.Simulation.Longitude + _random.NextDouble() * 0.05,
             AltitudeMeters = _config.Simulation.AltitudeMeters + _random.NextDouble() * 5,
             SpeedMetersPerSecond = _config.Simulation.SpeedMetersPerSecond + _random.NextDouble() * 3,
-            HeadingDegrees = heading
+            HeadingDegrees = heading,
+            Type = type
         };
     }
 

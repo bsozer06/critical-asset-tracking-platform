@@ -7,11 +7,12 @@
     "longitude": 35.0000,
     "AltitudeMeters": 10000,
     "SpeedMetersPerSecond": 230,
-    "HeadingDegrees": 90.0
+    "HeadingDegrees": 90.0,
+    "DefaultAssetType": "Aircraft"
   },
   "output": {
     "type": "rabbitmq",
-    "host": "rabbitmq",
+    "host": "localhost",
     "port": 5672,
     "user": "rabbitmq",
     "password": "rabbitmq",

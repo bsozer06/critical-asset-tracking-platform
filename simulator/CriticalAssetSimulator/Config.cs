@@ -51,6 +51,12 @@ public class SimulationConfig
     /// Gets or sets the heading of the asset, in degrees.
     /// </summary>
     public double HeadingDegrees { get; set; }
+
+    /// <summary>
+    /// Optional default asset type to simulate (e.g. "Aircraft", "Drone", "LandVehicle").
+    /// If not set, simulator will pick randomly.
+    /// </summary>
+    public string? DefaultAssetType { get; set; }
 }
 
 public class OutputConfig

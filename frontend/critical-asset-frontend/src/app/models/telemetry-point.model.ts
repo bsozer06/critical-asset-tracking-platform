@@ -7,4 +7,7 @@ export interface TelemetryPoint {
   speedMps?: number;
   headingDeg?: number;
   classification?: string;
+  assetType?: string;
+  baseAltitudeMeters?: number;
+  baseSpeedMps?: number;
 }

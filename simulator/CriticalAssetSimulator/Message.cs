@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CriticalAssetSimulator;
 
@@ -25,6 +26,23 @@ public static class TelemetryMessage
         TelemetryPoint point,
         ClassificationLevel classification = ClassificationLevel.UNCLASSIFIED)
     {
+        var jsonOptions = new JsonSerializerOptions
+        {
+            Converters = { new JsonStringEnumConverter() }
+        };
+        var body = new TelemetryBody(
+                point.TimestampUtc,
+                point.Latitude,
+                point.Longitude,
+                point.AltitudeMeters,
+                point.SpeedMetersPerSecond,
+                point.HeadingDegrees,
+                point.AssetType
+        );
+
+
+
+
         var message = new
         {
             header = new
@@ -35,17 +53,10 @@ public static class TelemetryMessage
                 timestampUtc = point.TimestampUtc.ToString("O"),
                 classification = classification.ToString()
             },
-            body = new
-            {
-                latitude = point.Latitude,
-                longitude = point.Longitude,
-                altitudeMeters = point.AltitudeMeters,
-                speedMps = point.SpeedMetersPerSecond,
-                headingDeg = point.HeadingDegrees
-            }
+            body
         };
 
-        string json = JsonSerializer.Serialize(message);
+        string json = JsonSerializer.Serialize(message, jsonOptions);
         string checksum = ComputeChecksum(json);
 
         var envelope = new
@@ -57,7 +68,7 @@ public static class TelemetryMessage
             }
         };
 
-        return JsonSerializer.Serialize(envelope);
+        return JsonSerializer.Serialize(envelope, jsonOptions);
     }
 
     private static string ComputeChecksum(string input)

@@ -96,13 +96,24 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   addPlaneEntity(pt: TelemetryPoint, position: Cesium.Cartesian3, hpr: Cesium.HeadingPitchRoll, orientation: Cesium.Quaternion): Cesium.Entity | undefined {
     const id = pt.assetId;
+    // pick model based on assetType; fallback to Cesium_Air
+    const MODEL_BY_TYPE: Record<string, string> = {
+      Aircraft: 'assets/models/Cesium_Air.glb',
+      Drone: 'assets/models/Drone.glb',
+      LandVehicle: 'assets/models/Vehicle.glb',
+      Person: 'assets/models/Person.glb',
+      Ship: 'assets/models/Ship.glb'
+    };
+
+    const modelUri = (pt.assetType && MODEL_BY_TYPE[pt.assetType]) ?? 'assets/models/Cesium_Air.glb';
+
     const entity = this.viewer?.entities.add({
       id: id,
       position,
       orientation,
       model: {
-        uri: 'assets/models/Cesium_Air.glb',
-        scale: 2.0, // modele göre ayarla
+        uri: modelUri,
+        scale: 2.0,
         minimumPixelSize: 64,
         maximumScale: 200,
         heightReference: Cesium.HeightReference.NONE
