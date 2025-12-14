@@ -132,7 +132,11 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     previous?: TelemetryPoint
   ): Cesium.HeadingPitchRoll {
 
-    const heading = Cesium.Math.toRadians(current.headingDeg ?? 0);
+    // Some glTF models don't use Cesium's forward axis convention.
+    // Tweak this offset (degrees) to align the model nose with the heading.
+    const MODEL_HEADING_OFFSET_DEG = -90; // adjust if model faces wrong way
+
+    const heading = Cesium.Math.toRadians((current.headingDeg ?? 0) + MODEL_HEADING_OFFSET_DEG);
 
     let pitch = 0;
     let roll = 0;
@@ -163,7 +167,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
         if (deltaHeading < -180) deltaHeading += 360;
 
         roll = Cesium.Math.clamp(
-          Cesium.Math.toRadians(deltaHeading * 1.5),
+          // invert roll sign so bank direction matches visual expectation
+          -Cesium.Math.toRadians(deltaHeading * 1.5),
           Cesium.Math.toRadians(-30),
           Cesium.Math.toRadians(30)
         );
