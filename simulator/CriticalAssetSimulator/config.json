@@ -1,6 +1,10 @@
 {
   "simulation": {
     "assetCount": 2,
+    "assetTypeCounts": {
+      "Aircraft": 2,
+      "LandVehicle": 1
+    },
     "updateIntervalMs": 1000,
     "pointIntervalSec": 2,
     "latitude": 39.0000,
@@ -12,7 +16,7 @@
   },
   "output": {
     "type": "rabbitmq",
-    "host": "localhost",
+    "host": "rabbitmq",
     "port": 5672,
     "user": "rabbitmq",
     "password": "rabbitmq",

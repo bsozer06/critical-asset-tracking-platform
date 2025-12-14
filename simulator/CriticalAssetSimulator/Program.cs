@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Linq;
 
 namespace CriticalAssetSimulator;
 
@@ -15,7 +16,6 @@ class Program
         var config = JsonSerializer.Deserialize<AppConfig>(configJson, options)!;
 
         // --- Resolve values ---
-        int assetCount = config.Simulation.AssetCount;
         int intervalMs = config.Simulation.UpdateIntervalMs;
 
         var classification =
@@ -25,7 +25,14 @@ class Program
             );
 
         // --- Components ---
-        var simulator = new Simulator(assetCount, config);
+        var simulator = new Simulator(config);
+
+        // Print a simple startup summary of assets (counts by type)
+        var groups = simulator.Assets.GroupBy(a => a.Type)
+            .Select(g => new { Type = g.Key, Count = g.Count() })
+            .OrderBy(x => x.Type)
+            .ToList();
+        Console.WriteLine("Simulating assets: " + string.Join(", ", groups.Select(g => g.Type + ":" + g.Count)));
 
         IOutput output = config.Output.Type.ToLower() switch
         {
