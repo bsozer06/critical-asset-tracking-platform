@@ -154,7 +154,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     
     // For land vehicles, only use heading (no pitch or roll)
     const MODEL_HEADING_OFFSET_DEG = -90;
-    const heading = Cesium.Math.toRadians((pt.headingDeg ?? 0) + MODEL_HEADING_OFFSET_DEG);
+    const heading = Cesium.Math.toRadians((pt.headingDegrees ?? 0) + MODEL_HEADING_OFFSET_DEG);
     
     // No pitch or roll for ground vehicles
     const hpr = new Cesium.HeadingPitchRoll(heading, 0, 0);
@@ -170,7 +170,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     // Tweak this offset (degrees) to align the model nose with the heading.
     const MODEL_HEADING_OFFSET_DEG = -90; // adjust if model faces wrong way
 
-    const heading = Cesium.Math.toRadians((current.headingDeg ?? 0) + MODEL_HEADING_OFFSET_DEG);
+    const heading = Cesium.Math.toRadians((current.headingDegrees ?? 0) + MODEL_HEADING_OFFSET_DEG);
 
     let pitch = 0;
     let roll = 0;
@@ -191,11 +191,11 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
       // ----- ROLL (bank angle) -----
       if (
-        current.headingDeg !== undefined &&
-        previous.headingDeg !== undefined
+        current.headingDegrees !== undefined &&
+        previous.headingDegrees !== undefined
       ) {
         let deltaHeading =
-          current.headingDeg - previous.headingDeg;
+          current.headingDegrees - previous.headingDegrees;
         // wrap [-180, 180]
         if (deltaHeading > 180) deltaHeading -= 360;
         if (deltaHeading < -180) deltaHeading += 360;

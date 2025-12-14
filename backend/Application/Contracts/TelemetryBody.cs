@@ -5,7 +5,7 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double AltitudeMeters { get; set; }
-        public double SpeedMps { get; set; }
-        public double HeadingDeg { get; set; }
+        public double SpeedMetersPerSecond { get; set; }
+        public double HeadingDegrees { get; set; }
     }
 }

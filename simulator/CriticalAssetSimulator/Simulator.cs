@@ -69,10 +69,6 @@ namespace CriticalAssetSimulator;
 
     private Asset CreateRandomAsset(int index, AssetType? forcedType = null)
     {
-        // ensure heading is normalized to [0,360)
-        var rawHeading = _config.Simulation.HeadingDegrees + _random.NextDouble() * 360.0;
-        var heading = ((rawHeading % 360.0) + 360.0) % 360.0;
-
         // determine asset type: forcedType > config default > random
         AssetType type;
         if (forcedType.HasValue)
@@ -91,16 +87,60 @@ namespace CriticalAssetSimulator;
             type = values[_random.Next(values.Length)];
         }
 
+        // Get asset-type-specific config if available, otherwise use simulation defaults
+        var typeConfig = GetAssetTypeConfig(type);
+        double altitude = type == AssetType.LandVehicle
+            ? 0
+            : typeConfig.AltitudeMeters + _random.NextDouble() * 5;
+        double speed = typeConfig.SpeedMetersPerSecond + _random.NextDouble() * 3;
+        double baseHeading = typeConfig.HeadingDegrees;
+
+        // ensure heading is normalized to [0,360)
+        var rawHeading = baseHeading + _random.NextDouble() * 360.0;
+        var heading = ((rawHeading % 360.0) + 360.0) % 360.0;
+
         return new Asset
         {
             AssetId = $"ASSET-{index:D3}",
             Latitude = _config.Simulation.Latitude + _random.NextDouble() * 0.05,
             Longitude = _config.Simulation.Longitude + _random.NextDouble() * 0.05,
-            AltitudeMeters = _config.Simulation.AltitudeMeters + _random.NextDouble() * 5,
-            SpeedMetersPerSecond = _config.Simulation.SpeedMetersPerSecond + _random.NextDouble() * 3,
+            AltitudeMeters = altitude,
+            SpeedMetersPerSecond = speed,
             HeadingDegrees = heading,
             Type = type
         };
     }
 
+    private AssetTypeDefaults GetAssetTypeConfig(AssetType type)
+    {
+        var typeName = type.ToString();
+        
+        if (_config.Simulation.AssetTypeDefaults != null &&
+            _config.Simulation.AssetTypeDefaults.TryGetValue(typeName, out var config))
+        {
+            return new AssetTypeDefaults
+            {
+                AltitudeMeters = config.AltitudeMeters ?? _config.Simulation.AltitudeMeters,
+                SpeedMetersPerSecond = config.SpeedMetersPerSecond ?? _config.Simulation.SpeedMetersPerSecond,
+                HeadingDegrees = config.HeadingDegrees ?? _config.Simulation.HeadingDegrees
+            };
+        }
+        
+        return new AssetTypeDefaults
+        {
+            AltitudeMeters = _config.Simulation.AltitudeMeters,
+            SpeedMetersPerSecond = _config.Simulation.SpeedMetersPerSecond,
+            HeadingDegrees = _config.Simulation.HeadingDegrees
+        };
+    }
+}
+
+/// <summary>
+/// Helper class for asset type defaults
+/// </summary>
+internal class AssetTypeDefaults
+{
+    public double AltitudeMeters { get; set; }
+    public double SpeedMetersPerSecond { get; set; }
+    public double HeadingDegrees { get; set; }
 }

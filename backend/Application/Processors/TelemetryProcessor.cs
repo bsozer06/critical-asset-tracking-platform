@@ -25,8 +25,8 @@ namespace CriticalAssetTracking.Application.Processors
                 body.Latitude,
                 body.Longitude,
                 body.AltitudeMeters,
-                body.SpeedMps,
-                body.HeadingDeg,
+                body.SpeedMetersPerSecond,
+                body.HeadingDegrees,
                 header.TimestampUtc,
                 header.Classification,
                 header.AssetType
