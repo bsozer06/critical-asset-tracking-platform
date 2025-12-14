@@ -41,6 +41,10 @@ public class Simulator
 
      private Asset CreateRandomAsset(int index)
     {
+        // ensure heading is normalized to [0,360)
+        var rawHeading = _config.Simulation.HeadingDegrees + _random.NextDouble() * 360.0;
+        var heading = ((rawHeading % 360.0) + 360.0) % 360.0;
+
         return new Asset
         {
             AssetId = $"ASSET-{index:D3}",
@@ -48,7 +52,7 @@ public class Simulator
             Longitude = _config.Simulation.Longitude + _random.NextDouble() * 0.05,
             AltitudeMeters = _config.Simulation.AltitudeMeters + _random.NextDouble() * 5,
             SpeedMetersPerSecond = _config.Simulation.SpeedMetersPerSecond + _random.NextDouble() * 3,
-            HeadingDegrees = _config.Simulation.HeadingDegrees + _random.NextDouble() * 360
+            HeadingDegrees = heading
         };
     }
 
