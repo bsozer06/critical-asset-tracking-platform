@@ -28,7 +28,8 @@ namespace CriticalAssetTracking.Application.Processors
                 body.SpeedMps,
                 body.HeadingDeg,
                 header.TimestampUtc,
-                header.Classification
+                header.Classification,
+                header.AssetType
             );
 
             await _publisher.PublishAsync(telemetry, ct);

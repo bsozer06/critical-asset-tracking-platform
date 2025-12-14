@@ -51,7 +51,8 @@ public static class TelemetryMessage
                 messageType = "telemetry",
                 assetId = point.AssetId,
                 timestampUtc = point.TimestampUtc.ToString("O"),
-                classification = classification.ToString()
+                classification = classification.ToString(),
+                assetType = point.AssetType
             },
             body
         };

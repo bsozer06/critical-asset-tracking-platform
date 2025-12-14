@@ -8,6 +8,4 @@ export interface TelemetryPoint {
   headingDeg?: number;
   classification?: string;
   assetType?: string;
-  baseAltitudeMeters?: number;
-  baseSpeedMps?: number;
 }

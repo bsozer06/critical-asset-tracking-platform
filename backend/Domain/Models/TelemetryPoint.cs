@@ -9,6 +9,7 @@
          double SpeedMps,
          double HeadingDeg,
          DateTime TimestampUtc,
-         string Classification 
+         string Classification,
+         string AssetType = ""
      );
 }
