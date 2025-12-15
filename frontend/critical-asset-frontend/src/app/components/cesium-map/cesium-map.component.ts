@@ -19,6 +19,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   private subscription: any;
   private lastTelemetry = new Map<string, TelemetryPoint>();
   private trails = new Map<string, Cesium.Cartesian3[]>();
+  private initialZoomDone = false;
+  private entityPositions = new Map<string, Cesium.Cartesian3>();
 
   constructor(private signalRService: SignalRService) { }
 
@@ -44,6 +46,12 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     this.subscription = this.signalRService.telemetry$.subscribe((pt) => {
       if (!pt) { return; }
       this.upsertEntity(pt);
+      
+      // Do initial zoom after we have some entities
+      if (!this.initialZoomDone && this.entitiesMap.size >= 1) {
+        this.zoomToFitAll();
+        this.initialZoomDone = true;
+      }
     });
   }
 
@@ -53,6 +61,10 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     const id = pt.assetId;
     const existing = this.entitiesMap.get(id);
     const position = Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude, pt.altitudeMeters ?? 0);
+    
+    // Store position for zoom calculations
+    this.entityPositions.set(id, position);
+    
     let trail = this.trails.get(id);
     if (!trail) {
       trail = [];
@@ -84,11 +96,82 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   }
 
+  /**
+   * Zoom camera to fit all entities in view
+   */
+  zoomToFitAll() {
+    if (!this.viewer || this.entityPositions.size === 0) {
+      return;
+    }
+
+    try {
+      const positions = Array.from(this.entityPositions.values());
+      
+      if (positions.length === 1) {
+        // For single entity, zoom with HeadingPitchRange for precise positioning
+        const position = positions[0];
+        console.log('position', position);
+        
+        this.viewer.camera.flyTo({
+          destination: position,
+          orientation: {
+            heading: Cesium.Math.toRadians(0),
+            pitch: Cesium.Math.toRadians(-45),
+            roll: 0
+          },
+          duration: 2.0
+        });
+      } else {
+        // For multiple entities, calculate bounding sphere with better framing
+        const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+        
+        this.viewer.camera.flyToBoundingSphere(boundingSphere, {
+          duration: 2.0,
+        });
+      }
+    } catch (error) {
+      console.error('Error zooming to fit all entities:', error);
+    }
+  }
+
+  /**
+   * Zoom camera to a specific asset
+   */
+  zoomToAsset(assetId: string) {
+    if (!this.viewer) {
+      return;
+    }
+
+    const position = this.entityPositions.get(assetId);
+    if (!position) {
+      console.warn(`Asset ${assetId} not found`);
+      return;
+    }
+
+    try {
+      // Get altitude to adjust zoom distance
+      const cartographic = Cesium.Cartographic.fromCartesian(position);
+      const altitude = cartographic.height || 0;
+      
+      // Calculate distance based on altitude (higher altitude = more distance)
+      const baseDistance = 10000;
+      const altitudeDistance = Math.max(altitude * 0.5, 0);
+      const totalDistance = baseDistance + altitudeDistance;
+
+      this.viewer.camera.flyToBoundingSphere(new Cesium.BoundingSphere(position, 3), {
+        duration: 1.5
+      });
+    } catch (error) {
+      console.error('Error zooming to asset:', error);
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
     this.trails.clear();
     this.entitiesMap.clear();
     this.lastTelemetry.clear();
+    this.entityPositions.clear();
     if (this.viewer) {
       this.viewer.destroy();
     }

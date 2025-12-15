@@ -1,34 +1,97 @@
-# Backend — Dockerized setup
+# Backend API
 
-This folder contains the ASP.NET Core backend (SignalR) for the Critical Asset Tracking Platform.
+ASP.NET Core backend with real-time data streaming via SignalR and RabbitMQ message queue integration.
 
-Quick start (Docker Compose)
+## Quick Start
 
-1) Build and run the backend and RabbitMQ locally:
+### With Docker (Recommended)
 
 ```bash
-cd backend
 docker compose up --build
 ```
 
-2) The API is available at http://localhost:5073 and the RabbitMQ management UI at http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`).
+- **API**: http://localhost:5073
+- **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
 
-Using the local RabbitMQ image
-- The docker compose RabbitMQ image replaces CloudAMQP for local development. It is configured with default credentials `rabbitmq`/`rabbitmq` and port `5672`.
-- `appsettings.Development.json` is updated to use the local RabbitMQ defaults for comfortable local development. If you run the API in Docker Compose, environment variables in `docker-compose.yml` will override these values.
+### Local Development
 
-Notes
-- `Api/Dockerfile` is a multi-stage Dockerfile that builds and publishes the API.
-- `docker-compose.yml` starts a RabbitMQ service and the API and injects RabbitMQ environment variables.
-- The API will bind to `http://+:80` inside the container; compose maps host port 5073 to container port 80.   
-- RabbitMQ Management UI:
-- Management UI: http://localhost:15672
-- User: rabbitmq
-- Password: rabbitmq
+```bash
+cd Api
+dotnet restore
+dotnet build
+dotnet run
+```
 
-Environment overrides
-- To point the API to a cloud RabbitMQ, remove the `RabbitMq__*` environment overrides in the compose file and update `appsettings.*.json` accordingly.
+API runs at http://localhost:5073
 
-Simulator (Docker Compose)
-- A simulator service is included in `docker-compose.yml` for local testing. It uses the `simulator/CriticalAssetSimulator/Dockerfile` and is configured to connect to the `rabbitmq` service on the same compose network.
-- The simulator `config.json` defaults are set to use `rabbitmq:5672` and credentials `rabbitmq`/`rabbitmq` for local development.
+## What's Inside
+
+- **SignalR Hub** (`Api/Hubs/TelemetryHub.cs`) — Broadcasts telemetry to connected clients in real-time
+- **RabbitMQ Consumer** (`Api/BackgroundServices/TelemetryConsumerHostedService.cs`) — Listens for messages and streams them to clients
+- **Telemetry Processor** (`Application/Processors/TelemetryProcessor.cs`) — Processes and validates incoming data
+- **Security** (`Application/Security/ChecksumCalculator.cs`) — Validates message integrity with CRC32 checksums
+
+## Configuration
+
+Edit `Api/appsettings.json` to configure:
+
+- **RabbitMQ host and port**
+- **SignalR hub URL**
+- **Exchange and queue names**
+
+For local Docker development, settings are in `appsettings.Development.json` and `docker-compose.yml`.
+
+## Environment Variables
+
+If running in Docker, these environment variables override settings files:
+
+```
+RabbitMq__Host=rabbitmq
+RabbitMq__Port=5672
+RabbitMq__Username=rabbitmq
+RabbitMq__Password=rabbitmq
+```
+
+## Testing
+
+```bash
+dotnet test
+```
+
+## Architecture
+
+```
+Api/
+├── Program.cs                 # Startup configuration
+├── Hubs/TelemetryHub.cs      # Real-time client connections
+├── Controllers/               # REST endpoints
+├── BackgroundServices/        # Message queue consumer
+└── Settings/                  # Configuration models
+
+Application/
+├── Processors/                # Business logic
+├── Security/                  # Checksum validation
+└── Interfaces/                # Abstractions
+
+Infrastructure/
+├── Messaging/                 # RabbitMQ implementation
+└── obj/                       # Build artifacts
+
+Domain/
+└── Models/                    # Core data models
+```
+
+## How It Works
+
+1. Simulator sends telemetry messages to RabbitMQ
+2. Backend consumer reads messages from the queue
+3. Processor validates data integrity
+4. SignalR broadcasts to all connected web clients
+5. Frontend receives updates in real-time
+
+## Next Steps
+
+- Customize telemetry processing in `Application/Processors/`
+- Add new REST endpoints in `Api/Controllers/`
+- Modify SignalR methods in `Api/Hubs/TelemetryHub.cs`
+- Deploy to cloud by updating `docker-compose.yml`

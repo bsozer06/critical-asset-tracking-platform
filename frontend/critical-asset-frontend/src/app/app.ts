@@ -1,5 +1,5 @@
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { SignalRService } from './services/signalr.service';
@@ -7,6 +7,7 @@ import { environment } from '../environments/environment';
 import { CesiumMapComponent } from "./components/cesium-map/cesium-map.component";
 import { ConnectionStatusBadgeComponent } from './components/connection-status-badge/connection-status-badge.component';
 import { TelemetryPanelComponent } from "./components/telemetry-panel/telemetry-panel.component";
+import { TelemetryPoint } from './models/telemetry-point.model';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,9 @@ import { TelemetryPanelComponent } from "./components/telemetry-panel/telemetry-
   styleUrl: './app.css'
 })
 export class App implements OnInit {
+  @ViewChild(CesiumMapComponent) cesiumMapComponent?: CesiumMapComponent;
+  @ViewChild(TelemetryPanelComponent) telemetryPanelComponent?: TelemetryPanelComponent;
+
   connectionStatus: 'connected' | 'disconnected' | 'reconnecting' | 'error' = 'disconnected';
   lastError: string | null = null;
 
@@ -38,6 +42,13 @@ export class App implements OnInit {
     this.signalR.startConnection(url).catch(err => {
       // Hata zaten lastError$ ile yakalanıyor
     });
+  }
+
+  onAssetSelected(asset: TelemetryPoint) {
+    // Zoom to the selected asset on the map
+    if (this.cesiumMapComponent) {
+      this.cesiumMapComponent.zoomToAsset(asset.assetId);
+    }
   }
 
   showSnackbar(message: string) {

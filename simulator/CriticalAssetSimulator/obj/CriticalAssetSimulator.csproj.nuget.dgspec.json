@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/src/simulator/CriticalAssetSimulator/CriticalAssetSimulator.csproj": {}
+    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\CriticalAssetSimulator.csproj": {}
   },
   "projects": {
-    "/src/simulator/CriticalAssetSimulator/CriticalAssetSimulator.csproj": {
+    "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\CriticalAssetSimulator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/src/simulator/CriticalAssetSimulator/CriticalAssetSimulator.csproj",
+        "projectUniqueName": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\CriticalAssetSimulator.csproj",
         "projectName": "CriticalAssetSimulator",
-        "projectPath": "/src/simulator/CriticalAssetSimulator/CriticalAssetSimulator.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/src/simulator/CriticalAssetSimulator/obj/",
+        "projectPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\CriticalAssetSimulator.csproj",
+        "packagesPath": "C:\\Users\\Burhan\\.nuget\\packages\\",
+        "outputPath": "C:\\_burhan\\_projects\\critical-asset-tracking-platform\\simulator\\CriticalAssetSimulator\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Burhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -69,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
