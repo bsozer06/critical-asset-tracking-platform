@@ -1,103 +1,156 @@
-# Critical Asset Tracking Platform (CATP)
+# Critical Asset Tracking Platform
 
-A minimal end-to-end platform for tracking telemetry from simulated assets using RabbitMQ, ASP.NET Core backend (SignalR), an Angular/Cesium frontend, and a simulator that emits telemetry.
+A real-time platform for tracking and visualizing asset telemetry. Monitor simulated aircraft and vehicles on an interactive map with live data streaming.
 
-Repository layout
-- backend/ — ASP.NET Core backend with SignalR hub and RabbitMQ consumer.
-  - [`CriticalAssetTracking.Api.Program`](backend/Api/Program.cs)
-  - [`CriticalAssetTracking.Api.BackgroundServices.TelemetryConsumerHostedService`](backend/Api/BackgroundServices/TelemetryConsumerHostedService.cs)
-  - [`CriticalAssetTracking.Infrastructure.Messaging.TelemetryConsumer`](backend/Infrastructure/Messaging/TelemetryConsumer.cs)
-  - [`CriticalAssetTracking.Application.Processors.TelemetryProcessor`](backend/Application/Processors/TelemetryProcessor.cs)
-  - [`CriticalAssetTracking.Application.Security.ChecksumCalculator`](backend/Application/Security/ChecksumCalculator.cs)
-  - [`CriticalAssetTracking.Api.Settings.RabbitMqSettings`](backend/Api/Settings/RabbitMqSettings.cs)
-  - [`backend/CriticalAssetTracking.sln`](backend/CriticalAssetTracking.sln)
+## What is this?
 
-- frontend/ — Angular UI with Cesium map and telemetry panel
-  - App entry: [`src/main.ts`](frontend/critical-asset-frontend/src/main.ts)
-  - Map component: [`CesiumMapComponent`](frontend/critical-asset-frontend/src/app/components/cesium-map/cesium-map.component.ts)
-  - Telemetry list/UX: [`TelemetryPanelComponent`](frontend/critical-asset-frontend/src/app/components/telemetry-panel/telemetry-panel.component.ts)
-  - Cesium assets (Workers/widgets): [`src/assets/cesium/`](frontend/critical-asset-frontend/src/assets/cesium/)
-  - Environment / Cesium config: [`src/environments/environment.ts`](frontend/critical-asset-frontend/src/environments/environment.ts)
+This project demonstrates a complete tracking system with:
+- **Backend API** — Real-time data streaming via SignalR and message queuing with RabbitMQ
+- **Web Dashboard** — Interactive map (Cesium) showing asset locations and telemetry
+- **Asset Simulator** — Generates realistic telemetry data for testing and demonstration
 
-- simulator/ — Small simulator that produces telemetry messages and outputs via console/UDP/RabbitMQ
-  - Entrypoint: [`simulator/CriticalAssetSimulator/Program.cs`](simulator/CriticalAssetSimulator/Program.cs)
-  - Message builder: [`simulator/CriticalAssetSimulator/Message.cs`](simulator/CriticalAssetSimulator/Message.cs)
-  - Config classes: [`simulator/CriticalAssetSimulator/Config.cs`](simulator/CriticalAssetSimulator/Config.cs)
-  - Output adapters: [`simulator/CriticalAssetSimulator/Output.cs`](simulator/CriticalAssetSimulator/Output.cs)
+## Quick Start
 
-Quick start (local development)
+### Prerequisites
 
-Prerequisites
-- .NET SDK 8+ (for backend and simulator)
-- Node.js + npm (for frontend)
-- Angular CLI (optional, use local npm scripts)
-- RabbitMQ (optional for RabbitMQ output; simulator can also emit to console/UDP)
+Choose your setup approach:
 
-1) Start RabbitMQ (optional)
-- Default settings are in [`backend/Api/Settings/RabbitMqSettings.cs`](backend/Api/Settings/RabbitMqSettings.cs) (host `localhost`, port `5673`, exchange `catp.exchange`, queue `catp.telemetry.queue`). If you use a normal RabbitMQ install, you may need to update the `Port` or `VHost`.
+**Option A: Docker (Recommended)**
+- Docker and Docker Compose
 
-2) Run the backend (SignalR + RabbitMQ consumer)
+**Option B: Local Development**
+- .NET SDK 8+
+- Node.js and npm
+- RabbitMQ (optional, simulator can run without it)
+
+### Option A: Docker Setup (Fastest)
+
+```bash
+cd backend
+docker compose up --build
+```
+
+Then open:
+- **Web App**: http://localhost:5073 (Angular frontend)
+- **API**: http://localhost:5073/hubs/telemetry
+- **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
+
+### Option B: Local Development
+
+**1. Start the backend**
 ```bash
 cd backend/Api
 dotnet restore
 dotnet build
 dotnet run
 ```
+API runs at http://localhost:5073
 
-Run with Docker Compose (backend + RabbitMQ)
-```bash
-cd backend
-docker compose up --build
-```
-The API will then be available at `http://localhost:5073` and RabbitMQ management at `http://localhost:15672` (user/password: `rabbitmq`).
-- The SignalR hub is registered at `/hubs/telemetry` (`Program.cs` maps hub at `/hubs/telemetry`) — see [`CriticalAssetTracking.Api.Hubs.TelemetryHub`](backend/Api/Hubs/TelemetryHub.cs).
-- The RabbitMQ background consumer is implemented by [`CriticalAssetTracking.Api.BackgroundServices.TelemetryConsumerHostedService`](backend/Api/BackgroundServices/TelemetryConsumerHostedService.cs) and uses [`CriticalAssetTracking.Infrastructure.Messaging.TelemetryConsumer`](backend/Infrastructure/Messaging/TelemetryConsumer.cs) to receive messages and pass them to the registered [`CriticalAssetTracking.Application.Processors.TelemetryProcessor`](backend/Application/Processors/TelemetryProcessor.cs).
-
-3) Run the frontend (Angular + Cesium)
+**2. Start the frontend** (in new terminal)
 ```bash
 cd frontend/critical-asset-frontend
 npm install
-ng serve
-# or:
-npm run start
+npm start
 ```
-- Frontend uses Cesium static assets in `src/assets/cesium` and sets `window.CESIUM_BASE_URL` via [`src/index.html`](frontend/critical-asset-frontend/src/index.html).
-- `environment.ts` sets the default SignalR Hub URL to `http://localhost:5073/hubs/telemetry` — see [`frontend/critical-asset-frontend/src/environments/environment.ts`](frontend/critical-asset-frontend/src/environments/environment.ts).
-- The map uses [`CesiumMapComponent`](frontend/critical-asset-frontend/src/app/components/cesium-map/cesium-map.component.ts) and receives telemetry via SignalR.
+App opens at http://localhost:4200
 
-4) Run the simulator
+**3. Start the simulator** (in new terminal)
 ```bash
 cd simulator/CriticalAssetSimulator
 dotnet run
 ```
-- Configure the simulator via `config.json` (modelled by `simulator/CriticalAssetSimulator/Config.cs`) to send to RabbitMQ, UDP, or console.
-- The simulator builds telemetry envelopes using [`simulator/CriticalAssetSimulator/Message.cs`](simulator/CriticalAssetSimulator/Message.cs) and computes CRC32 checksums which are validated by the backend (`[`CriticalAssetTracking.Application.Security.IntegrityValidator`](backend/Application/Security/IntegrityValidator.cs)` uses `ChecksumCalculator`).
 
-Build & test
-- Backend build/test:
+## Project Structure
+
+```
+critical-asset-tracking-platform/
+├── backend/                    # ASP.NET Core API
+│   ├── Api/                   # API and SignalR hub
+│   ├── Application/           # Business logic
+│   ├── Infrastructure/        # RabbitMQ messaging
+│   └── Domain/                # Core models
+├── frontend/                  # Angular web app
+│   └── critical-asset-frontend/
+│       ├── src/
+│       │   ├── app/          # Components and services
+│       │   └── assets/       # Cesium maps library
+│       └── package.json
+└── simulator/                 # Asset simulator
+    └── CriticalAssetSimulator/
+```
+
+## How It Works
+
+1. **Simulator** generates telemetry (location, speed, altitude)
+2. **Backend** receives data via RabbitMQ and broadcasts to clients
+3. **Frontend** displays real-time data on an interactive map
+
+## Configuration
+
+### Simulator Config
+Edit `simulator/CriticalAssetSimulator/config.json`:
+```json
+{
+  "simulation": {
+    "assetTypeCounts": {
+      "Aircraft": 2,
+      "LandVehicle": 1
+    },
+    "updateIntervalMs": 1000,
+    "latitude": 39.0,
+    "longitude": 35.0,
+    "AltitudeMeters": 10000
+  },
+  "output": {
+    "Type": "RabbitMQ"
+  }
+}
+```
+
+### Backend Config
+Edit `backend/Api/appsettings.json` for RabbitMQ host and credentials.
+
+## Building & Testing
+
+**Backend:**
 ```bash
 cd backend
-dotnet restore
 dotnet build
 dotnet test
 ```
-- Frontend:
+
+**Frontend:**
 ```bash
 cd frontend/critical-asset-frontend
 npm ci
-ng test
-ng e2e  # if e2e configured
-```
-- Simulator:
-```bash
-cd simulator
-dotnet restore
-dotnet build
-dotnet run
+npm run test
 ```
 
-Telemetry flow overview
-- Simulator emits a telemetry envelope (message + integrity) using the message builder: [`simulator/CriticalAssetSimulator/Message.cs`](simulator/CriticalAssetSimulator/Message.cs).
+**Simulator:**
+```bash
+cd simulator
+dotnet build
+```
+
+## Features
+
+- Real-time telemetry streaming with SignalR
+- Interactive Cesium map for asset visualization
+- Message queue support (RabbitMQ)
+- Data integrity validation (CRC32 checksums)
+- Docker containerization for easy deployment
+- Multi-asset type simulation (Aircraft, LandVehicle, etc.)
+
+## Next Steps
+
+- Customize the simulator configuration in `config.json`
+- Modify the map in `frontend/critical-asset-frontend/src/app/components/cesium-map/`
+- Add custom telemetry processing in `backend/Application/Processors/`
+- Deploy to cloud using the provided Docker setup
+
+## File Reference
+
+For detailed component info, see individual README files in `backend/` and `simulator/`.
 - If RabbitMQ is configured, the broker receives the envelope (exchange/queue described in [`backend/Api/Settings/RabbitMqSettings.cs`](backend/Api/Settings/RabbitMqSettings.cs)).
 - The backend consumer at [`backend/Infrastructure/Messaging/TelemetryConsumer.cs`](backend/Infrastructure/Messaging/TelemetryConsumer.cs) reads raw JSON, extracts the "message" payload and validates checksum using [`CriticalAssetTracking.Application.Security.IntegrityValidator`](backend/Application/Security/IntegrityValidator.cs).
 - On success, messages are processed by [`CriticalAssetTracking.Application.Processors.TelemetryProcessor`](backend/Application/Processors/TelemetryProcessor.cs) which publishes telemetry to SignalR via a publisher adapter (registration done in [`backend/Api/Program.cs`](backend/Api/Program.cs)).

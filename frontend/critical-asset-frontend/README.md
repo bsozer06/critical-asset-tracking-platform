@@ -1,59 +1,109 @@
-# CriticalAssetFrontend
+# Frontend Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.6.
+Real-time asset tracking dashboard built with Angular and Cesium maps.
 
-## Development server
+## Quick Start
 
-To start a local development server, run:
+### With Docker
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The frontend runs automatically as part of the full platform:
 
 ```bash
-ng generate component component-name
+cd backend
+docker compose up --build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Open http://localhost:5073 in your browser.
+
+### Local Development
 
 ```bash
-ng generate --help
+npm install
+npm start
 ```
 
-## Building
+App opens at http://localhost:4200
 
-To build the project run:
+## Features
+
+- **Interactive Cesium Map** — Visualize asset locations in real-time
+- **Live Telemetry Panel** — View asset data (position, speed, altitude)
+- **Real-time Updates** — SignalR connection streams data as it arrives
+- **Responsive Design** — Works on desktop and mobile
+
+## Project Structure
+
+```
+src/
+├── main.ts                    # Bootstrap the app
+├── index.html                 # Entry point
+├── environments/              # Config by environment
+├── app/
+│   ├── components/
+│   │   ├── cesium-map/       # Map visualization
+│   │   └── telemetry-panel/  # Data display
+│   ├── services/             # API communication
+│   └── app.component.ts      # Root component
+└── assets/
+    └── cesium/               # Cesium JS library
+```
+
+## Configuration
+
+Edit `src/environments/environment.ts` to configure:
+
+```typescript
+export const environment = {
+  production: false,
+  signalRUrl: 'http://localhost:5073/hubs/telemetry',
+  cesiumBaseUrl: '/assets/cesium/'
+};
+```
+
+## Development Commands
 
 ```bash
-ng build
+# Run dev server
+npm start
+
+# Build for production
+npm run build
+
+# Run unit tests
+npm test
+
+# Run end-to-end tests
+npm run e2e
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## How It Works
 
-## Running unit tests
+1. App connects to backend via SignalR at startup
+2. Backend streams telemetry data to the connected client
+3. Cesium map updates asset positions in real-time
+4. Telemetry panel displays current asset data
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Key Components
 
-```bash
-ng test
-```
+### Cesium Map Component
+Displays asset positions on an interactive 3D globe. Updates automatically as telemetry data arrives.
 
-## Running end-to-end tests
+Location: `src/app/components/cesium-map/cesium-map.component.ts`
 
-For end-to-end (e2e) testing, run:
+### Telemetry Panel
+Shows detailed information about each asset including speed, altitude, and last update time.
 
-```bash
-ng e2e
-```
+Location: `src/app/components/telemetry-panel/telemetry-panel.component.ts`
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Next Steps
 
-## Additional Resources
+- Customize the map view in `cesium-map.component.ts`
+- Add new telemetry fields to the panel
+- Create additional components for analysis or alerts
+- Style the UI in `app.component.css`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Resources
+
+- [Angular Documentation](https://angular.dev)
+- [Cesium Documentation](https://cesium.com/docs/)
+- [Angular CLI Guide](https://angular.dev/tools/cli)
