@@ -96,13 +96,35 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   addPlaneEntity(pt: TelemetryPoint, position: Cesium.Cartesian3, hpr: Cesium.HeadingPitchRoll, orientation: Cesium.Quaternion): Cesium.Entity | undefined {
     const id = pt.assetId;
+    // pick model based on assetType; fallback to Cesium_Air
+    const MODEL_BY_TYPE: Record<string, string> = {
+      Aircraft: 'assets/models/Cesium_Air.glb',
+      Drone: 'assets/models/Drone.glb',
+      LandVehicle: 'assets/models/GroundVehicle.glb',
+      Person: 'assets/models/Person.glb',
+      Ship: 'assets/models/Ship.glb'
+    };
+
+    const modelUri = (pt.assetType && MODEL_BY_TYPE[pt.assetType]) ?? 'assets/models/Cesium_Air.glb';
+    
+    // For land vehicles, use simplified orientation (heading only)
+    // For aircraft and others, use full orientation with pitch and roll
+    const entityOrientation = pt.assetType === 'LandVehicle' 
+      ? this.computeLandVehicleOrientation(pt)
+      : orientation;
+
+    // Different trail colors for different asset types
+    const trailColor = pt.assetType === 'LandVehicle' 
+      ? Cesium.Color.YELLOW.withAlpha(0.7)
+      : Cesium.Color.CYAN.withAlpha(0.7);
+
     const entity = this.viewer?.entities.add({
       id: id,
       position,
-      orientation,
+      orientation: entityOrientation,
       model: {
-        uri: 'assets/models/Cesium_Air.glb',
-        scale: 2.0, // modele göre ayarla
+        uri: modelUri,
+        scale: 2.0,
         minimumPixelSize: 64,
         maximumScale: 200,
         heightReference: Cesium.HeightReference.NONE
@@ -112,10 +134,10 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
           return this.trails.get(id) ?? [];
         }, false),
         width: 2,
-        material: Cesium.Color.CYAN.withAlpha(0.7)
+        material: trailColor
       },
       label: {
-        text: id,
+        text: `${id} (${pt.assetType})`,
         font: '14px sans-serif',
         fillColor: Cesium.Color.WHITE,
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
@@ -127,6 +149,18 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     return entity;
   }
 
+  private computeLandVehicleOrientation(pt: TelemetryPoint): Cesium.Quaternion {
+    const position = Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude, pt.altitudeMeters ?? 0);
+    
+    // For land vehicles, only use heading (no pitch or roll)
+    const MODEL_HEADING_OFFSET_DEG = -90;
+    const heading = Cesium.Math.toRadians((pt.headingDegrees ?? 0) + MODEL_HEADING_OFFSET_DEG);
+    
+    // No pitch or roll for ground vehicles
+    const hpr = new Cesium.HeadingPitchRoll(heading, 0, 0);
+    return Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+  }
+
   private computeOrientation(
     current: TelemetryPoint,
     previous?: TelemetryPoint
@@ -136,7 +170,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     // Tweak this offset (degrees) to align the model nose with the heading.
     const MODEL_HEADING_OFFSET_DEG = -90; // adjust if model faces wrong way
 
-    const heading = Cesium.Math.toRadians((current.headingDeg ?? 0) + MODEL_HEADING_OFFSET_DEG);
+    const heading = Cesium.Math.toRadians((current.headingDegrees ?? 0) + MODEL_HEADING_OFFSET_DEG);
 
     let pitch = 0;
     let roll = 0;
@@ -157,11 +191,11 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
       // ----- ROLL (bank angle) -----
       if (
-        current.headingDeg !== undefined &&
-        previous.headingDeg !== undefined
+        current.headingDegrees !== undefined &&
+        previous.headingDegrees !== undefined
       ) {
         let deltaHeading =
-          current.headingDeg - previous.headingDeg;
+          current.headingDegrees - previous.headingDegrees;
         // wrap [-180, 180]
         if (deltaHeading > 180) deltaHeading -= 360;
         if (deltaHeading < -180) deltaHeading += 360;

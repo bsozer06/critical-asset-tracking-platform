@@ -26,10 +26,16 @@ public class Asset
 
     // Altitude in meters
     public double AltitudeMeters { get; set; }
+    // Base (preset) altitude for this asset type (meters)
+    // public double BaseAltitudeMeters { get; set; }
 
     // Movement properties
     public double SpeedMetersPerSecond { get; set; }
+    // Base (preset) speed for this asset type (m/s)
+    // public double BaseSpeedMetersPerSecond { get; set; }
     public double HeadingDegrees { get; set; }
+    // type of the asset (Aircraft, Drone, LandVehicle, Person, Ship)
+    public AssetType Type { get; set; } = AssetType.Aircraft;
 
     public void Move(int deltaMs)
     {
@@ -50,10 +56,24 @@ public class Asset
             Longitude,
             AltitudeMeters,
             SpeedMetersPerSecond,
-            HeadingDegrees
+            HeadingDegrees,
+            Type
+            // BaseAltitudeMeters,
+            // BaseSpeedMetersPerSecond
         );
     }
 }
+
+public record TelemetryBody
+(
+    DateTime TimestampUtc,
+    double Latitude,
+    double Longitude,
+    double AltitudeMeters,
+    double SpeedMetersPerSecond,
+    double HeadingDegrees,
+    AssetType AssetType
+);
 
 /// <summary>
 /// Immutable telemetry point sent to the tracking platform
@@ -66,5 +86,20 @@ public record TelemetryPoint
     double Longitude,
     double AltitudeMeters,
     double SpeedMetersPerSecond,
-    double HeadingDegrees
+    double HeadingDegrees,
+    AssetType AssetType
+    // double BaseAltitudeMeters,
+    // double BaseSpeedMetersPerSecond
 );
+
+/// <summary>
+/// High-level asset categories for telemetry and model selection.
+/// </summary>
+public enum AssetType
+{
+    Aircraft,
+    Drone,
+    LandVehicle,
+    Person,
+    Ship
+}

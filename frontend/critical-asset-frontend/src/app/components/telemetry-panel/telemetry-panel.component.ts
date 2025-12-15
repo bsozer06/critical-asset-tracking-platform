@@ -52,7 +52,7 @@ export class TelemetryPanelComponent implements OnInit {
       const asset = {
         id: pt.assetId,
         location: `${pt.latitude.toFixed(5)}, ${pt.longitude.toFixed(5)}`,
-        speed: pt.speedMps?.toFixed(2) ?? '-',
+        speed: pt.speedMetersPerSecond?.toFixed(2) ?? '-',
         date: pt.timestampUtc,
         raw: pt
       };

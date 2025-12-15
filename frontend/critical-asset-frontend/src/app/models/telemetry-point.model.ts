@@ -4,7 +4,8 @@ export interface TelemetryPoint {
   latitude: number;
   longitude: number;
   altitudeMeters?: number;
-  speedMps?: number;
-  headingDeg?: number;
+  speedMetersPerSecond?: number;
+  headingDegrees?: number;
   classification?: string;
+  assetType?: string;
 }

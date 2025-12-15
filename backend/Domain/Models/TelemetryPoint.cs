@@ -6,9 +6,10 @@
          double Latitude,
          double Longitude,
          double AltitudeMeters,
-         double SpeedMps,
-         double HeadingDeg,
+         double SpeedMetersPerSecond,
+         double HeadingDegrees,
          DateTime TimestampUtc,
-         string Classification 
+         string Classification,
+         string AssetType = ""
      );
 }

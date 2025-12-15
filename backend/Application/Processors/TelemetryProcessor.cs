@@ -25,10 +25,11 @@ namespace CriticalAssetTracking.Application.Processors
                 body.Latitude,
                 body.Longitude,
                 body.AltitudeMeters,
-                body.SpeedMps,
-                body.HeadingDeg,
+                body.SpeedMetersPerSecond,
+                body.HeadingDegrees,
                 header.TimestampUtc,
-                header.Classification
+                header.Classification,
+                header.AssetType
             );
 
             await _publisher.PublishAsync(telemetry, ct);

@@ -15,7 +15,14 @@ public class SimulationConfig
     /// <summary>
     /// Gets or sets the number of assets to simulate.
     /// </summary>
+    [Obsolete("Use AssetTypeCounts to configure assets by type. This property is kept for backward compatibility.")]
     public int AssetCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets counts of assets grouped by asset type (e.g. { "Aircraft": 2, "LandVehicle": 3 }).
+    /// When present, this is used in preference to AssetCount.
+    /// </summary>
+    public Dictionary<string, int>? AssetTypeCounts { get; set; }
 
     /// <summary>
     /// Gets or sets the interval, in milliseconds, between asset updates.
@@ -51,6 +58,38 @@ public class SimulationConfig
     /// Gets or sets the heading of the asset, in degrees.
     /// </summary>
     public double HeadingDegrees { get; set; }
+
+    /// <summary>
+    /// Optional default asset type to simulate (e.g. "Aircraft", "Drone", "LandVehicle").
+    /// If not set, simulator will pick randomly.
+    /// </summary>
+    public string? DefaultAssetType { get; set; }
+
+    /// <summary>
+    /// Asset type-specific configurations (altitude, speed, etc.)
+    /// </summary>
+    public Dictionary<string, AssetTypeConfig>? AssetTypeDefaults { get; set; }
+}
+
+/// <summary>
+/// Configuration settings specific to an asset type.
+/// </summary>
+public class AssetTypeConfig
+{
+    /// <summary>
+    /// Initial altitude in meters for this asset type.
+    /// </summary>
+    public double? AltitudeMeters { get; set; }
+
+    /// <summary>
+    /// Speed in meters per second for this asset type.
+    /// </summary>
+    public double? SpeedMetersPerSecond { get; set; }
+
+    /// <summary>
+    /// Initial heading in degrees for this asset type.
+    /// </summary>
+    public double? HeadingDegrees { get; set; }
 }
 
 public class OutputConfig

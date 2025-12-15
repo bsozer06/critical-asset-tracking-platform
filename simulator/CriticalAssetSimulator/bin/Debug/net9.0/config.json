@@ -1,13 +1,40 @@
 {
   "simulation": {
     "assetCount": 2,
+    "assetTypeCounts": {
+      "Aircraft": 2,
+      "LandVehicle": 1
+    },
     "updateIntervalMs": 1000,
     "pointIntervalSec": 2,
     "latitude": 39.0000,
     "longitude": 35.0000,
     "AltitudeMeters": 10000,
     "SpeedMetersPerSecond": 230,
-    "HeadingDegrees": 90.0
+    "HeadingDegrees": 90.0,
+    "DefaultAssetType": "Aircraft",
+    "assetTypeDefaults": {
+      "Aircraft": {
+        "AltitudeMeters": 10000,
+        "SpeedMetersPerSecond": 230,
+        "HeadingDegrees": 90.0
+      },
+      "LandVehicle": {
+        "AltitudeMeters": 0,
+        "SpeedMetersPerSecond": 25,
+        "HeadingDegrees": 90.0
+      },
+      "Drone": {
+        "AltitudeMeters": 500,
+        "SpeedMetersPerSecond": 20,
+        "HeadingDegrees": 0.0
+      },
+      "Ship": {
+        "AltitudeMeters": 0,
+        "SpeedMetersPerSecond": 15,
+        "HeadingDegrees": 45.0
+      }
+    }
   },
   "output": {
     "type": "rabbitmq",

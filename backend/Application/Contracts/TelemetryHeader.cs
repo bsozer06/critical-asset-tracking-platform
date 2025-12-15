@@ -7,5 +7,6 @@
         public string AssetId { get; set; } = string.Empty;
         public DateTime TimestampUtc { get; set; }
         public string Classification { get; set; } = string.Empty;
+        public string AssetType { get; set; } = string.Empty;
     }
 }
