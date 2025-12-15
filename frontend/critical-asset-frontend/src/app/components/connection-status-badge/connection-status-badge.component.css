@@ -1,25 +1,61 @@
 .badge {
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-    margin-right: 8px;
-    color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-right: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  letter-spacing: 0.3px;
 }
 
 .connected {
-    background: #43a047;
+  background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+}
+
+.connected:hover {
+  box-shadow: 0 4px 12px rgba(67, 160, 71, 0.3);
+  transform: translateY(-1px);
 }
 
 .disconnected {
-    background: #e53935;
+  background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+}
+
+.disconnected:hover {
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+  transform: translateY(-1px);
 }
 
 .reconnecting {
-    background: #fbc02d;
-    color: #222;
+  background: linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
+  color: #1a237e;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.reconnecting:hover {
+  box-shadow: 0 4px 12px rgba(251, 192, 45, 0.3);
+  transform: translateY(-1px);
 }
 
 .error {
-    background: #8e24aa;
+  background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+}
+
+.error:hover {
+  box-shadow: 0 4px 12px rgba(142, 36, 170, 0.3);
+  transform: translateY(-1px);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
