@@ -108,20 +108,25 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       const positions = Array.from(this.entityPositions.values());
       
       if (positions.length === 1) {
-        // For single entity, zoom to it with offset
+        // For single entity, zoom with HeadingPitchRange for precise positioning
+        const position = positions[0];
+        console.log('position', position);
+        
         this.viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.add(
-            positions[0],
-            new Cesium.Cartesian3(5000, 5000, 5000),
-            new Cesium.Cartesian3()
-          ),
+          destination: position,
+          orientation: {
+            heading: Cesium.Math.toRadians(0),
+            pitch: Cesium.Math.toRadians(-45),
+            roll: 0
+          },
           duration: 2.0
         });
       } else {
-        // For multiple entities, calculate bounding sphere
+        // For multiple entities, calculate bounding sphere with better framing
         const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+        
         this.viewer.camera.flyToBoundingSphere(boundingSphere, {
-          duration: 2.0
+          duration: 2.0,
         });
       }
     } catch (error) {
@@ -144,17 +149,16 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     }
 
     try {
-      // Create an offset position for better viewing angle
-      const offset = new Cesium.Cartesian3(3000, 3000, 3000);
-      const cameraPosition = Cesium.Cartesian3.add(position, offset, new Cesium.Cartesian3());
+      // Get altitude to adjust zoom distance
+      const cartographic = Cesium.Cartographic.fromCartesian(position);
+      const altitude = cartographic.height || 0;
+      
+      // Calculate distance based on altitude (higher altitude = more distance)
+      const baseDistance = 10000;
+      const altitudeDistance = Math.max(altitude * 0.5, 0);
+      const totalDistance = baseDistance + altitudeDistance;
 
-      this.viewer.camera.flyTo({
-        destination: cameraPosition,
-        orientation: {
-          heading: Cesium.Math.toRadians(0),
-          pitch: Cesium.Math.toRadians(-45),
-          roll: 0
-        },
+      this.viewer.camera.flyToBoundingSphere(new Cesium.BoundingSphere(position, 3), {
         duration: 1.5
       });
     } catch (error) {
