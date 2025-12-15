@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SignalRService } from '../../services/signalr.service';
 import { TelemetryPoint } from '../../models/telemetry-point.model';
@@ -6,24 +6,29 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-telemetry-panel',
   standalone: true,
-  imports: [CommonModule,MatIconModule, MatTableModule, MatExpansionModule, MatInputModule, ScrollingModule],
+  imports: [CommonModule, MatIconModule, MatTableModule, MatExpansionModule, MatInputModule, MatButtonModule, MatCardModule, MatDividerModule, ScrollingModule],
   templateUrl: './telemetry-panel.component.html',
   styleUrls: ['./telemetry-panel.component.css'],
-  // animations: [
-  //   trigger('rowExpandAnimation', [
-  //     state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
-  //     state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
-  //     transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-  //   ])
-  // ]
+  animations: [
+    trigger('rowExpandAnimation', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden', opacity: 0 })),
+      state('expanded', style({ height: '*', visibility: 'visible', opacity: 1 })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
 export class TelemetryPanelComponent implements OnInit {
+  @Output() assetSelected = new EventEmitter<TelemetryPoint>();
+  
   displayedColumns: string[] = ['id', 'location', 'speed', 'date', 'expand'];
   dataSource = new MatTableDataSource<any>([]);
   filteredAssets: any[] = [];
@@ -85,8 +90,13 @@ export class TelemetryPanelComponent implements OnInit {
   }
 
   toggleRow(asset: any) {
-    this.expandedAssetId = this.expandedAssetId === asset.id ? null : asset.id;
-    console.log('expandedAssetId', this.expandedAssetId);
+    const wasExpanded = this.expandedAssetId === asset.id;
+    this.expandedAssetId = wasExpanded ? null : asset.id;
+    
+    if (!wasExpanded) {
+      // Emit the raw telemetry data so map can zoom
+      this.assetSelected.emit(asset.raw);
+    }
   }
 
   isExpanded(asset: any) {
@@ -94,4 +104,30 @@ export class TelemetryPanelComponent implements OnInit {
   }
 
   isExpansionDetailRow = (_: number, row: any) => this.isExpanded(row);
+
+  formatTime(date: string): string {
+    return new Date(date).toLocaleString();
+  }
+
+  getAssetTypeIcon(assetType?: string): string {
+    const iconMap: Record<string, string> = {
+      'Aircraft': 'flight',
+      'Drone': 'toys',
+      'LandVehicle': 'directions_car',
+      'Person': 'person',
+      'Ship': 'directions_boat'
+    };
+    return iconMap[assetType ?? ''] || 'location_on';
+  }
+
+  getAssetTypeColor(assetType?: string): string {
+    const colorMap: Record<string, string> = {
+      'Aircraft': '#1976d2',
+      'Drone': '#ff6f00',
+      'LandVehicle': '#fbc02d',
+      'Person': '#388e3c',
+      'Ship': '#0097a7'
+    };
+    return colorMap[assetType ?? ''] || '#757575';
+  }
 }
