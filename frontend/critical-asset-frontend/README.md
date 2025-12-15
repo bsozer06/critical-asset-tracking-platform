@@ -1,109 +1,105 @@
-# Frontend Dashboard
 
-Real-time asset tracking dashboard built with Angular and Cesium maps.
+# Critical Asset Tracking Frontend
 
-## Quick Start
+Modern real-time asset tracking dashboard built with Angular and Cesium.
 
-### With Docker
+## 🚀 Quick Start
 
-The frontend runs automatically as part of the full platform:
-
-```bash
-cd backend
-docker compose up --build
-```
-
-Open http://localhost:5073 in your browser.
+### Run with Docker (Recommended)
+1. From the project root, run:
+   ```bash
+   cd backend
+   docker compose up --build
+   ```
+2. Open [http://localhost:5073](http://localhost:5073) in your browser.
 
 ### Local Development
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start the dev server:
+   ```bash
+   npm start
+   ```
+3. App opens at [http://localhost:4200](http://localhost:4200)
 
-```bash
-npm install
-npm start
-```
+## ✨ Features
 
-App opens at http://localhost:4200
+- **Interactive 3D Cesium Map** — Real-time asset locations
+- **Live Telemetry Panel** — Card-based, color-coded, expandable asset details
+- **Zoom to Asset** — Click an asset to focus the map
+- **Initial Zoom to All** — Map auto-zooms to show all assets on load
+- **Responsive & Mobile Friendly** — Modern Material Design
+- **Smooth Animations** — For map, panel, and UI transitions
 
-## Features
-
-- **Interactive Cesium Map** — Visualize asset locations in real-time
-- **Live Telemetry Panel** — View asset data (position, speed, altitude)
-- **Real-time Updates** — SignalR connection streams data as it arrives
-- **Responsive Design** — Works on desktop and mobile
-
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 src/
-├── main.ts                    # Bootstrap the app
-├── index.html                 # Entry point
-├── environments/              # Config by environment
-├── app/
-│   ├── components/
-│   │   ├── cesium-map/       # Map visualization
-│   │   └── telemetry-panel/  # Data display
-│   ├── services/             # API communication
-│   └── app.component.ts      # Root component
-└── assets/
-    └── cesium/               # Cesium JS library
+  app/
+    components/
+      cesium-map/         # 3D map visualization
+      telemetry-panel/    # Telemetry cards & details
+    services/             # SignalR, helpers
+  assets/
+    cesium/               # Cesium JS library
+  environments/           # Environment configs
 ```
 
-## Configuration
+## ⚙️ Configuration
 
-Edit `src/environments/environment.ts` to configure:
+Edit `src/environments/environment.ts` if you need to change API or Cesium settings:
 
 ```typescript
 export const environment = {
   production: false,
-  signalRUrl: 'http://localhost:5073/hubs/telemetry',
-  cesiumBaseUrl: '/assets/cesium/'
+  signalRHubUrl: 'http://localhost:5073/hubs/telemetry',
+  cesiumBaseUrl: 'assets/cesium',
+  cesiumIonToken: '' // Optional: add your Cesium Ion token
 };
 ```
 
-## Development Commands
+## 🛠️ Common Commands
 
 ```bash
-# Run dev server
+# Start dev server
 npm start
-
 # Build for production
 npm run build
-
 # Run unit tests
 npm test
-
-# Run end-to-end tests
-npm run e2e
 ```
 
-## How It Works
+## 🧩 How It Works
 
-1. App connects to backend via SignalR at startup
-2. Backend streams telemetry data to the connected client
-3. Cesium map updates asset positions in real-time
-4. Telemetry panel displays current asset data
+1. App connects to backend via SignalR for live telemetry
+2. Cesium map displays and updates asset positions in real-time
+3. Telemetry panel shows asset details, color-coded by type
+4. Click an asset to zoom/focus the map
 
-## Key Components
+## 🖼️ Visual & UX Highlights
 
-### Cesium Map Component
-Displays asset positions on an interactive 3D globe. Updates automatically as telemetry data arrives.
+- Card-based telemetry panel with icons, colors, and smooth expand/collapse
+- Zoom to asset on selection, or zoom to all on load
+- Mobile-friendly, responsive layout
+- Material Design color scheme for asset types
 
-Location: `src/app/components/cesium-map/cesium-map.component.ts`
+## 📝 Recent Improvements
 
-### Telemetry Panel
-Shows detailed information about each asset including speed, altitude, and last update time.
+- Modern card-based telemetry panel with icons and color badges
+- Smooth animations for expand/collapse and map zoom
+- Initial map zoom to fit all assets
+- Click-to-zoom from telemetry panel to map
+- Improved responsive layout and accessibility
 
-Location: `src/app/components/telemetry-panel/telemetry-panel.component.ts`
+See `FRONTEND_IMPROVEMENTS.md` for full details.
 
-## Next Steps
-
-- Customize the map view in `cesium-map.component.ts`
-- Add new telemetry fields to the panel
-- Create additional components for analysis or alerts
-- Style the UI in `app.component.css`
-
-## Resources
+## 📚 Resources
 
 - [Angular Documentation](https://angular.dev)
 - [Cesium Documentation](https://cesium.com/docs/)
-- [Angular CLI Guide](https://angular.dev/tools/cli)
+- [Angular Material](https://material.angular.io/)
+
+---
+For backend/API setup, see the main project README.
