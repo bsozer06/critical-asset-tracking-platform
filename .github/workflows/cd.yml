@@ -11,23 +11,23 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push backend image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}/backend:latest -f backend/Api/Dockerfile .
-          docker push ghcr.io/${{ github.repository }}/backend:latest
+      # - name: Build and push backend image
+      #   run: |
+      #     docker build -t ghcr.io/${{ github.repository }}/backend:latest -f backend/Api/Dockerfile .
+      #     docker push ghcr.io/${{ github.repository }}/backend:latest
 
-      - name: Build and push frontend image
+      # - name: Build and push frontend image
         run: |
           docker build -t ghcr.io/${{ github.repository }}/frontend:latest -f frontend/critical-asset-frontend/Dockerfile .
           docker push ghcr.io/${{ github.repository }}/frontend:latest
 
-      - name: Build and push simulator image
+      # - name: Build and push simulator image
         run: |
           docker build -t ghcr.io/${{ github.repository }}/simulator:latest -f simulator/CriticalAssetSimulator/Dockerfile .
           docker push ghcr.io/${{ github.repository }}/simulator:latest
