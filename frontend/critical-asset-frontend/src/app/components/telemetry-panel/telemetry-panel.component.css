@@ -346,7 +346,7 @@
 
 /* Normal state - mat-label */
 ::ng-deep .telemetry-panel .mdc-floating-label {
-  color: #ffffff !important;
+  color: #ffffffbc !important;
 }
 
 /* Hover state */
