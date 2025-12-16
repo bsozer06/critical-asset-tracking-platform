@@ -17,19 +17,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Build and push backend image
-      #   run: |
-      #     docker build -t ghcr.io/${{ github.repository }}/backend:latest -f backend/Api/Dockerfile .
-      #     docker push ghcr.io/${{ github.repository }}/backend:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # - name: Build and push frontend image
-      #   run: |
-      #     docker build -t ghcr.io/${{ github.repository }}/frontend:latest -f frontend/critical-asset-frontend/Dockerfile .
-      #     docker push ghcr.io/${{ github.repository }}/frontend:latest
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: backend/Api/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/backend:latest,ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
 
-      # - name: Build and push simulator image
-      #   run: |
-      #     docker build -t ghcr.io/${{ github.repository }}/simulator:latest -f simulator/CriticalAssetSimulator/Dockerfile .
-      #     docker push ghcr.io/${{ github.repository }}/simulator:latest
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: frontend/critical-asset-frontend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/frontend:latest,ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
 
-  # Optional: Add deployment steps here (e.g., SSH, Azure, AWS, etc.)
+      - name: Build and push simulator image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: simulator/CriticalAssetSimulator/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}/simulator:latest,ghcr.io/${{ github.repository }}/simulator:${{ github.sha }}
