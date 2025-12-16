@@ -34,6 +34,7 @@ export class TelemetryPanelComponent implements OnInit {
   filteredAssets: any[] = [];
   expandedAssetId: string | null = null;
   filterValue = '';
+  private _filterTimeout: any;
 
   constructor(private signalR: SignalRService) {}
 
@@ -72,10 +73,20 @@ export class TelemetryPanelComponent implements OnInit {
     this.filteredAssets = [...this.dataSource.data];
   }
 
+
+  /**
+   * Handles the filter input event, debouncing user input to avoid excessive filtering operations.
+   *
+   * @param event - The input event triggered by the filter input field.
+   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.filterValue = filterValue;
-    this.applyFilterInternal();
+    clearTimeout(this._filterTimeout);
+
+    this._filterTimeout = setTimeout(() => {
+      this.filterValue = filterValue;
+      this.applyFilterInternal();
+    }, 250);
   }
 
   applyFilterInternal() {
@@ -83,8 +94,8 @@ export class TelemetryPanelComponent implements OnInit {
       this.filteredAssets = [...this.dataSource.data];
     } else {
       this.filteredAssets = this.dataSource.data.filter(asset =>
-        asset.id.toLowerCase().includes(this.filterValue) ||
-        asset.location.toLowerCase().includes(this.filterValue)
+        asset.id.toLowerCase().includes(this.filterValue)
+        // || asset.location.toLowerCase().includes(this.filterValue)
       );
     }
   }
