@@ -354,8 +354,6 @@
   color: #ffffff !important;
 }
 
-*/
-
 /* Disabled state (opsiyonel) */
 ::ng-deep .telemetry-panel .mdc-text-field--disabled .mdc-floating-label {
   color: #888888 !important;
