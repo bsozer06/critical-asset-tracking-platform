@@ -24,8 +24,12 @@ export class CesiumUtility {
   }
 
    public static getTrailColor(type?: string): Cesium.Color {
-    return type === 'LandVehicle'
-      ? Cesium.Color.YELLOW.withAlpha(0.7)
-      : Cesium.Color.CYAN.withAlpha(0.7);
+    if (type === 'LandVehicle') {
+      return Cesium.Color.YELLOW.withAlpha(0.7);
+    } else if (type === 'Drone') {
+      return Cesium.Color.ORANGE.withAlpha(0.7);
+    } else {
+      return Cesium.Color.CYAN.withAlpha(0.7);
+    }
   }
 }
