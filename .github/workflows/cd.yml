@@ -23,13 +23,13 @@ jobs:
       #     docker push ghcr.io/${{ github.repository }}/backend:latest
 
       # - name: Build and push frontend image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}/frontend:latest -f frontend/critical-asset-frontend/Dockerfile .
-          docker push ghcr.io/${{ github.repository }}/frontend:latest
+        # run: |
+        #   docker build -t ghcr.io/${{ github.repository }}/frontend:latest -f frontend/critical-asset-frontend/Dockerfile .
+        #   docker push ghcr.io/${{ github.repository }}/frontend:latest
 
       # - name: Build and push simulator image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}/simulator:latest -f simulator/CriticalAssetSimulator/Dockerfile .
-          docker push ghcr.io/${{ github.repository }}/simulator:latest
+        # run: |
+        #   docker build -t ghcr.io/${{ github.repository }}/simulator:latest -f simulator/CriticalAssetSimulator/Dockerfile .
+        #   docker push ghcr.io/${{ github.repository }}/simulator:latest
 
   # Optional: Add deployment steps here (e.g., SSH, Azure, AWS, etc.)
