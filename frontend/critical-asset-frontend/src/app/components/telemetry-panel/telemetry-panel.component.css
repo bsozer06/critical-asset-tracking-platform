@@ -332,30 +332,31 @@
   background: #777777;
 }
 
-
-.example-element-detail-wrapper {
+.detail-wrapper {
   overflow: hidden;
   display: grid;
   grid-template-rows: 0fr;
   grid-template-columns: 100%;
 }
 
-.example-element-detail-wrapper-expanded {
-  grid-template-rows: 1fr;
-}
-
-/* .detail-wrapper {
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: 0fr;
-  grid-template-columns: 100%;
-} */
- .detail-wrapper {
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: 0fr;
-  grid-template-columns: 100%;
-}
 .detail-box {
   padding: 8px 12px;
+}
+
+
+/* Normal state - mat-label */
+::ng-deep .telemetry-panel .mdc-floating-label {
+  color: #ffffff !important;
+}
+
+/* Hover state */
+::ng-deep .telemetry-panel .mdc-text-field:hover .mdc-floating-label {
+  color: #ffffff !important;
+}
+
+*/
+
+/* Disabled state (opsiyonel) */
+::ng-deep .telemetry-panel .mdc-text-field--disabled .mdc-floating-label {
+  color: #888888 !important;
 }
