@@ -16,7 +16,7 @@ export class CesiumUtility {
   public static getModelUri(type?: string): string {
     const models: Record<string, string> = {
       Aircraft: 'assets/models/Cesium_Air.glb',
-      Drone: 'assets/models/Drone.glb',
+      Drone: 'assets/models/CesiumDrone.glb',
       LandVehicle: 'assets/models/GroundVehicle.glb',
       Ship: 'assets/models/Ship.glb'
     };
