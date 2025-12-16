@@ -7,27 +7,27 @@ on:
     branches: [main, develop]
 
 jobs:
-  # backend:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: backend
-  #   steps:
-  #     - uses: actions/checkout@v4
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v4
-  #       with:
-  #         dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
 
-  #     - name: Restore
-  #       run: dotnet restore
+      - name: Restore
+        run: dotnet restore
 
-  #     - name: Build
-  #       run: dotnet build --no-restore --configuration Release
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
 
-  #     - name: Test
-  #       run: dotnet test --no-build --configuration Release
+      - name: Test
+        run: dotnet test --no-build --configuration Release
 
   frontend:
     runs-on: ubuntu-latest
@@ -55,21 +55,21 @@ jobs:
       # - name: Test
       #   run: npm test -- --watch=false --browsers=ChromeHeadless      
 
-  # simulator:
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: simulator
-  #   steps:
-  #     - uses: actions/checkout@v4
+  simulator:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: simulator
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v4
-  #       with:
-  #         dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
 
-  #     - name: Restore
-  #       run: dotnet restore
+      - name: Restore
+        run: dotnet restore
 
-  #     - name: Build
-  #       run: dotnet build --no-restore --configuration Release
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
