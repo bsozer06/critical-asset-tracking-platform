@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend/critical-asset-frontend
-          file: Dockerfile
+          file: frontend/critical-asset-frontend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/frontend:latest,ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
 
@@ -45,6 +45,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./simulator/CriticalAssetSimulator
-          file: Dockerfile
+          file: simulator/CriticalAssetSimulator/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/simulator:latest,ghcr.io/${{ github.repository }}/simulator:${{ github.sha }}
