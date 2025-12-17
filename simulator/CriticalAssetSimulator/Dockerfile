@@ -3,13 +3,16 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore
-COPY *.csproj ./CriticalAssetSimulator/
+# COPY *.csproj ./CriticalAssetSimulator/
 # COPY simulator/CriticalAssetSimulator/*.csproj ./CriticalAssetSimulator/
-RUN dotnet restore CriticalAssetSimulator/CriticalAssetSimulator.csproj
+# RUN dotnet restore CriticalAssetSimulator/CriticalAssetSimulator.csproj
+COPY *.csproj ./
+RUN dotnet restore CriticalAssetSimulator.csproj
 
 # Copy everything and publish
 COPY . .
-RUN dotnet publish CriticalAssetSimulator/CriticalAssetSimulator.csproj -c Release -o /app/publish
+# RUN dotnet publish CriticalAssetSimulator/CriticalAssetSimulator.csproj -c Release -o /app/publish
+RUN dotnet publish CriticalAssetSimulator.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0 AS runtime
 WORKDIR /app
