@@ -182,6 +182,10 @@ Troubleshooting
   - If using RabbitMQ, ensure exchange and queue exist and the consumer has correct permissions.
 - Cesium errors often come from missing static assets or incorrect `CESIUM_BASE_URL`; confirm [`frontend/critical-asset-frontend/src/index.html`](frontend/critical-asset-frontend/src/index.html) and [`environment.ts`](frontend/critical-asset-frontend/src/environments/environment.ts) match.
 
+## CI/CD
+
+For information about the CI/CD pipeline, see [CI/CD documentation](.github/workflows/README.md).
+
 Contributing
 - Follow typical Git workflow for feature branches, PRs, and code review.
 - Add unit tests for your changes. See frontend tests in [`frontend/critical-asset-frontend/README.md`](frontend/critical-asset-frontend/README.md) and backend tests via `dotnet test`.
