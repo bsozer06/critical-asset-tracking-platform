@@ -27,7 +27,8 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          # context: ./backend
+          context: .
           file: backend/Api/Dockerfile
           push: true
           tags: |
@@ -36,7 +37,8 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend/critical-asset-frontend
+          # context: ./frontend/critical-asset-frontend
+          context: .
           file: frontend/critical-asset-frontend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/frontend:latest,ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
@@ -44,7 +46,8 @@ jobs:
       - name: Build and push simulator image
         uses: docker/build-push-action@v5
         with:
-          context: ./simulator/CriticalAssetSimulator
+          # context: ./simulator/CriticalAssetSimulator
+          context: .
           file: simulator/CriticalAssetSimulator/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/simulator:latest,ghcr.io/${{ github.repository }}/simulator:${{ github.sha }}
