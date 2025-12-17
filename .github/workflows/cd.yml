@@ -24,10 +24,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          file: Api/Dockerfile
+          file: ./Api/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/backend:latest,ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
-
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
