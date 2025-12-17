@@ -296,7 +296,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       polyline: {
         positions,
         width: 3,
-        material: Cesium.Color.YELLOW.withAlpha(0.7)
+        material: Cesium.Color.RED.withAlpha(0.9),
       },
       properties: {
         geofenceId: geofence.id,
