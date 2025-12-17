@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import * as Cesium from 'cesium';
 import { SignalRService } from '../../services/signalr.service';
+import { GeofenceService } from '../../services/geofence.service';
 import { TelemetryPoint } from '../../models/telemetry-point.model';
+import { Geofence, GeoPoint } from '../../models/geofence.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CesiumUtility } from '../../utilities/cesium.utility';
 import { CesiumHelper } from '../../helpers/cesium.helper';
@@ -14,6 +16,9 @@ import { CesiumHelper } from '../../helpers/cesium.helper';
 })
 export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cesiumContainer', { static: true }) cesiumContainer!: ElementRef<HTMLDivElement>;
+  @Output() geofenceCreated = new EventEmitter<Geofence>();
+  @Output() violationDetected = new EventEmitter<any>();
+
   viewer?: Cesium.Viewer;
 
   private destroy$ = new Subject<void>();
@@ -26,7 +31,16 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   private initialZoomDone = false;
 
-  constructor(private signalRService: SignalRService) { }
+  /** Geofence drawing state */
+  isDrawingMode = false;
+  drawingPoints: GeoPoint[] = [];
+  drawingEntity?: Cesium.Entity;
+  geofencePolylines = new Map<string, Cesium.Entity>();
+
+  constructor(
+    private signalRService: SignalRService,
+    private geofenceService: GeofenceService
+  ) { }
 
   ngAfterViewInit(): void {
     this._initViewer();
@@ -41,6 +55,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     this.trails.clear();
     this.positions.clear();
     this.lastTelemetry.clear();
+    this.geofencePolylines.clear();
+    this.drawingPoints = [];
 
     this.viewer?.destroy();
   }
@@ -203,11 +219,195 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
         this.upsertEntity(pt);
 
+        // Check geofence violations
+        const violations = this.geofenceService.checkGeofenceViolations(pt.assetId, pt);
+        violations.forEach(violation => {
+          this.violationDetected.emit(violation);
+        });
+
         if (!this.initialZoomDone && this.entities.size > 0) {
           this.zoomToFitAll();
           this.initialZoomDone = true;
         }
       });
+  }
+
+  /**
+   * Start drawing a geofence polygon
+   */
+  startDrawingGeofence(): void {
+    if (!this.viewer) return;
+
+    this.isDrawingMode = true;
+    this.drawingPoints = [];
+    this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
+      (click: any) => {
+        this._handleMapClick(click);
+      },
+      Cesium.ScreenSpaceEventType.LEFT_CLICK
+    );
+
+    this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
+      (dblClick: any) => {
+        this._finishDrawingGeofence();
+      },
+      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
+    );
+
+    console.log('Geofence drawing mode started. Click to add points, double-click to finish.');
+  }
+
+  /**
+   * Cancel drawing mode
+   */
+  cancelDrawing(): void {
+    if (!this.viewer) return;
+
+    this.isDrawingMode = false;
+    this.drawingPoints = [];
+
+    if (this.drawingEntity) {
+      this.viewer.entities.remove(this.drawingEntity);
+      this.drawingEntity = undefined;
+    }
+
+    // Reset event handlers
+    this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+      Cesium.ScreenSpaceEventType.LEFT_CLICK
+    );
+    this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
+    );
+
+    console.log('Drawing cancelled');
+  }
+
+  /**
+   * Display a geofence polygon on the map
+   */
+  displayGeofence(geofence: Geofence): void {
+    if (!this.viewer || this.geofencePolylines.has(geofence.id)) return;
+
+    const positions = geofence.polygon.map(pt =>
+      Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
+    );
+
+    const polylineEntity = this.viewer.entities.add({
+      polyline: {
+        positions,
+        width: 3,
+        material: Cesium.Color.YELLOW.withAlpha(0.7)
+      },
+      properties: {
+        geofenceId: geofence.id,
+        geofenceName: geofence.name
+      }
+    });
+
+    this.geofencePolylines.set(geofence.id, polylineEntity);
+  }
+
+  /**
+   * Remove geofence visualization
+   */
+  removeGeofenceDisplay(geofenceId: string): void {
+    if (!this.viewer) return;
+
+    const entity = this.geofencePolylines.get(geofenceId);
+    if (entity) {
+      this.viewer.entities.remove(entity);
+      this.geofencePolylines.delete(geofenceId);
+    }
+  }
+
+  /**
+   * Get all current geofences
+   */
+  getAllGeofences(): Geofence[] {
+    return this.geofenceService.getGeofences();
+  }
+
+  private _handleMapClick(click: any): void {
+    if (!this.isDrawingMode || !this.viewer) return;
+
+    const pickedObject = this.viewer.scene.pick(click.position);
+    if (Cesium.defined(pickedObject)) {
+      return; // Don't add point if clicking on an entity
+    }
+
+    const earthPosition = this.viewer.scene.pickPosition(click.position);
+    if (!Cesium.defined(earthPosition)) {
+      return;
+    }
+
+    const cartographic = Cesium.Cartographic.fromCartesian(earthPosition as Cesium.Cartesian3);
+    const point: GeoPoint = {
+      longitude: Cesium.Math.toDegrees(cartographic.longitude),
+      latitude: Cesium.Math.toDegrees(cartographic.latitude)
+    };
+
+    this.drawingPoints.push(point);
+    console.log(`Point added: ${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`);
+
+    // Update visualization
+    this._updateDrawingVisualization();
+  }
+
+  private _finishDrawingGeofence(): void {
+    if (this.drawingPoints.length < 3) {
+      alert('A geofence must have at least 3 points');
+      return;
+    }
+
+    // Create geofence
+    const geofenceId = `geofence-${Date.now()}`;
+    const geofence: Geofence = {
+      id: geofenceId,
+      name: `Geofence ${new Date().toLocaleTimeString()}`,
+      polygon: [...this.drawingPoints],
+      createdAt: new Date(),
+      enabled: true,
+      alertOnEntry: true,
+      alertOnExit: true
+    };
+
+    this.geofenceService.addGeofence(geofence);
+    this.displayGeofence(geofence);
+    this.geofenceCreated.emit(geofence);
+
+    console.log('Geofence created:', geofence);
+
+    // Cancel drawing mode
+    this.cancelDrawing();
+  }
+
+  private _updateDrawingVisualization(): void {
+    if (!this.viewer) return;
+
+    if (this.drawingEntity) {
+      this.viewer.entities.remove(this.drawingEntity);
+    }
+
+    const positions = this.drawingPoints.map(pt =>
+      Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
+    );
+
+    if (positions.length > 0) {
+      this.drawingEntity = this.viewer.entities.add({
+        polyline: {
+          positions: new Cesium.CallbackProperty(() => positions, false),
+          width: 2,
+          material: Cesium.Color.CYAN.withAlpha(0.8),
+          clampToGround: true
+        },
+        point: {
+          pixelSize: 8,
+          color: Cesium.Color.RED,
+          outlineColor: Cesium.Color.WHITE,
+          outlineWidth: 2
+        }
+      });
+    }
   }
 
 }

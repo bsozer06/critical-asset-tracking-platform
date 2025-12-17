@@ -1,14 +1,11 @@
+# Backend
 backend/.vs/
-backend/Api/bin/
-backend/Api/obj/
-backend/Application/bin/
-backend/Application/obj/
-backend/Domain/bin/
-backend/Domain/obj/
-backend/Infrastructure/bin/
-backend/Infrastructure/obj/
-simulator/CriticalAssetSimulator/bin/
-simulator/CriticalAssetSimulator/obj/
+backend/**/bin/
+backend/**/obj/
+
+# Simulator
+simulator/**/bin/
+simulator/**/obj/
 frontend/critical-asset-frontend/dist/
 frontend/critical-asset-frontend/node_modules/
 *.log

@@ -1,0 +1,16 @@
+<div *ngIf="isVisible && violations.length > 0" 
+     class="geofence-alert" 
+     [@blinking]="blinkState">
+  <div class="alert-header">
+    <span class="alert-title">🚨 Geofence Alert</span>
+    <button class="close-btn" (click)="dismiss()">✕</button>
+  </div>
+  
+  <div class="alert-content">
+    <div *ngFor="let violation of violations" class="violation-item">
+      <span class="violation-icon">{{ getViolationIcon(violation) }}</span>
+      <span class="violation-message">{{ getViolationMessage(violation) }}</span>
+      <span class="violation-time">{{ violation.timestamp | date:'HH:mm:ss' }}</span>
+    </div>
+  </div>
+</div>
