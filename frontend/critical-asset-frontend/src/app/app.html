@@ -4,31 +4,28 @@
 			<connection-status-badge [status]="connectionStatus"></connection-status-badge>
 			<span style="font-weight: bold; font-size: 18px;">Critical Asset Tracking Platform</span>
 		</div>
-		<div class="geofence-controls">
-			<button *ngIf="!isDrawingGeofence" 
-					(click)="startDrawingGeofence()"
-					class="btn btn-primary"
-					title="Draw a new geofence on the map">
-				📍 Draw Geofence
-			</button>
-			<button *ngIf="isDrawingGeofence" 
-					(click)="cancelGeofenceDrawing()"
-					class="btn btn-danger"
-					title="Cancel geofence drawing">
-				✕ Cancel Drawing
-			</button>
-			<span *ngIf="geofences.length > 0" class="geofence-count">
-				{{ geofences.length }} Geofence(s)
-			</span>
-		</div>
+		<!-- geofence-controls removed: button moved to map area -->
 	</div>
 
 	<div class="main-layout">
-		<div class="map-area">
+		<div class="map-area" style="position:relative;">
 			<app-cesium-map 
 				(geofenceCreated)="onGeofenceCreated($event)"
 				(violationDetected)="onViolationDetected($event)">
 			</app-cesium-map>
+			<!-- Floating Draw Geofence Button -->
+			<button *ngIf="!isDrawingGeofence" 
+				(click)="startDrawingGeofence()"
+				class="fab-geofence-btn"
+				title="Draw a new geofence">
+				<span aria-label="Draw Geofence" style="font-size: 22px;">📍</span>
+			</button>
+			<button *ngIf="isDrawingGeofence" 
+				(click)="cancelGeofenceDrawing()"
+				class="fab-geofence-btn fab-cancel"
+				title="Cancel geofence drawing">
+				<span aria-label="Cancel Drawing" style="font-size: 22px;">✕</span>
+			</button>
 		</div>
 		<div class="panel-area">
 			<app-telemetry-panel (assetSelected)="onAssetSelected($event)"></app-telemetry-panel>
