@@ -3,7 +3,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore
-COPY simulator/CriticalAssetSimulator/*.csproj ./CriticalAssetSimulator/
+COPY *.csproj ./CriticalAssetSimulator/
+# COPY simulator/CriticalAssetSimulator/*.csproj ./CriticalAssetSimulator/
 RUN dotnet restore CriticalAssetSimulator/CriticalAssetSimulator.csproj
 
 # Copy everything and publish
