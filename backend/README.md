@@ -85,13 +85,31 @@ Domain/
 
 1. Simulator sends telemetry messages to RabbitMQ
 2. Backend consumer reads messages from the queue
-3. Processor validates data integrity
-4. SignalR broadcasts to all connected web clients
-5. Frontend receives updates in real-time
+# Backend API
 
-## Next Steps
+Handles real-time telemetry, data validation, and streaming to the frontend.
 
-- Customize telemetry processing in `Application/Processors/`
-- Add new REST endpoints in `Api/Controllers/`
-- Modify SignalR methods in `Api/Hubs/TelemetryHub.cs`
-- Deploy to cloud by updating `docker-compose.yml`
+## Quick Start
+
+```bash
+cd Api
+dotnet restore
+dotnet build
+dotnet run
+```
+Runs at http://localhost:5073
+
+## Features
+
+- Receives telemetry from simulator or external sources
+- Validates data with CRC32 checksums
+- Streams updates to web clients via SignalR
+- Integrates with RabbitMQ for message queuing
+
+## Configuration
+
+Edit `Api/appsettings.json` for RabbitMQ and API settings.
+
+## Contributing
+
+Open to all! Please add tests for your changes.

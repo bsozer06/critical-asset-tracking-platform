@@ -7,3 +7,8 @@
 .cesium-container .cesium-viewer .cesium-widget, .cesium-container .cesium-viewer .cesium-viewer-toolbar {
   z-index: 3;
 }
+
+/* Ensure floating button is above Cesium controls */
+.fab-geofence-btn {
+  z-index: 30;
+}

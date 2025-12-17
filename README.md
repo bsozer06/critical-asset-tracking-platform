@@ -1,111 +1,105 @@
 # Critical Asset Tracking Platform
+# Critical Asset Tracking Platform
 
-A real-time platform for tracking and visualizing asset telemetry. Monitor simulated aircraft and vehicles on an interactive map with live data streaming.
+A real-time platform for tracking and visualizing assets like vehicles, aircraft, drones, and people. See live locations and details on an interactive map.
 
-## What is this?
+---
 
-This project demonstrates a complete tracking system with:
-- **Backend API** — Real-time data streaming via SignalR and message queuing with RabbitMQ
-- **Web Dashboard** — Interactive map (Cesium) showing asset locations and telemetry
-- **Asset Simulator** — Generates realistic telemetry data for testing and demonstration
+## What’s Included
+
+- **Backend API** — Receives telemetry, validates data, and streams updates to the web dashboard.
+- **Frontend Web App** — Modern dashboard with a 3D map, live asset panel, and alerts.
+- **Simulator** — Generates realistic test data for all asset types.
+
+---
 
 ## Quick Start
 
-### Prerequisites
-
-Choose your setup approach:
-
-**Option A: Docker (Recommended)**
-- Docker and Docker Compose
-
-**Option B: Local Development**
-- .NET SDK 8+
-- Node.js and npm
-- RabbitMQ (optional, simulator can run without it)
-
-### Option A: Docker Setup (Fastest)
+### With Docker (Recommended)
 
 ```bash
 cd backend
 docker compose up --build
 ```
+- Web App: [http://localhost:5073](http://localhost:5073)
+- API: [http://localhost:5073/hubs/telemetry](http://localhost:5073/hubs/telemetry)
+- RabbitMQ Admin: [http://localhost:15672](http://localhost:15672) (: `rabbitmq`, password: `rabbitmq`)
 
-Then open:
-- **Web App**: http://localhost:5073 (Angular frontend)
-- **API**: http://localhost:5073/hubs/telemetry
-- **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
+### Local Development
 
-### Option B: Local Development
+1. **Backend**
+  ```bash
+  cd backend/Api
+  dotnet restore
+  dotnet build
+  dotnet run
+  ```
+  Runs at http://localhost:5073
 
-**1. Start the backend**
-```bash
-cd backend/Api
-dotnet restore
-dotnet build
-dotnet run
-```
-API runs at http://localhost:5073
+2. **Frontend**
+  ```bash
+  cd frontend/critical-asset-frontend
+  npm install
+  npm start
+  ```
+  Opens at http://localhost:4200
 
-**2. Start the frontend** (in new terminal)
-```bash
-cd frontend/critical-asset-frontend
-npm install
-npm start
-```
-App opens at http://localhost:4200
+3. **Simulator**
+  ```bash
+  cd simulator/CriticalAssetSimulator
+  dotnet run
+  ```
 
-**3. Start the simulator** (in new terminal)
-```bash
-cd simulator/CriticalAssetSimulator
-dotnet run
-```
-
-## Project Structure
-
-```
-critical-asset-tracking-platform/
-├── backend/                    # ASP.NET Core API
-│   ├── Api/                   # API and SignalR hub
-│   ├── Application/           # Business logic
-│   ├── Infrastructure/        # RabbitMQ messaging
-│   └── Domain/                # Core models
-├── frontend/                  # Angular web app
-│   └── critical-asset-frontend/
-│       ├── src/
-│       │   ├── app/          # Components and services
-│       │   └── assets/       # Cesium maps library
-│       └── package.json
-└── simulator/                 # Asset simulator
-    └── CriticalAssetSimulator/
-```
+---
 
 ## How It Works
 
-1. **Simulator** generates telemetry (location, speed, altitude)
-2. **Backend** receives data via RabbitMQ and broadcasts to clients
-3. **Frontend** displays real-time data on an interactive map
+1. **Simulator** sends asset telemetry (location, speed, etc.) to the backend.
+2. **Backend** validates and broadcasts data to all connected clients.
+3. **Frontend** shows assets on a 3D map and in a live panel, with alerts for geofence events.
+
+---
+
+## Features
+
+- Real-time updates with SignalR
+- Interactive Cesium 3D map
+- Card-based telemetry panel with icons and color badges
+- Zoom to asset and zoom to all features
+- Geofence drawing and alerts
+- Responsive and mobile-friendly design
+- Data integrity checks (CRC32)
+
+---
 
 ## Configuration
 
-### Simulator Config
-Edit `simulator/CriticalAssetSimulator/config.json`:
-```json
-{
-  "simulation": {
-    "assetTypeCounts": {
-      "Aircraft": 2,
-      "LandVehicle": 1
-    },
-    "updateIntervalMs": 1000,
-    "latitude": 39.0,
-    "longitude": 35.0,
-    "AltitudeMeters": 10000
-  },
-  "output": {
-    "Type": "RabbitMQ"
-  }
-}
-```
+- **Simulator:** Edit `simulator/CriticalAssetSimulator/config.json` to set asset counts, location, and output type.
+- **Backend:** Edit `backend/Api/appsettings.json` for RabbitMQ and API settings.
+- **Frontend:** Edit `frontend/critical-asset-frontend/src/environments/environment.ts` for API and Cesium settings.
+
+---
+
+## Contributing
+
+- All are welcome! Please open issues or pull requests for improvements.
+- Add tests for your changes.
+- See [frontend/critical-asset-frontend/README.md](frontend/critical-asset-frontend/README.md) and [backend/README.md](backend/README.md) for more details.
+
+---
+
+## Need Help?
+
+- For backend/API: see [`backend/Api/Program.cs`](backend/Api/Program.cs) and [`backend/Infrastructure/Messaging/TelemetryConsumer.cs`](backend/Infrastructure/Messaging/TelemetryConsumer.cs)
+- For UI: see [`CesiumMapComponent`](frontend/critical-asset-frontend/src/app/components/cesium-map/cesium-map.component.ts)
+- For simulator: see [`simulator/README.md`](simulator/README.md)
+
+---
+
+## License
+
+- Cesium assets: Apache 2.0 (see headers in `frontend/critical-asset-frontend/src/assets/cesium`)
+- Project code: See LICENSE file if present
 
 ### Backend Config
 Edit `backend/Api/appsettings.json` for RabbitMQ host and credentials.
