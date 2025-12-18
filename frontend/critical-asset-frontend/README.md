@@ -1,3 +1,28 @@
+# Critical Asset Tracking Frontend
+
+This is a modern dashboard for real-time asset tracking, built with Angular and Cesium. Everyone is invited to use and improve it.
+
+## Quick Start
+
+```bash
+npm install
+npm start
+```
+App opens at http://localhost:4200
+
+## Configuration
+
+Edit `src/environments/environment.ts` to change API or Cesium settings.
+
+## How It Works
+
+- Connects to backend via SignalR for live updates
+- Shows assets and details in real time
+- Alerts you if an asset enters or leaves a geofence
+
+## Contributing
+
+Everyone is welcome! Please open issues or pull requests. Add tests if you can.
 
 # Critical Asset Tracking Frontend
 
