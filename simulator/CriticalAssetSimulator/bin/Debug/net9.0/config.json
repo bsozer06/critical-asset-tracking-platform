@@ -1,10 +1,10 @@
 {
   "simulation": {
-    "assetCount": 8,
+    "assetCount": 0,
     "assetTypeCounts": {
-      "Aircraft": 1,
-      "Drone": 1,
-      "LandVehicle": 1
+      "Aircraft": 15,
+      "Drone": 15,
+      "LandVehicle": 15
     },
     "updateIntervalMs": 1000,
     "pointIntervalSec": 2,

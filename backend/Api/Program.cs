@@ -6,6 +6,7 @@ using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Processors;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // CORS for frontend
 builder.Services.AddCors(options =>
 {
@@ -29,7 +30,7 @@ builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
 builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

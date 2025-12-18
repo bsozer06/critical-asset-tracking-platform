@@ -17,8 +17,6 @@ docker compose up --build
 
 ```bash
 cd Api
-dotnet restore
-dotnet build
 dotnet run
 ```
 
@@ -28,22 +26,14 @@ API runs at http://localhost:5073
 
 - **SignalR Hub** (`Api/Hubs/TelemetryHub.cs`) — Broadcasts telemetry to connected clients in real-time
 - **RabbitMQ Consumer** (`Api/BackgroundServices/TelemetryConsumerHostedService.cs`) — Listens for messages and streams them to clients
-- **Telemetry Processor** (`Application/Processors/TelemetryProcessor.cs`) — Processes and validates incoming data
 - **Security** (`Application/Security/ChecksumCalculator.cs`) — Validates message integrity with CRC32 checksums
 
 ## Configuration
-
-Edit `Api/appsettings.json` to configure:
-
-- **RabbitMQ host and port**
 - **SignalR hub URL**
 - **Exchange and queue names**
 
 For local Docker development, settings are in `appsettings.Development.json` and `docker-compose.yml`.
 
-## Environment Variables
-
-If running in Docker, these environment variables override settings files:
 
 ```
 RabbitMq__Host=rabbitmq
@@ -91,7 +81,6 @@ Handles real-time telemetry, data validation, and streaming to the frontend.
 
 ## Quick Start
 
-```bash
 cd Api
 dotnet restore
 dotnet build
@@ -103,13 +92,8 @@ Runs at http://localhost:5073
 
 - Receives telemetry from simulator or external sources
 - Validates data with CRC32 checksums
-- Streams updates to web clients via SignalR
 - Integrates with RabbitMQ for message queuing
 
 ## Configuration
-
-Edit `Api/appsettings.json` for RabbitMQ and API settings.
-
-## Contributing
 
 Open to all! Please add tests for your changes.
