@@ -1,19 +1,10 @@
-using System;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CriticalAssetSimulator.Enums;
+using CriticalAssetSimulator.Models;
 
-namespace CriticalAssetSimulator;
-
-/// <summary>
-/// Security / classification level (MVP version)
-/// </summary>
-public enum ClassificationLevel
-{
-    UNCLASSIFIED,
-    RESTRICTED,
-    CONFIDENTIAL
-}
+namespace CriticalAssetSimulator.Helpers;
 
 /// <summary>
 /// Builds a military-style telemetry message envelope
@@ -39,9 +30,6 @@ public static class TelemetryMessage
                 point.HeadingDegrees,
                 point.AssetType
         );
-
-
-
 
         var message = new
         {
