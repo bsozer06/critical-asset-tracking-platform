@@ -8,7 +8,6 @@ namespace CriticalAssetTracking.Api.BackgroundServices
     public class TelemetryConsumerHostedService : BackgroundService
     {
         private readonly RabbitMqSettings _settings;
-        //private readonly ITelemetryProcessor _processor;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILoggerFactory _loggerFactory;
 
@@ -18,14 +17,13 @@ namespace CriticalAssetTracking.Api.BackgroundServices
             ILoggerFactory loggerFactory)
         {
             _settings = options.Value;
-            //_processor = processor;
             _loggerFactory = loggerFactory;
             _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Tek connection ve consumer
+            // Single connection and consumer
             var connection = RabbitMqConnectionFactory.Create(
                 _settings.HostName,
                 _settings.Port,
