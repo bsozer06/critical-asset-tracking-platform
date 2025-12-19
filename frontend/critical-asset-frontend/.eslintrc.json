@@ -17,7 +17,34 @@
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "@angular-eslint/prefer-inject": "off"
+        "@angular-eslint/prefer-inject": "off",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "property",
+            "modifiers": ["private"],
+            "format": ["camelCase"],
+            "leadingUnderscore": "require"
+          },
+          {
+            "selector": "method",
+            "modifiers": ["private"],
+            "format": ["camelCase"],
+            "leadingUnderscore": "require"
+          },
+          {
+            "selector": "property",
+            "modifiers": ["public"],
+            "format": ["camelCase"],
+            "leadingUnderscore": "forbid"
+          },
+          {
+            "selector": "method",
+            "modifiers": ["public"],
+            "format": ["camelCase"],
+            "leadingUnderscore": "forbid"
+          }
+        ]
       }
     },
     {

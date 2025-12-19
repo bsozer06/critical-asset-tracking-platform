@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-import { environment } from '../../../environments/environment';
+// import { environment } from '../../../environments/environment';
 import * as Cesium from 'cesium';
 import { SignalRService } from '../../services/signalr.service';
 import { GeofenceService } from '../../services/geofence.service';
@@ -21,15 +21,15 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   viewer?: Cesium.Viewer;
 
-  private destroy$ = new Subject<void>();
+  private _destroy$ = new Subject<void>();
 
   /** Asset state */
-  private entities = new Map<string, Cesium.Entity>();
-  private lastTelemetry = new Map<string, TelemetryPoint>();
-  private trails = new Map<string, Cesium.Cartesian3[]>();
-  private positions = new Map<string, Cesium.Cartesian3>();
+  private _entities = new Map<string, Cesium.Entity>();
+  private _lastTelemetry = new Map<string, TelemetryPoint>();
+  private _trails = new Map<string, Cesium.Cartesian3[]>();
+  private _positions = new Map<string, Cesium.Cartesian3>();
 
-  private initialZoomDone = false;
+  private _initialZoomDone = false;
 
   /** Geofence drawing state */
   isDrawingMode = false;
@@ -48,13 +48,13 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this._destroy$.next();
+    this._destroy$.complete();
 
-    this.entities.clear();
-    this.trails.clear();
-    this.positions.clear();
-    this.lastTelemetry.clear();
+    this._entities.clear();
+    this._trails.clear();
+    this._positions.clear();
+    this._lastTelemetry.clear();
     this.geofencePolylines.clear();
     this.drawingPoints = [];
 
@@ -65,17 +65,17 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   upsertEntity(pt: TelemetryPoint) {
     const id = pt.assetId;
     const position = CesiumUtility.toCartesian(pt);
-    this.positions.set(id, position);
+    this._positions.set(id, position);
     this._updateTrail(id, position);
 
-    const previous = this.lastTelemetry.get(id);
+    const previous = this._lastTelemetry.get(id);
     const hpr = CesiumHelper.computeOrientation(pt, previous);
     const orientation =
       pt.assetType === 'LandVehicle'
         ? CesiumHelper.computeLandVehicleOrientation(pt)
         : Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
 
-    const entity = this.entities.get(id);
+    const entity = this._entities.get(id);
 
     if (entity) {
       // Increase performance by updating for existing orientation property
@@ -91,10 +91,10 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
         entity.position = new Cesium.ConstantPositionProperty(position);
       }
     } else {
-      this.entities.set(id, this._createEntity(pt, position, orientation));
+      this._entities.set(id, this._createEntity(pt, position, orientation));
     }
 
-    this.lastTelemetry.set(id, pt);
+    this._lastTelemetry.set(id, pt);
   }
 
   /**
@@ -104,7 +104,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     if (!this.viewer) {
       throw new Error('Cesium Viewer is not initialized');
     }
-    const points = [...this.positions.values()];
+    const points = [...this._positions.values()];
     if (!points.length) return;
 
     if (points.length === 1) {
@@ -128,7 +128,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   zoomToAsset(assetId: string) {
     if (!this.viewer) return;
     
-    const position = this.positions.get(assetId);
+    const position = this._positions.get(assetId);
     if (!position) {
       console.warn(`Asset ${assetId} not found`);
       return;
@@ -165,7 +165,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       },
       polyline: {
         positions: new Cesium.CallbackProperty(
-          () => this.trails.get(id) ?? [],
+          () => this._trails.get(id) ?? [],
           false
         ),
         width: 2,
@@ -183,14 +183,14 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private _updateTrail(id: string, position: Cesium.Cartesian3): void {
-    const trail = this.trails.get(id) ?? [];
+    const trail = this._trails.get(id) ?? [];
     trail.push(position);
 
     if (trail.length > 50) {
       trail.shift();
     }
 
-    this.trails.set(id, trail);
+    this._trails.set(id, trail);
   }
 
   private _initViewer(): void {
@@ -213,7 +213,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   private _subscribeTelemetry(): void {
     this.signalRService.telemetry$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this._destroy$))
       .subscribe(pt => {
         if (!pt) return;
 
@@ -225,9 +225,9 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
           this.violationDetected.emit(violation);
         });
 
-        if (!this.initialZoomDone && this.entities.size > 0) {
+        if (!this._initialZoomDone && this._entities.size > 0) {
           this.zoomToFitAll();
-          this.initialZoomDone = true;
+          this._initialZoomDone = true;
         }
       });
   }

@@ -15,18 +15,18 @@ export class CesiumUtility {
 
   public static getModelUri(type?: string): string {
     const models: Record<string, string> = {
-      Aircraft: 'assets/models/Cesium_Air.glb',
-      Drone: 'assets/models/CesiumDrone.glb',
-      LandVehicle: 'assets/models/GroundVehicle.glb',
-      Ship: 'assets/models/Ship.glb'
+      aircraft: 'assets/models/Cesium_Air.glb',
+      drone: 'assets/models/CesiumDrone.glb',
+      landVehicle: 'assets/models/GroundVehicle.glb',
+      ship: 'assets/models/Ship.glb'
     };
-    return models[type ?? ''] ?? models['Aircraft'];
+    return models[type ?? ''] ?? models['aircraft'];
   }
 
    public static getTrailColor(type?: string): Cesium.Color {
-    if (type === 'LandVehicle') {
+    if (type === 'landVehicle') {
       return Cesium.Color.YELLOW.withAlpha(0.7);
-    } else if (type === 'Drone') {
+    } else if (type === 'drone') {
       return Cesium.Color.ORANGE.withAlpha(0.7);
     } else {
       return Cesium.Color.CYAN.withAlpha(0.7);
