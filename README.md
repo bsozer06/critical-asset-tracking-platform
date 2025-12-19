@@ -1,5 +1,7 @@
 # Critical Asset Tracking Platform
 
+[![CI](https://github.com/bsozer06/critical-asset-tracking-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/bsozer06/critical-asset-tracking-platform/actions/workflows/ci.yml)
+
 A platform for real-time tracking and visualization of assets (vehicles, aircraft, drones, etc.). Open for contributions and improvements.
 
 ---
