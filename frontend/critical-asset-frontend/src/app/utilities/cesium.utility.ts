@@ -20,13 +20,24 @@ export class CesiumUtility {
       landVehicle: 'assets/models/GroundVehicle.glb',
       ship: 'assets/models/Ship.glb'
     };
-    return models[type ?? ''] ?? models['aircraft'];
+    if (!type) {
+      return '';
+    }
+    const normalizedType = type.charAt(0).toLowerCase() + type.slice(1);
+    if (normalizedType in models) {
+      return models[normalizedType];
+    }
+    return models['aircraft'];
   }
 
    public static getTrailColor(type?: string): Cesium.Color {
-    if (type === 'landVehicle') {
+    if (!type) {
+      return Cesium.Color.CYAN.withAlpha(0.7);
+    }
+    const normalizedType = type.charAt(0).toLowerCase() + type.slice(1);
+    if (normalizedType === 'landVehicle') {
       return Cesium.Color.YELLOW.withAlpha(0.7);
-    } else if (type === 'drone') {
+    } else if (normalizedType === 'drone') {
       return Cesium.Color.ORANGE.withAlpha(0.7);
     } else {
       return Cesium.Color.CYAN.withAlpha(0.7);

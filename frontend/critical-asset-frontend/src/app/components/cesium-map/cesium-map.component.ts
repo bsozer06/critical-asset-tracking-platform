@@ -71,7 +71,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     const previous = this._lastTelemetry.get(id);
     const hpr = CesiumHelper.computeOrientation(pt, previous);
     const orientation =
-      pt.assetType === 'LandVehicle'
+      pt.assetType === 'landVehicle'
         ? CesiumHelper.computeLandVehicleOrientation(pt)
         : Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
 
