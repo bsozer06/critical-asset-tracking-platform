@@ -159,7 +159,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       position,
       orientation: new Cesium.ConstantProperty(orientation),
       model: {
-        uri: CesiumUtility.getModelUri(pt.assetType),
+        uri: CesiumUtility.getModelUri(CesiumUtility.parseAssetType(pt.assetType)),
         scale: 2,
         minimumPixelSize: 64
       },
@@ -169,7 +169,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
           false
         ),
         width: 2,
-        material: CesiumUtility.getTrailColor(pt.assetType)
+        material: CesiumUtility.getTrailColor(CesiumUtility.parseAssetType(pt.assetType))
       },
       label: {
         text: `${id} (${pt.assetType})`,
