@@ -51,9 +51,8 @@ jobs:
       - name: Build
         run: npm run build
       
-      # Test step is temporarily disabled - app.spec.ts needs to be updated
-      # - name: Test
-      #   run: npm test -- --watch=false --browsers=ChromeHeadless      
+      - name: Test
+        run: npm test -- --watch=false --browsers=ChromeHeadless
 
   simulator:
     runs-on: ubuntu-latest
