@@ -122,22 +122,22 @@ export class TelemetryPanelComponent implements OnInit {
 
   getAssetTypeIcon(assetType?: string): string {
     const iconMap: Record<string, string> = {
-      'Aircraft': 'flight',
-      'Drone': 'toys',
-      'LandVehicle': 'directions_car',
-      'Person': 'person',
-      'Ship': 'directions_boat'
+      'aircraft': 'flight',
+      'drone': 'toys',
+      'landvehicle': 'directions_car',
+      'person': 'person',
+      'ship': 'directions_boat'
     };
     return iconMap[assetType ?? ''] || 'location_on';
   }
 
   getAssetTypeColor(assetType?: string): string {
     const colorMap: Record<string, string> = {
-      'Aircraft': '#1976d2',
-      'Drone': '#ff6f00',
-      'LandVehicle': '#fbc02d',
-      'Person': '#388e3c',
-      'Ship': '#0097a7'
+      'aircraft': '#1976d2',
+      'drone': '#ff6f00',
+      'landvehicle': '#fbc02d',
+      'person': '#388e3c',
+      'ship': '#0097a7'
     };
     return colorMap[assetType ?? ''] || '#757575';
   }

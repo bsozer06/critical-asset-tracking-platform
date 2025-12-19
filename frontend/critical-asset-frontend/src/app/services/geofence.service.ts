@@ -6,9 +6,9 @@ import { TelemetryPoint } from '../models/telemetry-point.model';
   providedIn: 'root'
 })
 export class GeofenceService {
-  private geofences: Map<string, Geofence> = new Map();
-  private assetStates: Map<string, Map<string, AssetGeofenceState>> = new Map();
-  private violations: GeofenceViolation[] = [];
+  private _geofences: Map<string, Geofence> = new Map();
+  private _assetStates: Map<string, Map<string, AssetGeofenceState>> = new Map();
+  private _violations: GeofenceViolation[] = [];
 
   constructor() {}
 
@@ -52,17 +52,17 @@ export class GeofenceService {
       longitude: telemetry.longitude
     };
 
-    this.geofences.forEach((geofence, geofenceId) => {
+    this._geofences.forEach((geofence: Geofence, geofenceId: string) => {
       if (!geofence.enabled) {
         return;
       }
 
       // Get previous state or initialize
-      if (!this.assetStates.has(assetId)) {
-        this.assetStates.set(assetId, new Map());
+      if (!this._assetStates.has(assetId)) {
+        this._assetStates.set(assetId, new Map());
       }
 
-      const assetStateMap = this.assetStates.get(assetId)!;
+      const assetStateMap = this._assetStates.get(assetId)!;
       const previousState = assetStateMap.get(geofenceId);
       const wasInside = previousState?.isInside ?? false;
 
@@ -98,7 +98,7 @@ export class GeofenceService {
       }
     });
 
-    this.violations.push(...newViolations);
+    this._violations.push(...newViolations);
     return newViolations;
   }
 
@@ -106,48 +106,48 @@ export class GeofenceService {
    * Add or update a geofence
    */
   addGeofence(geofence: Geofence): void {
-    this.geofences.set(geofence.id, geofence);
+    this._geofences.set(geofence.id, geofence);
   }
 
   /**
    * Remove a geofence
    */
   removeGeofence(geofenceId: string): void {
-    this.geofences.delete(geofenceId);
+    this._geofences.delete(geofenceId);
   }
 
   /**
    * Get all geofences
    */
   getGeofences(): Geofence[] {
-    return Array.from(this.geofences.values());
+    return Array.from(this._geofences.values());
   }
 
   /**
    * Get geofence by ID
    */
   getGeofence(geofenceId: string): Geofence | undefined {
-    return this.geofences.get(geofenceId);
+    return this._geofences.get(geofenceId);
   }
 
   /**
    * Get current state of an asset in all geofences
    */
   getAssetState(assetId: string): Map<string, AssetGeofenceState> | undefined {
-    return this.assetStates.get(assetId);
+    return this._assetStates.get(assetId);
   }
 
   /**
    * Get recent violations
    */
   getViolations(limit: number = 100): GeofenceViolation[] {
-    return this.violations.slice(-limit);
+    return this._violations.slice(-limit);
   }
 
   /**
    * Clear violations
    */
   clearViolations(): void {
-    this.violations = [];
+    this._violations = [];
   }
 }

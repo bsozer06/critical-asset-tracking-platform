@@ -31,9 +31,9 @@ export class GeofenceAlertComponent implements OnInit, OnDestroy {
   isVisible = true;
   blinkState = 'visible';
 
-  private destroy$ = new Subject<void>();
-  private blinkInterval$ = interval(600);
-  private autoHideTimer?: ReturnType<typeof setTimeout>;
+  private _destroy$ = new Subject<void>();
+  private _blinkInterval$ = interval(600);
+  private _autoHideTimer?: ReturnType<typeof setTimeout>;
 
   ngOnInit(): void {
     if (this.violations.length > 0) {
@@ -43,10 +43,10 @@ export class GeofenceAlertComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    if (this.autoHideTimer) {
-      clearTimeout(this.autoHideTimer);
+    this._destroy$.next();
+    this._destroy$.complete();
+    if (this._autoHideTimer) {
+      clearTimeout(this._autoHideTimer);
     }
   }
 
@@ -66,19 +66,19 @@ export class GeofenceAlertComponent implements OnInit, OnDestroy {
   }
 
   private _startBlinking(): void {
-    this.blinkInterval$
-      .pipe(takeUntil(this.destroy$))
+    this._blinkInterval$
+      .pipe(takeUntil(this._destroy$))
       .subscribe(() => {
         this.blinkState = this.blinkState === 'visible' ? 'hidden' : 'visible';
       });
   }
 
   private _stopBlinking(): void {
-    this.destroy$.next();
+    this._destroy$.next();
   }
 
   private _startAutoHide(): void {
-    this.autoHideTimer = setTimeout(() => {
+    this._autoHideTimer = setTimeout(() => {
       this.dismiss();
     }, this.autoHideDuration);
   }

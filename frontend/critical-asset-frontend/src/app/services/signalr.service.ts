@@ -7,74 +7,72 @@ import { TelemetryPoint } from '../models/telemetry-point.model';
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
 
-  private hubConnection!: signalR.HubConnection;
-  private telemetrySubject = new BehaviorSubject<TelemetryPoint | null>(null);
-  public telemetry$ = this.telemetrySubject.asObservable();
+  private _telemetrySubject = new BehaviorSubject<TelemetryPoint | null>(null);
+  public telemetry$ = this._telemetrySubject.asObservable();
+  private _connectionStatusSubject = new BehaviorSubject<'connected' | 'disconnected' | 'reconnecting' | 'error'>('disconnected');
+  public connectionStatus$ = this._connectionStatusSubject.asObservable();
+  private _lastErrorSubject = new BehaviorSubject<string | null>(null);
+  public lastError$ = this._lastErrorSubject.asObservable();
+  private _hubConnection!: signalR.HubConnection;
 
-  private connectionStatusSubject = new BehaviorSubject<'connected' | 'disconnected' | 'reconnecting' | 'error'>('disconnected');
-  public connectionStatus$ = this.connectionStatusSubject.asObservable();
-
-  private lastErrorSubject = new BehaviorSubject<string | null>(null);
-  public lastError$ = this.lastErrorSubject.asObservable();
-
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) { }
 
 
   public async startConnection(hubUrl: string) {
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this._hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl) // e.g. http://localhost:5000/hubs/telemetry
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.on('telemetry-received', (data: any) => {
+    this._hubConnection.on('telemetry-received', (data: any) => {
       this.ngZone.run(() => {
-        this.telemetrySubject.next(data as TelemetryPoint);
+        this._telemetrySubject.next(data as TelemetryPoint);
       });
     });
 
-    this.hubConnection.onreconnecting((error) => {
+    this._hubConnection.onreconnecting((error: Error | undefined) => {
       this.ngZone.run(() => {
-        this.connectionStatusSubject.next('reconnecting');
-        this.lastErrorSubject.next(error ? error.message : 'Reconnecting...');
+        this._connectionStatusSubject.next('reconnecting');
+        this._lastErrorSubject.next(error ? error.message : 'Reconnecting...');
       });
     });
 
-    this.hubConnection.onreconnected(() => {
+    this._hubConnection.onreconnected(() => {
       this.ngZone.run(() => {
-        this.connectionStatusSubject.next('connected');
-        this.lastErrorSubject.next(null);
+        this._connectionStatusSubject.next('connected');
+        this._lastErrorSubject.next(null);
       });
     });
 
-    this.hubConnection.onclose((error) => {
+    this._hubConnection.onclose((error: Error | undefined) => {
       this.ngZone.run(() => {
-        this.connectionStatusSubject.next('disconnected');
+        this._connectionStatusSubject.next('disconnected');
         if (error) {
-          this.lastErrorSubject.next(error.message);
+          this._lastErrorSubject.next(error.message);
         }
       });
     });
 
     try {
-      await this.hubConnection.start();
+      await this._hubConnection.start();
       this.ngZone.run(() => {
-        this.connectionStatusSubject.next('connected');
-        this.lastErrorSubject.next(null);
+        this._connectionStatusSubject.next('connected');
+        this._lastErrorSubject.next(null);
       });
       console.log('SignalR connected');
     } catch (err: any) {
       this.ngZone.run(() => {
-        this.connectionStatusSubject.next('error');
-        this.lastErrorSubject.next(err?.message || 'Unknown error');
+        this._connectionStatusSubject.next('error');
+        this._lastErrorSubject.next(err?.message || 'Unknown error');
       });
       throw err;
     }
   }
 
   public stopConnection() {
-    if (this.hubConnection) {
-      this.hubConnection.stop();
-      this.connectionStatusSubject.next('disconnected');
+    if (this._hubConnection) {
+      this._hubConnection.stop();
+      this._connectionStatusSubject.next('disconnected');
     }
   }
 }
