@@ -4,6 +4,7 @@ using CriticalAssetTracking.Api.Hubs;
 using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Processors;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,9 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 
 app.UseHttpsRedirection();
+
+// Add Prometheus metrics endpoint
+app.UseMetricServer();
 
 app.UseAuthorization();
 

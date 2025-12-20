@@ -1,6 +1,8 @@
 using CriticalAssetTracking.Application.Contracts;
 using CriticalAssetTracking.Application.Interfaces;
+using CriticalAssetTracking.Application.Metrics;
 using CriticalAssetTracking.Domain.Models;
+using System.Diagnostics;
 
 namespace CriticalAssetTracking.Application.Processors
 {
@@ -17,10 +19,14 @@ namespace CriticalAssetTracking.Application.Processors
         TelemetryEnvelope envelope,
         CancellationToken ct = default)
         {
+            var stopwatch = Stopwatch.StartNew();
             var header = envelope.Message.Header;
             var body = envelope.Message.Body;
+            var assetType = header.AssetType?.ToLower() ?? "unknown";
 
-            var telemetry = new TelemetryPoint(
+            try
+            {
+                var telemetry = new TelemetryPoint(
                 header.AssetId,
                 body.Latitude,
                 body.Longitude,
@@ -29,10 +35,32 @@ namespace CriticalAssetTracking.Application.Processors
                 body.HeadingDegrees,
                 header.TimestampUtc,
                 header.Classification,
-                header.AssetType
-            );
+                header.AssetType ?? "unknown"
+                );
 
-            await _publisher.PublishAsync(telemetry, ct);
+                await _publisher.PublishAsync(telemetry, ct);
+
+                // Record successful processing
+                TelemetryMetrics.TelemetryMessagesProcessed
+                        .Labels(assetType, "success")
+                        .Inc();
+            }
+            catch (Exception)
+            {
+                // Record failed processing
+                TelemetryMetrics.TelemetryMessagesProcessed
+                    .Labels(assetType, "error")
+                    .Inc();
+                throw;
+            }
+            finally
+            {
+                stopwatch.Stop();
+                TelemetryMetrics.TelemetryProcessingDuration
+                    .Labels(assetType)
+                    .Observe(stopwatch.Elapsed.TotalSeconds);
+            }
+          
         }
     }
 }

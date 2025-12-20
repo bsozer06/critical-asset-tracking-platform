@@ -1,5 +1,6 @@
 ﻿using CriticalAssetTracking.Application.Contracts;
 using CriticalAssetTracking.Application.Interfaces;
+using CriticalAssetTracking.Application.Metrics;
 using CriticalAssetTracking.Application.Security;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -96,9 +97,17 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
 
                     if (!string.Equals(calculated, received, StringComparison.OrdinalIgnoreCase))
                     {
+                        // Record checksum validation failure
+                        var assetId = envelope.Message?.Header?.AssetId ?? "unknown";
+                        var assetType = envelope.Message?.Header?.AssetType?.ToLower() ?? "unknown";
+                        
+                        TelemetryMetrics.ChecksumValidationFailures
+                            .Labels(assetId, assetType)
+                            .Inc();
+
                         _logger.LogWarning(
                             "[SECURITY] CHECKSUM MISMATCH | Asset:{AssetId} | Received:{Received} | Calc:{Calc}",
-                            envelope.Message.Header.AssetId,
+                            envelope.Message?.Header?.AssetId ?? "unknown",
                             received,
                             calculated);
 
