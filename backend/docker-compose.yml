@@ -45,3 +45,26 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: catp-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./Infrastructure/Monitoring/Dashboards/Grafana/provisioning:/etc/grafana/provisioning
+      - ./Infrastructure/Monitoring/Dashboards/Grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: catp-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./Infrastructure/Monitoring/Metrics/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
