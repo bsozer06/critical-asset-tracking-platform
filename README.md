@@ -11,6 +11,7 @@ A platform for real-time tracking and visualization of assets (vehicles, aircraf
 - **Backend API** — Handles telemetry, validates data, and streams updates.
 - **Frontend Web App** — Modern dashboard with a 3D map and live asset panel.
 - **Simulator** — Generates test data for all asset types.
+- **Monitoring Stack** — Prometheus metrics and Grafana dashboards for system observability.
 
 ---
 
@@ -28,6 +29,8 @@ docker compose up --build
 - Web App: [http://localhost:5073](http://localhost:5073)
 - API: [http://localhost:5073/hubs/telemetry](http://localhost:5073/hubs/telemetry)
 - RabbitMQ Admin: [http://localhost:15672](http://localhost:15672) (user: `rabbitmq`, password: `rabbitmq`)
+- **Grafana Dashboard**: [http://localhost:3000](http://localhost:3000) (user: `admin`, password: `admin`)
+- **Prometheus Metrics**: [http://localhost:9090](http://localhost:9090)
 
 ### Local Development
 
@@ -66,6 +69,9 @@ docker compose up --build
 4. **Render**  
    The Angular + Cesium application updates 3D asset models in real time.
 
+5. **Monitor**  
+   Prometheus collects system metrics, and Grafana provides visual dashboards for observability.
+
 ---
 
 ### Demo
@@ -83,6 +89,7 @@ docker compose up --build
 - Geofence drawing and alerts
 - Responsive, mobile-friendly design
 - Data integrity checks (CRC32)
+- **System monitoring with Prometheus metrics and Grafana dashboards**
 
 ---
 

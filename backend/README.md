@@ -1,6 +1,6 @@
 # Backend API
 
-ASP.NET Core backend with real-time data streaming via SignalR and RabbitMQ message queue integration.
+ASP.NET Core backend with real-time data streaming via SignalR, RabbitMQ message queue integration, and comprehensive monitoring.
 
 ## Quick Start
 
@@ -12,6 +12,9 @@ docker compose up --build
 
 - **API**: http://localhost:5073
 - **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
+- **Grafana Dashboard**: http://localhost:3000 (user: `admin`, password: `admin`)
+- **Prometheus Metrics**: http://localhost:9090
+- **API Metrics Endpoint**: http://localhost:5073/metrics
 
 ### Local Development
 
@@ -27,15 +30,35 @@ API runs at http://localhost:5073
 - **SignalR Hub** (`Api/Hubs/TelemetryHub.cs`) — Broadcasts telemetry to connected clients in real-time
 - **RabbitMQ Consumer** (`Api/BackgroundServices/TelemetryConsumerHostedService.cs`) — Listens for messages and streams them to clients
 - **Security** (`Application/Security/ChecksumCalculator.cs`) — Validates message integrity with CRC32 checksums
+- **Metrics Collection** (`Application/Metrics/TelemetryMetrics.cs`) — Tracks system performance and health
+- **Monitoring Stack** — Prometheus + Grafana for observability
+
+## Monitoring & Metrics
+
+The platform provides comprehensive monitoring out of the box:
+
+### 📊 Available Metrics
+- **Message Processing Rate** — How many telemetry messages processed per second
+- **Processing Duration** — Time taken to process each message
+- **Active Connections** — Number of real-time SignalR connections
+- **Validation Failures** — Count of checksum validation errors
+
+### 📈 Grafana Dashboard
+Access the monitoring dashboard at http://localhost:3000:
+- Real-time charts for all metrics
+- Visual alerts and health indicators
+- Organized by asset type (aircraft, drone, landvehicle)
+
+### 🔍 Prometheus Metrics
+Raw metrics available at:
+- **API endpoint**: http://localhost:5073/metrics
+- **Prometheus UI**: http://localhost:9090
 
 ## Configuration
-- **SignalR hub URL**
-- **Exchange and queue names**
 
 For local Docker development, settings are in `appsettings.Development.json` and `docker-compose.yml`.
 
-
-```
+```bash
 RabbitMq__Host=rabbitmq
 RabbitMq__Port=5672
 RabbitMq__Username=rabbitmq
@@ -52,20 +75,24 @@ dotnet test
 
 ```
 Api/
-├── Program.cs                 # Startup configuration
+├── Program.cs                 # Startup configuration + metrics middleware
 ├── Hubs/TelemetryHub.cs      # Real-time client connections
 ├── Controllers/               # REST endpoints
 ├── BackgroundServices/        # Message queue consumer
 └── Settings/                  # Configuration models
 
 Application/
-├── Processors/                # Business logic
+├── Processors/                # Business logic with metrics tracking
 ├── Security/                  # Checksum validation
+├── Metrics/                   # Prometheus metrics definitions
 └── Interfaces/                # Abstractions
 
 Infrastructure/
 ├── Messaging/                 # RabbitMQ implementation
-└── obj/                       # Build artifacts
+├── Monitoring/                # Observability infrastructure
+│   ├── Dashboards/Grafana/   # Grafana configuration
+│   └── Metrics/Prometheus/   # Prometheus configuration
+└── Settings/                  # Infrastructure settings
 
 Domain/
 └── Models/                    # Core data models
@@ -73,27 +100,15 @@ Domain/
 
 ## How It Works
 
-1. Simulator sends telemetry messages to RabbitMQ
-2. Backend consumer reads messages from the queue
-# Backend API
+1. **Simulator** sends telemetry messages to RabbitMQ
+2. **Backend consumer** reads messages from the queue and validates them
+3. **Metrics collection** tracks performance during processing
+4. **SignalR hub** broadcasts validated data to connected clients
+5. **Monitoring stack** provides observability through dashboards
 
-Handles real-time telemetry, data validation, and streaming to the frontend.
+## Contributing
 
-## Quick Start
-
-cd Api
-dotnet restore
-dotnet build
-dotnet run
-```
-Runs at http://localhost:5073
-
-## Features
-
-- Receives telemetry from simulator or external sources
-- Validates data with CRC32 checksums
-- Integrates with RabbitMQ for message queuing
-
-## Configuration
-
-Open to all! Please add tests for your changes.
+Open to all! Please:
+- Add tests for your changes
+- Consider metrics impact for new features
+- Update monitoring dashboards if needed
