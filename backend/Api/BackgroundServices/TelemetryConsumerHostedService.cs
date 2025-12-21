@@ -1,4 +1,5 @@
-﻿using CriticalAssetTracking.Api.Settings;
+﻿using CriticalAssetTracking.Api.HealthChecks;
+using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Infrastructure.Messaging;
 using Microsoft.Extensions.Options;
@@ -44,6 +45,9 @@ namespace CriticalAssetTracking.Api.BackgroundServices
                 _settings.TelemetryRoutingKey,
                 processor,
                 consumerLogger);
+
+            // Hook up health check callback
+            consumer.OnMessageReceived = TelemetryStreamHealthCheck.RecordMessageReceived;
 
             consumer.Start(stoppingToken);
 

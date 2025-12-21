@@ -11,10 +11,13 @@ docker compose up --build
 ```
 
 - **API**: http://localhost:5073
+- **Health Check**: http://localhost:5073/health
+- **Liveness Probe**: http://localhost:5073/health/live
+- **Readiness Probe**: http://localhost:5073/health/ready
+- **API Metrics Endpoint**: http://localhost:5073/metrics
 - **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
 - **Grafana Dashboard**: http://localhost:3000 (user: `admin`, password: `admin`)
 - **Prometheus Metrics**: http://localhost:9090
-- **API Metrics Endpoint**: http://localhost:5073/metrics
 
 ### Local Development
 
@@ -36,6 +39,31 @@ API runs at http://localhost:5073
 ## Monitoring & Metrics
 
 The platform provides comprehensive monitoring out of the box:
+
+### 🏥 Health Checks
+
+Health endpoints for monitoring system status:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /health` | Full health status with all checks |
+| `GET /health/live` | Liveness probe (is app running?) |
+| `GET /health/ready` | Readiness probe (can accept traffic?) |
+
+**Checks included:**
+- **RabbitMQ** — Message broker connection status
+- **Simulator** — Telemetry stream activity (healthy if messages received in last 30s)
+
+Example response:
+```json
+{
+  "status": "Healthy",
+  "checks": [
+    { "name": "rabbitmq", "status": "Healthy" },
+    { "name": "simulator", "status": "Healthy", "data": { "messageCount": 1523 } }
+  ]
+}
+```
 
 ### 📊 Available Metrics
 - **Message Processing Rate** — How many telemetry messages processed per second
@@ -78,6 +106,9 @@ Api/
 ├── Program.cs                 # Startup configuration + metrics middleware
 ├── Hubs/TelemetryHub.cs      # Real-time client connections
 ├── Controllers/               # REST endpoints
+│   └── HealthController.cs   # Health check endpoints
+├── HealthChecks/              # Custom health checks
+│   └── TelemetryStreamHealthCheck.cs  # Simulator monitoring
 ├── BackgroundServices/        # Message queue consumer
 └── Settings/                  # Configuration models
 
