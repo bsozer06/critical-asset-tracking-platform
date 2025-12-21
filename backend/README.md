@@ -11,10 +11,13 @@ docker compose up --build
 ```
 
 - **API**: http://localhost:5073
+- **Health Check**: http://localhost:5073/health
+- **Liveness Probe**: http://localhost:5073/health/live
+- **Readiness Probe**: http://localhost:5073/health/ready
+- **API Metrics Endpoint**: http://localhost:5073/metrics
 - **RabbitMQ Admin**: http://localhost:15672 (user: `rabbitmq`, password: `rabbitmq`)
 - **Grafana Dashboard**: http://localhost:3000 (user: `admin`, password: `admin`)
 - **Prometheus Metrics**: http://localhost:9090
-- **API Metrics Endpoint**: http://localhost:5073/metrics
 
 ### Local Development
 
