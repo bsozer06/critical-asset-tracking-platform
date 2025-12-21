@@ -37,6 +37,31 @@ API runs at http://localhost:5073
 
 The platform provides comprehensive monitoring out of the box:
 
+### 🏥 Health Checks
+
+Health endpoints for monitoring system status:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /health` | Full health status with all checks |
+| `GET /health/live` | Liveness probe (is app running?) |
+| `GET /health/ready` | Readiness probe (can accept traffic?) |
+
+**Checks included:**
+- **RabbitMQ** — Message broker connection status
+- **Simulator** — Telemetry stream activity (healthy if messages received in last 30s)
+
+Example response:
+```json
+{
+  "status": "Healthy",
+  "checks": [
+    { "name": "rabbitmq", "status": "Healthy" },
+    { "name": "simulator", "status": "Healthy", "data": { "messageCount": 1523 } }
+  ]
+}
+```
+
 ### 📊 Available Metrics
 - **Message Processing Rate** — How many telemetry messages processed per second
 - **Processing Duration** — Time taken to process each message
@@ -78,6 +103,9 @@ Api/
 ├── Program.cs                 # Startup configuration + metrics middleware
 ├── Hubs/TelemetryHub.cs      # Real-time client connections
 ├── Controllers/               # REST endpoints
+│   └── HealthController.cs   # Health check endpoints
+├── HealthChecks/              # Custom health checks
+│   └── TelemetryStreamHealthCheck.cs  # Simulator monitoring
 ├── BackgroundServices/        # Message queue consumer
 └── Settings/                  # Configuration models
 
