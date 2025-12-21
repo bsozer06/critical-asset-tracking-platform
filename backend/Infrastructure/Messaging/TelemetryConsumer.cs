@@ -17,6 +17,12 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
         private readonly string _queue;
         private readonly ILogger<TelemetryConsumer> _logger;
 
+        /// <summary>
+        /// Callback invoked when a message is successfully received and processed.
+        /// Used for health check monitoring.
+        /// </summary>
+        public Action? OnMessageReceived { get; set; }
+
         public TelemetryConsumer(
             IConnection connection,
             string exchange,
@@ -118,6 +124,9 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
 
                     // 5) pass the envelope forward (now validated)
                     await _processor.ProcessAsync(envelope, cancellationToken);
+
+                    // 6) Record message received for health check
+                    OnMessageReceived?.Invoke();
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, multiple: false);
                 }
