@@ -31,6 +31,9 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   private _initialZoomDone = false;
 
+  /** Trail visibility state */
+  trailsVisible = true;
+
   /** Geofence drawing state */
   isDrawingMode = false;
   drawingPoints: GeoPoint[] = [];
@@ -143,6 +146,19 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Toggle trail visibility for all assets
+   */
+  toggleTrails(): void {
+    this.trailsVisible = !this.trailsVisible;
+    
+    this._entities.forEach((entity) => {
+      if (entity.polyline) {
+        entity.polyline.show = new Cesium.ConstantProperty(this.trailsVisible);
+      }
+    });
+  }
+
   private _createEntity(
     pt: TelemetryPoint,
     position: Cesium.Cartesian3,
@@ -169,7 +185,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
           false
         ),
         width: 2,
-        material: CesiumUtility.getTrailColor(CesiumUtility.parseAssetType(pt.assetType))
+        material: CesiumUtility.getTrailColor(CesiumUtility.parseAssetType(pt.assetType)),
+        show: new Cesium.ConstantProperty(this.trailsVisible)
       },
       label: {
         text: `${id} (${pt.assetType})`,

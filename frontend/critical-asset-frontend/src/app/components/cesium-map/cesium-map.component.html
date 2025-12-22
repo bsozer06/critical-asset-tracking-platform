@@ -1,1 +1,11 @@
 <div #cesiumContainer class="cesium-container" style="width:100%; height:100%;"></div>
+
+<!-- Trail Toggle Button -->
+<button 
+  class="trail-toggle-btn"
+  (click)="toggleTrails()"
+  [class.trails-off]="!trailsVisible"
+  [attr.title]="trailsVisible ? 'Hide asset trails' : 'Show asset trails'">
+  <span class="trail-icon">〰️</span>
+  <span class="trail-label">{{ trailsVisible ? 'Trails On' : 'Trails Off' }}</span>
+</button>
