@@ -29,6 +29,10 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   private _trails = new Map<string, Cesium.Cartesian3[]>();
   private _positions = new Map<string, Cesium.Cartesian3>();
 
+  /** Throttle configuration for entity updates (ms) */
+  private _updateThrottleMs = 100;
+  private _lastUpdateTime = new Map<string, number>();
+
   private _initialZoomDone = false;
 
   /** Trail visibility state */
@@ -58,6 +62,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     this._trails.clear();
     this._positions.clear();
     this._lastTelemetry.clear();
+    this._lastUpdateTime.clear();
     this.geofencePolylines.clear();
     this.drawingPoints = [];
 
@@ -67,6 +72,21 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   upsertEntity(pt: TelemetryPoint) {
     const id = pt.assetId;
+
+    // Throttle updates per asset to improve performance
+    /**
+     * Performance impact: With 45 assets sending updates every 1 second, 
+     * the throttle ensures that even if SignalR delivers messages in bursts, 
+     * the map won't re-render more than 10 times per second per asset, 
+     * significantly reducing CPU load and improving frame rates.
+     */
+    const now = performance.now();
+    const lastUpdate = this._lastUpdateTime.get(id) ?? 0;
+    if (now - lastUpdate < this._updateThrottleMs) {
+      return; // Skip this update - too soon since last one
+    }
+    this._lastUpdateTime.set(id, now);
+
     const position = CesiumUtility.toCartesian(pt);
     this._positions.set(id, position);
     this._updateTrail(id, position);
@@ -203,7 +223,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     const trail = this._trails.get(id) ?? [];
     trail.push(position);
 
-    if (trail.length > 50) {
+    if (trail.length > 20) {
       trail.shift();
     }
 
