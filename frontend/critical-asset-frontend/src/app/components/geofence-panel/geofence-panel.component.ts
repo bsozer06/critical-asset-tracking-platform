@@ -15,11 +15,16 @@ import {CdkDrag} from '@angular/cdk/drag-drop';
 export class GeofencePanelComponent implements OnInit {
   geofences: Geofence[] = [];
   isDrawing: boolean = false;
+  isPanelVisible: boolean = true;
 
   private geofenceService = Inject(GeofenceService)
 
   ngOnInit(): void {
     this.loadGeofences();
+  }
+
+  togglePanel() {
+    this.isPanelVisible = !this.isPanelVisible;
   }
 
   loadGeofences() {

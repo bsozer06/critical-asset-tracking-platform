@@ -1,10 +1,9 @@
 .geofence-panel {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 120px;
+    left: 60px;
     width: 320px;
     max-height: 80vh;
-
     z-index: 1100;
     border-radius: 12px;
     overflow: hidden;
@@ -25,19 +24,52 @@
     border-bottom: 2px solid #1976d2;
     cursor: move; 
 
-    h5 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 600;
-        color: #ffffff;
+    .header-main {
         display: flex;
         align-items: center;
-        gap: 8px;
-
-        i {
-            color: #64b5f6;
-        }
+        gap: 10px;
+        
+        .telemetry-icon { color: #64b5f6; font-size: 1.2rem; }
+        .telemetry-title { font-size: 1rem; font-weight: 600; color: #ffffff; }
     }
+}
+
+.btn-icon-close {
+    background: transparent;
+    border: none;
+    color: #64b5f6;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(211, 47, 47, 0.2);
+        color: #ff5252;
+        transform: rotate(90deg);
+    }
+}
+
+.btn-draw-main {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &.btn-primary { background: #1976d2; color: white; &:hover { background: #1565c0; } }
+    &.btn-danger { background: #d32f2f; color: white; &:hover { background: #b71c1c; } }
 }
 
 .panel-body {
@@ -48,21 +80,18 @@
     flex-direction: column;
     gap: 12px;
 
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: #3a4455;
-        border-radius: 10px;
-    }
+    &::-webkit-scrollbar { width: 5px; }
+    &::-webkit-scrollbar-thumb { background: #3a4455; border-radius: 10px; }
 }
+
+.table-viewport { flex: 1; overflow-y: auto; }
 
 .geofence-card {
     background: rgba(37, 45, 66, 0.7);
     border-radius: 8px;
     border-left: 4px solid #64b5f6;
     padding: 12px;
+    margin-bottom: 8px;
     transition: all 0.2s ease;
 
     &:hover {
@@ -71,8 +100,76 @@
         transform: translateX(-2px);
     }
 
-    &.disabled {
-        border-left-color: #555555;
-        opacity: 0.6;
+    &.disabled { border-left-color: #555555; opacity: 0.6; }
+
+    .card-top {
+        display: flex; 
+        justify-content: space-between; 
+        margin-bottom: 8px;
+        .name { font-weight: 600; color: #fff; }
+        .toggles i { margin-left: 10px; cursor: pointer; &:hover { color: #64b5f6; } }
     }
+    .card-info { display: flex; justify-content: space-between; color: #888; font-size: 0.75rem; }
+}
+
+.panel-footer {
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid #3a4455;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-footer-close {
+    background: transparent;
+    border: none;
+    color: #aaaaaa;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover { color: #64b5f6; }
+}
+
+.panel-toggle-btn {
+     position: absolute;
+    top: 52px;
+    left: 130px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(48, 48, 48, 0.9);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+
+  .svg-icon {
+    color: #64b5f6; /* İkon rengi */
+    display: block;
+  }
+
+  &:hover .svg-icon {
+    filter: drop-shadow(0 0 5px rgba(100, 181, 246, 0.8));
+    transition: filter 0.25s ease;
+  }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    i { font-size: 2rem; margin-bottom: 10px; }
+}
+
+.header-main svg {
+  margin-right: 4px;
 }

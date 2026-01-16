@@ -1,41 +1,58 @@
-<div class="geofence-panel shadow" cdkDrag>
-  <div class="panel-header">
-    <h5><i class="fas fa-shield-alt"></i> Geofence Control</h5>
-    <button class="btn btn-sm" [ngClass]="isDrawing ? 'btn-danger' : 'btn-primary'" (click)="startNewDrawing()">
-      <i class="fas" [ngClass]="isDrawing ? 'fa-times' : 'fa-plus'"></i>
-      {{ isDrawing ? 'Cancel' : 'New Area' }}
-    </button>
+<button class="panel-toggle-btn shadow" (click)="togglePanel()" [class.active]="isPanelVisible" title="Open Geofence Control">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+  </svg> Geofence Panel 
+</button>
+
+<div class="geofence-panel shadow" *ngIf="isPanelVisible" cdkDrag cdkDragBoundary=".map-container">
+  
+  <div class="panel-header" cdkDragHandle>
+  <div class="header-main">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64b5f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+    <span class="telemetry-title">Geofence Control</span>
+  </div>
+    <div class="header-actions">
+      <button class="btn-icon-close" (click)="togglePanel()" title="Close Panel">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
   </div>
 
   <div class="panel-body">
-    <div *ngFor="let gf of geofences" class="geofence-card" [class.disabled]="!gf.enabled">
-      <div class="card-top">
-        <span class="name">{{ gf.name }}</span>
-        <div class="toggles">
-          <i class="fas fa-power-off" (click)="toggleGeofenceEnabled(gf)" [title]="gf.enabled ? 'Disable' : 'Enable'"></i>
-          <i class="fas fa-trash-alt text-danger" (click)="deleteGeofence(gf.id)"></i>
+    <button class="btn btn-draw-main" 
+            [ngClass]="isDrawing ? 'btn-danger' : 'btn-primary'" 
+            (click)="startNewDrawing()">
+      <i class="fas" [ngClass]="isDrawing ? 'fa-times' : 'fa-plus'"></i>
+      {{ isDrawing ? 'Cancel Drawing' : 'Create New Area' }}
+    </button>
+
+    <div class="table-viewport">
+      <div *ngFor="let gf of geofences" class="geofence-card" [class.disabled]="!gf.enabled">
+        <div class="card-top">
+          <span class="name">{{ gf.name }}</span>
+          <div class="toggles">
+            <i class="fas fa-power-off" (click)="toggleGeofenceEnabled(gf)"></i>
+            <i class="fas fa-trash-alt text-danger" (click)="deleteGeofence(gf.id)"></i>
+          </div>
+        </div>
+        <div class="card-info">
+          <small>Points: {{ gf.polygon.length }}</small>
+          <small>{{ gf.createdAt | date:'shortTime' }}</small>
         </div>
       </div>
-
-      <div class="card-settings">
-        <div class="setting-item">
-          <span>Entry Alert</span>
-          <input type="checkbox" [(ngModel)]="gf.alertOnEntry">
-        </div>
-        <div class="setting-item">
-          <span>Exit Alert</span>
-          <input type="checkbox" [(ngModel)]="gf.alertOnExit">
-        </div>
-      </div>
-
-      <div class="card-info">
-        <small>Points: {{ gf.polygon.length }}</small>
-        <small>Created: {{ gf.createdAt | date:'shortTime' }}</small>
+      
+      <div *ngIf="geofences.length === 0" class="empty-state">
+        <i class="fas fa-map-marked-alt"></i>
+        <p>No geofences defined.</p>
       </div>
     </div>
+  </div>
 
-    <div *ngIf="geofences.length === 0" class="empty-state text-center py-4">
-      <p class="text-muted">No geofences active.</p>
-    </div>
+  <div class="panel-footer">
+    <button class="btn-footer-close" (click)="togglePanel()">
+      <i class="fas fa-chevron-up"></i> Hide Panel
+    </button>
   </div>
 </div>
