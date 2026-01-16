@@ -40,6 +40,8 @@
 		(dismissed)="onAlertDismissed()">
 	</app-geofence-alert>
 
+	<app-geofence-panel></app-geofence-panel>
+
 	<!-- Snackbar -->
 	<div *ngIf="snackbarVisible" style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
 		{{ snackbarMessage }}

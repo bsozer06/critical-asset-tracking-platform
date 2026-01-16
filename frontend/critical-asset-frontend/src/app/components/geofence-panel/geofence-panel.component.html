@@ -1,0 +1,41 @@
+<div class="geofence-panel shadow" cdkDrag>
+  <div class="panel-header">
+    <h5><i class="fas fa-shield-alt"></i> Geofence Control</h5>
+    <button class="btn btn-sm" [ngClass]="isDrawing ? 'btn-danger' : 'btn-primary'" (click)="startNewDrawing()">
+      <i class="fas" [ngClass]="isDrawing ? 'fa-times' : 'fa-plus'"></i>
+      {{ isDrawing ? 'Cancel' : 'New Area' }}
+    </button>
+  </div>
+
+  <div class="panel-body">
+    <div *ngFor="let gf of geofences" class="geofence-card" [class.disabled]="!gf.enabled">
+      <div class="card-top">
+        <span class="name">{{ gf.name }}</span>
+        <div class="toggles">
+          <i class="fas fa-power-off" (click)="toggleGeofenceEnabled(gf)" [title]="gf.enabled ? 'Disable' : 'Enable'"></i>
+          <i class="fas fa-trash-alt text-danger" (click)="deleteGeofence(gf.id)"></i>
+        </div>
+      </div>
+
+      <div class="card-settings">
+        <div class="setting-item">
+          <span>Entry Alert</span>
+          <input type="checkbox" [(ngModel)]="gf.alertOnEntry">
+        </div>
+        <div class="setting-item">
+          <span>Exit Alert</span>
+          <input type="checkbox" [(ngModel)]="gf.alertOnExit">
+        </div>
+      </div>
+
+      <div class="card-info">
+        <small>Points: {{ gf.polygon.length }}</small>
+        <small>Created: {{ gf.createdAt | date:'shortTime' }}</small>
+      </div>
+    </div>
+
+    <div *ngIf="geofences.length === 0" class="empty-state text-center py-4">
+      <p class="text-muted">No geofences active.</p>
+    </div>
+  </div>
+</div>

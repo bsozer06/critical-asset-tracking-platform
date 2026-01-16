@@ -1,0 +1,78 @@
+.geofence-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    max-height: 80vh;
+
+    z-index: 1100;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(100, 181, 246, 0.2); 
+    backdrop-filter: blur(8px);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid #1976d2;
+    cursor: move; 
+
+    h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        i {
+            color: #64b5f6;
+        }
+    }
+}
+
+.panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #3a4455;
+        border-radius: 10px;
+    }
+}
+
+.geofence-card {
+    background: rgba(37, 45, 66, 0.7);
+    border-radius: 8px;
+    border-left: 4px solid #64b5f6;
+    padding: 12px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba(45, 54, 83, 0.9);
+        border-left-width: 6px;
+        transform: translateX(-2px);
+    }
+
+    &.disabled {
+        border-left-color: #555555;
+        opacity: 0.6;
+    }
+}
