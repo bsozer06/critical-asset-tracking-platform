@@ -14,12 +14,12 @@
 				(violationDetected)="onViolationDetected($event)">
 			</app-cesium-map>
 			<!-- Floating Draw Geofence Button -->
-			<button *ngIf="!isDrawingGeofence" 
+			<!-- <button *ngIf="!isDrawingGeofence" 
 				(click)="startDrawingGeofence()"
 				class="fab-geofence-btn"
 				title="Draw a new geofence">
 				<span aria-label="Draw Geofence" style="font-size: 22px;">📍</span>
-			</button>
+			</button> -->
 			<button *ngIf="isDrawingGeofence" 
 				(click)="cancelGeofenceDrawing()"
 				class="fab-geofence-btn fab-cancel"
