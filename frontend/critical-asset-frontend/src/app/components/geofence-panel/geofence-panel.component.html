@@ -1,18 +1,21 @@
-<button class="panel-toggle-btn shadow" (click)="togglePanel()" [class.active]="isPanelVisible" title="Open Geofence Control">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+<button class="panel-toggle-btn shadow" (click)="togglePanel()" [class.active]="isPanelVisible"
+  title="Open Geofence Control">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-  </svg> Geofence Panel 
+  </svg> Geofence Panel
 </button>
 
 <div class="geofence-panel shadow" *ngIf="isPanelVisible" cdkDrag cdkDragBoundary=".map-container">
-  
+
   <div class="panel-header" cdkDragHandle>
-  <div class="header-main">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64b5f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-    </svg>
-    <span class="telemetry-title">Geofence Control</span>
-  </div>
+    <div class="header-main">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64b5f6" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      <span class="telemetry-title">Geofence Control</span>
+    </div>
     <div class="header-actions">
       <button class="btn-icon-close" (click)="togglePanel()" title="Close Panel">
         <i class="fas fa-times"></i>
@@ -21,28 +24,50 @@
   </div>
 
   <div class="panel-body">
-    <button class="btn btn-draw-main" 
-            [ngClass]="isDrawing ? 'btn-danger' : 'btn-primary'" 
-            (click)="startNewDrawing()">
+    <button class="btn btn-draw-main" [ngClass]="isDrawing ? 'btn-danger' : 'btn-primary'" (click)="startNewDrawing()">
       <i class="fas" [ngClass]="isDrawing ? 'fa-times' : 'fa-plus'"></i>
       {{ isDrawing ? 'Cancel Drawing' : 'Create New Area' }}
     </button>
 
     <div class="table-viewport">
       <div *ngFor="let gf of geofences" class="geofence-card" [class.disabled]="!gf.enabled">
-        <div class="card-top">
-          <span class="name">{{ gf.name }}</span>
+        <div class="card-top" (click)="zoomToGeofence(gf)" style="cursor: pointer;" title="Zoom to Area">
+          <span class="name">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="margin-right: 5px;">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            {{ gf.name }}
+          </span>
+
           <div class="toggles">
-            <i class="fas fa-power-off" (click)="toggleGeofenceEnabled(gf)"></i>
-            <i class="fas fa-trash-alt text-danger" (click)="deleteGeofence(gf.id)"></i>
+            <button class="icon-btn" (click)="toggleGeofenceEnabled(gf); $event.stopPropagation()"
+              [title]="gf.enabled ? 'Disable' : 'Enable'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                [attr.stroke]="gf.enabled ? '#64b5f6' : '#888'" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                <line x1="12" y1="2" x2="12" y2="12"></line>
+              </svg>
+            </button>
+
+            <button class="icon-btn" (click)="deleteGeofence(gf.id); $event.stopPropagation()" title="Delete">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
           </div>
         </div>
+
         <div class="card-info">
           <small>Points: {{ gf.polygon.length }}</small>
           <small>{{ gf.createdAt | date:'shortTime' }}</small>
         </div>
       </div>
-      
+
       <div *ngIf="geofences.length === 0" class="empty-state">
         <i class="fas fa-map-marked-alt"></i>
         <p>No geofences defined.</p>

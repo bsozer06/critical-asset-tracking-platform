@@ -161,9 +161,9 @@ export class GeofencePanelComponent implements OnInit {
     // add all entitites on map
     fences.forEach(fence => {
       viewer.entities.add({
-        id: fence.id, 
+        id: fence.id,
         name: fence.name,
-        properties: { isGeofence: true }, 
+        properties: { isGeofence: true },
         polygon: {
           hierarchy: Cesium.Cartesian3.fromDegreesArray(
             fence.polygon.flatMap(p => [p.longitude, p.latitude])
@@ -178,5 +178,29 @@ export class GeofencePanelComponent implements OnInit {
         }
       });
     });
+  }
+
+  zoomToGeofence(fence: Geofence) {
+    const viewer = (window as any).viewer;
+    if (!viewer) return;
+
+    const entity = viewer.entities.getById(fence.id);
+
+    if (entity) {
+      viewer.zoomTo(entity, new Cesium.HeadingPitchRange(
+        Cesium.Math.toRadians(0),
+        Cesium.Math.toRadians(-45),
+        0
+      ));
+    } else {
+      const positions = Cesium.Cartesian3.fromDegreesArray(
+        fence.polygon.flatMap(p => [p.longitude, p.latitude])
+      );
+
+      const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+      viewer.camera.flyToBoundingSphere(boundingSphere, {
+        duration: 1.5
+      });
+    }
   }
 }
