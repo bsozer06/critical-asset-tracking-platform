@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GeoPoint, Geofence, GeofenceViolation, AssetGeofenceState } from '../models/geofence.model';
 import { TelemetryPoint } from '../models/telemetry-point.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,9 @@ export class GeofenceService {
   private _assetStates: Map<string, Map<string, AssetGeofenceState>> = new Map();
   private _violations: GeofenceViolation[] = [];
 
+  private geofencesSubject = new BehaviorSubject<Geofence[]>([]);
+  public geofences$ = this.geofencesSubject.asObservable();
+  
   constructor() {}
 
   /**
@@ -107,6 +111,7 @@ export class GeofenceService {
    */
   addGeofence(geofence: Geofence): void {
     this._geofences.set(geofence.id, geofence);
+    this.refresh();
   }
 
   /**
@@ -114,6 +119,7 @@ export class GeofenceService {
    */
   removeGeofence(geofenceId: string): void {
     this._geofences.delete(geofenceId);
+    this.refresh();
   }
 
   /**
@@ -149,5 +155,9 @@ export class GeofenceService {
    */
   clearViolations(): void {
     this._violations = [];
+  }
+
+  private refresh(): void {
+    this.geofencesSubject.next(this.getGeofences());
   }
 }

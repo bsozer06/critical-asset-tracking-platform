@@ -14,18 +14,18 @@
 				(violationDetected)="onViolationDetected($event)">
 			</app-cesium-map>
 			<!-- Floating Draw Geofence Button -->
-			<button *ngIf="!isDrawingGeofence" 
+			<!-- <button *ngIf="!isDrawingGeofence" 
 				(click)="startDrawingGeofence()"
 				class="fab-geofence-btn"
 				title="Draw a new geofence">
 				<span aria-label="Draw Geofence" style="font-size: 22px;">📍</span>
-			</button>
-			<button *ngIf="isDrawingGeofence" 
+			</button> -->
+			<!-- <button *ngIf="isDrawingGeofence" 
 				(click)="cancelGeofenceDrawing()"
 				class="fab-geofence-btn fab-cancel"
 				title="Cancel geofence drawing">
 				<span aria-label="Cancel Drawing" style="font-size: 22px;">✕</span>
-			</button>
+			</button> -->
 		</div>
 		<div class="panel-area">
 			<app-telemetry-panel (assetSelected)="onAssetSelected($event)"></app-telemetry-panel>
@@ -39,6 +39,8 @@
 		[autoHideDuration]="15000"
 		(dismissed)="onAlertDismissed()">
 	</app-geofence-alert>
+
+	<app-geofence-panel></app-geofence-panel>
 
 	<!-- Snackbar -->
 	<div *ngIf="snackbarVisible" style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">

@@ -1,6 +1,7 @@
 import * as Cesium from 'cesium';
 import { TelemetryPoint } from "../models/telemetry-point.model";
 import { CesiumUtility } from '../utilities/cesium.utility';
+import { GeoPoint } from '../models/geofence.model';
 
 // Creeate a helper class to manage Cesium-related utilities
 export class CesiumHelper {
@@ -54,5 +55,14 @@ export class CesiumHelper {
         return new Cesium.HeadingPitchRoll(heading, pitch, roll);
     }
 
+    public static convertToGeoPoints(positions: Cesium.Cartesian3[]): GeoPoint[] {
+        return positions.map(pos => {
+            const cartographic = Cesium.Cartographic.fromCartesian(pos);
+            return {
+                latitude: Cesium.Math.toDegrees(cartographic.latitude),
+                longitude: Cesium.Math.toDegrees(cartographic.longitude)
+            };
+        });
 
+    }
 }

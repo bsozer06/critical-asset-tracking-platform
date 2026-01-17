@@ -1,6 +1,6 @@
 
 import { Component, OnInit, ViewChild, signal } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { SignalRService } from './services/signalr.service';
 import { environment } from '../environments/environment';
 import { CesiumMapComponent } from "./components/cesium-map/cesium-map.component";
@@ -9,10 +9,19 @@ import { TelemetryPanelComponent } from "./components/telemetry-panel/telemetry-
 import { GeofenceAlertComponent } from './components/geofence-alert/geofence-alert.component';
 import { TelemetryPoint } from './models/telemetry-point.model';
 import { GeofenceViolation, Geofence } from './models/geofence.model';
+import { GeofencePanelComponent } from "./components/geofence-panel/geofence-panel.component";
 
 @Component({
   selector: 'app-root',
-  imports: [CesiumMapComponent, ConnectionStatusBadgeComponent, NgIf, TelemetryPanelComponent, GeofenceAlertComponent],
+  imports: [
+    CommonModule,
+    CesiumMapComponent,
+    ConnectionStatusBadgeComponent,
+    NgIf,
+    TelemetryPanelComponent,
+    GeofenceAlertComponent,
+    GeofencePanelComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -33,7 +42,7 @@ export class App implements OnInit {
   isDrawingGeofence = false;
   geofences: Geofence[] = [];
 
-  constructor(private signalR: SignalRService) {}
+  constructor(private signalR: SignalRService) { }
 
   ngOnInit() {
     this.signalR.connectionStatus$.subscribe(status => {
@@ -61,22 +70,22 @@ export class App implements OnInit {
   /**
    * Start drawing a new geofence
    */
-  startDrawingGeofence() {
-    if (this.cesiumMapComponent) {
-      this.isDrawingGeofence = true;
-      this.cesiumMapComponent.startDrawingGeofence();
-    }
-  }
+  // startDrawingGeofence() {
+  //   if (this.cesiumMapComponent) {
+  //     this.isDrawingGeofence = true;
+  //     this.cesiumMapComponent.startDrawingGeofence();
+  //   }
+  // }
 
-  /**
-   * Cancel current geofence drawing
-   */
-  cancelGeofenceDrawing() {
-    if (this.cesiumMapComponent) {
-      this.cesiumMapComponent.cancelDrawing();
-      this.isDrawingGeofence = false;
-    }
-  }
+  // /**
+  //  * Cancel current geofence drawing
+  //  */
+  // cancelGeofenceDrawing() {
+  //   if (this.cesiumMapComponent) {
+  //     this.cesiumMapComponent.cancelDrawing();
+  //     this.isDrawingGeofence = false;
+  //   }
+  // }
 
   /**
    * Handle new geofence created
