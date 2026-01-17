@@ -70,22 +70,22 @@ export class App implements OnInit {
   /**
    * Start drawing a new geofence
    */
-  startDrawingGeofence() {
-    if (this.cesiumMapComponent) {
-      this.isDrawingGeofence = true;
-      this.cesiumMapComponent.startDrawingGeofence();
-    }
-  }
+  // startDrawingGeofence() {
+  //   if (this.cesiumMapComponent) {
+  //     this.isDrawingGeofence = true;
+  //     this.cesiumMapComponent.startDrawingGeofence();
+  //   }
+  // }
 
-  /**
-   * Cancel current geofence drawing
-   */
-  cancelGeofenceDrawing() {
-    if (this.cesiumMapComponent) {
-      this.cesiumMapComponent.cancelDrawing();
-      this.isDrawingGeofence = false;
-    }
-  }
+  // /**
+  //  * Cancel current geofence drawing
+  //  */
+  // cancelGeofenceDrawing() {
+  //   if (this.cesiumMapComponent) {
+  //     this.cesiumMapComponent.cancelDrawing();
+  //     this.isDrawingGeofence = false;
+  //   }
+  // }
 
   /**
    * Handle new geofence created

@@ -271,182 +271,182 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  /**
-   * Start drawing a geofence polygon
-   */
-  startDrawingGeofence(): void {
-    if (!this.viewer) return;
+  // /**
+  //  * Start drawing a geofence polygon
+  //  */
+  // startDrawingGeofence(): void {
+  //   if (!this.viewer) return;
 
-    this.isDrawingMode = true;
-    this.drawingPoints = [];
-    this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
-      (click: any) => {
-        this._handleMapClick(click);
-      },
-      Cesium.ScreenSpaceEventType.LEFT_CLICK
-    );
+  //   this.isDrawingMode = true;
+  //   this.drawingPoints = [];
+  //   this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
+  //     (click: any) => {
+  //       this._handleMapClick(click);
+  //     },
+  //     Cesium.ScreenSpaceEventType.LEFT_CLICK
+  //   );
 
-    this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
-      (dblClick: any) => {
-        this._finishDrawingGeofence();
-      },
-      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
-    );
+  //   this.viewer.cesiumWidget.screenSpaceEventHandler.setInputAction(
+  //     (dblClick: any) => {
+  //       this._finishDrawingGeofence();
+  //     },
+  //     Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
+  //   );
 
-    console.log('Geofence drawing mode started. Click to add points, double-click to finish.');
-  }
+  //   console.log('Geofence drawing mode started. Click to add points, double-click to finish.');
+  // }
 
-  /**
-   * Cancel drawing mode
-   */
-  cancelDrawing(): void {
-    if (!this.viewer) return;
+  // /**
+  //  * Cancel drawing mode
+  //  */
+  // cancelDrawing(): void {
+  //   if (!this.viewer) return;
 
-    this.isDrawingMode = false;
-    this.drawingPoints = [];
+  //   this.isDrawingMode = false;
+  //   this.drawingPoints = [];
 
-    if (this.drawingEntity) {
-      this.viewer.entities.remove(this.drawingEntity);
-      this.drawingEntity = undefined;
-    }
+  //   if (this.drawingEntity) {
+  //     this.viewer.entities.remove(this.drawingEntity);
+  //     this.drawingEntity = undefined;
+  //   }
 
-    // Reset event handlers
-    this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
-      Cesium.ScreenSpaceEventType.LEFT_CLICK
-    );
-    this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
-      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
-    );
+  //   // Reset event handlers
+  //   this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+  //     Cesium.ScreenSpaceEventType.LEFT_CLICK
+  //   );
+  //   this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+  //     Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK
+  //   );
 
-    console.log('Drawing cancelled');
-  }
+  //   console.log('Drawing cancelled');
+  // }
 
-  /**
-   * Display a geofence polygon on the map
-   */
-  displayGeofence(geofence: Geofence): void {
-    if (!this.viewer || this.geofencePolylines.has(geofence.id)) return;
+  // /**
+  //  * Display a geofence polygon on the map
+  //  */
+  // displayGeofence(geofence: Geofence): void {
+  //   if (!this.viewer || this.geofencePolylines.has(geofence.id)) return;
 
-    const positions = geofence.polygon.map(pt =>
-      Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
-    );
+  //   const positions = geofence.polygon.map(pt =>
+  //     Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
+  //   );
 
-    const polylineEntity = this.viewer.entities.add({
-      polyline: {
-        positions,
-        width: 3,
-        material: Cesium.Color.RED.withAlpha(0.9),
-      },
-      properties: {
-        geofenceId: geofence.id,
-        geofenceName: geofence.name
-      }
-    });
+  //   const polylineEntity = this.viewer.entities.add({
+  //     polyline: {
+  //       positions,
+  //       width: 3,
+  //       material: Cesium.Color.RED.withAlpha(0.9),
+  //     },
+  //     properties: {
+  //       geofenceId: geofence.id,
+  //       geofenceName: geofence.name
+  //     }
+  //   });
 
-    this.geofencePolylines.set(geofence.id, polylineEntity);
-  }
+  //   this.geofencePolylines.set(geofence.id, polylineEntity);
+  // }
 
-  /**
-   * Remove geofence visualization
-   */
-  removeGeofenceDisplay(geofenceId: string): void {
-    if (!this.viewer) return;
+  // /**
+  //  * Remove geofence visualization
+  //  */
+  // removeGeofenceDisplay(geofenceId: string): void {
+  //   if (!this.viewer) return;
 
-    const entity = this.geofencePolylines.get(geofenceId);
-    if (entity) {
-      this.viewer.entities.remove(entity);
-      this.geofencePolylines.delete(geofenceId);
-    }
-  }
+  //   const entity = this.geofencePolylines.get(geofenceId);
+  //   if (entity) {
+  //     this.viewer.entities.remove(entity);
+  //     this.geofencePolylines.delete(geofenceId);
+  //   }
+  // }
 
-  /**
-   * Get all current geofences
-   */
-  getAllGeofences(): Geofence[] {
-    return this.geofenceService.getGeofences();
-  }
+  // /**
+  //  * Get all current geofences
+  //  */
+  // getAllGeofences(): Geofence[] {
+  //   return this.geofenceService.getGeofences();
+  // }
 
-  private _handleMapClick(click: any): void {
-    if (!this.isDrawingMode || !this.viewer) return;
+  // private _handleMapClick(click: any): void {
+  //   if (!this.isDrawingMode || !this.viewer) return;
 
-    const pickedObject = this.viewer.scene.pick(click.position);
-    if (Cesium.defined(pickedObject)) {
-      return; // Don't add point if clicking on an entity
-    }
+  //   const pickedObject = this.viewer.scene.pick(click.position);
+  //   if (Cesium.defined(pickedObject)) {
+  //     return; // Don't add point if clicking on an entity
+  //   }
 
-    const earthPosition = this.viewer.scene.pickPosition(click.position);
-    if (!Cesium.defined(earthPosition)) {
-      return;
-    }
+  //   const earthPosition = this.viewer.scene.pickPosition(click.position);
+  //   if (!Cesium.defined(earthPosition)) {
+  //     return;
+  //   }
 
-    const cartographic = Cesium.Cartographic.fromCartesian(earthPosition as Cesium.Cartesian3);
-    const point: GeoPoint = {
-      longitude: Cesium.Math.toDegrees(cartographic.longitude),
-      latitude: Cesium.Math.toDegrees(cartographic.latitude)
-    };
+  //   const cartographic = Cesium.Cartographic.fromCartesian(earthPosition as Cesium.Cartesian3);
+  //   const point: GeoPoint = {
+  //     longitude: Cesium.Math.toDegrees(cartographic.longitude),
+  //     latitude: Cesium.Math.toDegrees(cartographic.latitude)
+  //   };
 
-    this.drawingPoints.push(point);
-    console.log(`Point added: ${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`);
+  //   this.drawingPoints.push(point);
+  //   console.log(`Point added: ${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`);
 
-    // Update visualization
-    this._updateDrawingVisualization();
-  }
+  //   // Update visualization
+  //   this._updateDrawingVisualization();
+  // }
 
-  private _finishDrawingGeofence(): void {
-    if (this.drawingPoints.length < 3) {
-      alert('A geofence must have at least 3 points');
-      return;
-    }
+  // private _finishDrawingGeofence(): void {
+  //   if (this.drawingPoints.length < 3) {
+  //     alert('A geofence must have at least 3 points');
+  //     return;
+  //   }
 
-    // Create geofence
-    const geofenceId = `geofence-${Date.now()}`;
-    const geofence: Geofence = {
-      id: geofenceId,
-      name: `Geofence ${new Date().toLocaleTimeString()}`,
-      polygon: [...this.drawingPoints],
-      createdAt: new Date(),
-      enabled: true,
-      alertOnEntry: true,
-      alertOnExit: true
-    };
+  //   // Create geofence
+  //   const geofenceId = `geofence-${Date.now()}`;
+  //   const geofence: Geofence = {
+  //     id: geofenceId,
+  //     name: `Geofence ${new Date().toLocaleTimeString()}`,
+  //     polygon: [...this.drawingPoints],
+  //     createdAt: new Date(),
+  //     enabled: true,
+  //     alertOnEntry: true,
+  //     alertOnExit: true
+  //   };
 
-    this.geofenceService.addGeofence(geofence);
-    this.displayGeofence(geofence);
-    this.geofenceCreated.emit(geofence);
+  //   this.geofenceService.addGeofence(geofence);
+  //   this.displayGeofence(geofence);
+  //   this.geofenceCreated.emit(geofence);
 
-    console.log('Geofence created:', geofence);
+  //   console.log('Geofence created:', geofence);
 
-    // Cancel drawing mode
-    this.cancelDrawing();
-  }
+  //   // Cancel drawing mode
+  //   this.cancelDrawing();
+  // }
 
-  private _updateDrawingVisualization(): void {
-    if (!this.viewer) return;
+  // private _updateDrawingVisualization(): void {
+  //   if (!this.viewer) return;
 
-    if (this.drawingEntity) {
-      this.viewer.entities.remove(this.drawingEntity);
-    }
+  //   if (this.drawingEntity) {
+  //     this.viewer.entities.remove(this.drawingEntity);
+  //   }
 
-    const positions = this.drawingPoints.map(pt =>
-      Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
-    );
+  //   const positions = this.drawingPoints.map(pt =>
+  //     Cesium.Cartesian3.fromDegrees(pt.longitude, pt.latitude)
+  //   );
 
-    if (positions.length > 0) {
-      this.drawingEntity = this.viewer.entities.add({
-        polyline: {
-          positions: new Cesium.CallbackProperty(() => positions, false),
-          width: 2,
-          material: Cesium.Color.CYAN.withAlpha(0.8),
-          clampToGround: true
-        },
-        point: {
-          pixelSize: 8,
-          color: Cesium.Color.RED,
-          outlineColor: Cesium.Color.WHITE,
-          outlineWidth: 2
-        }
-      });
-    }
-  }
+  //   if (positions.length > 0) {
+  //     this.drawingEntity = this.viewer.entities.add({
+  //       polyline: {
+  //         positions: new Cesium.CallbackProperty(() => positions, false),
+  //         width: 2,
+  //         material: Cesium.Color.CYAN.withAlpha(0.8),
+  //         clampToGround: true
+  //       },
+  //       point: {
+  //         pixelSize: 8,
+  //         color: Cesium.Color.RED,
+  //         outlineColor: Cesium.Color.WHITE,
+  //         outlineWidth: 2
+  //       }
+  //     });
+  //   }
+  // }
 
 }
