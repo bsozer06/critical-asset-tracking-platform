@@ -242,6 +242,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
       terrainProvider: new Cesium.EllipsoidTerrainProvider(),
       skyAtmosphere: false,
     });
+
+    (window as any).viewer = this.viewer
     // // optionally set Ion token (if provided)
     // if (environment.cesiumIonToken) {
     //   Cesium.Ion.defaultAccessToken = environment.cesiumIonToken;
