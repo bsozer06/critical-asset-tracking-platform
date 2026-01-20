@@ -28,11 +28,29 @@ namespace CriticalAssetTracking.Infrastructure.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Geofence>> GetAllAsync()
+        {
+            return await _context.Geofences
+                .AsNoTracking()
+                .OrderByDescending(g => g.CreatedAtUtc)
+                .ToListAsync();
+        }
+
         public async Task<Geofence?> GetByIdAsync(Guid id)
         {
             return await _context.Geofences
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.Id == id);
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var geofence = await _context.Geofences.FindAsync(id);
+            if (geofence != null)
+            {
+                _context.Geofences.Remove(geofence);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

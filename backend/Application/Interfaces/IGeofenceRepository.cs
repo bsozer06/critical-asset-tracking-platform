@@ -8,5 +8,7 @@ namespace CriticalAssetTracking.Application.Interfaces
         Task<List<Geofence>> GetIntersectingGeofencesAsync(Point point);
         Task AddAsync(Geofence geofence);
         Task<Geofence> GetByIdAsync(Guid id);
+        Task<List<Geofence>> GetAllAsync();
+        Task DeleteAsync(Guid id);
     }
 }
