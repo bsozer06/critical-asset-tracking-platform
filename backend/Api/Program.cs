@@ -4,7 +4,8 @@ using CriticalAssetTracking.Api.HealthChecks;
 using CriticalAssetTracking.Api.Hubs;
 using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
-using CriticalAssetTracking.Application.Processors;
+using CriticalAssetTracking.Application;
+using CriticalAssetTracking.Infrastructure;
 using Prometheus;
 using RabbitMQ.Client;
 
@@ -45,7 +46,9 @@ builder.Services.AddHealthChecks()
     .AddCheck<TelemetryStreamHealthCheck>("simulator", tags: ["telemetry", "simulator"]);
 
 //builder.Services.AddSingleton<ITelemetryProcessor, DummyTelemetryProcessor>();
-builder.Services.AddScoped<ITelemetryProcessor, TelemetryProcessor>();
+//builder.Services.AddScoped<ITelemetryProcessor, TelemetryProcessor>();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
 builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 

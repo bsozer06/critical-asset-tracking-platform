@@ -1,6 +1,8 @@
 using CriticalAssetTracking.Application.Contracts;
+using CriticalAssetTracking.Application.Dtos;
 using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Metrics;
+using CriticalAssetTracking.Application.Services;
 using CriticalAssetTracking.Domain.Models;
 using System.Diagnostics;
 
@@ -9,10 +11,12 @@ namespace CriticalAssetTracking.Application.Processors
     public class TelemetryProcessor : ITelemetryProcessor
     {
         private readonly ITelemetryPublisher _publisher;
+        private readonly IGeofenceEngine _geofenceEngine;
 
-        public TelemetryProcessor(ITelemetryPublisher publisher)
+        public TelemetryProcessor(ITelemetryPublisher publisher, IGeofenceEngine geofenceEngine)
         {
             _publisher = publisher;
+            _geofenceEngine = geofenceEngine;
         }
 
         public async Task ProcessAsync(
@@ -44,6 +48,15 @@ namespace CriticalAssetTracking.Application.Processors
                 TelemetryMetrics.TelemetryMessagesProcessed
                         .Labels(assetType, "success")
                         .Inc();
+
+                var message = new TelemetryMessageDto(
+                    envelope.Message.Header.AssetId,
+                    envelope.Message.Body.Latitude,
+                    envelope.Message.Body.Longitude,
+                    envelope.Message.Header.TimestampUtc
+                );
+
+                await _geofenceEngine.ProcessTelemetryAsync(message);
             }
             catch (Exception)
             {
@@ -60,7 +73,7 @@ namespace CriticalAssetTracking.Application.Processors
                     .Labels(assetType)
                     .Observe(stopwatch.Elapsed.TotalSeconds);
             }
-          
+
         }
     }
 }

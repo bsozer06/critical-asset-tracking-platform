@@ -1,4 +1,7 @@
 ﻿using CriticalAssetTracking.Application.Interfaces;
+using CriticalAssetTracking.Application.Processors;
+using CriticalAssetTracking.Application.Services;
+using CriticalAssetTracking.Infrastructure.Caching;
 using CriticalAssetTracking.Infrastructure.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +14,16 @@ namespace CriticalAssetTracking.Infrastructure
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+            var redisConnection = Environment.GetEnvironmentVariable("REDIS_URL")
+                          ?? configuration.GetConnectionString("RedisConnection")
+                          ?? "redis:6379";
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+                options.InstanceName = "CATP_"; // Critical Asset Tracking Platform prefix
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString, x =>
                 {
@@ -20,6 +33,7 @@ namespace CriticalAssetTracking.Infrastructure
 
             services.AddScoped<IGeofenceRepository, GeofenceRepository>();
             services.AddScoped<IViolationRepository, ViolationRepository>();
+            services.AddScoped<IGeofenceStateService, GeofenceStateService>();
 
             return services;
         }

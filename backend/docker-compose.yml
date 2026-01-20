@@ -26,6 +26,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_started
+      redis:
+        condition: service_started
     environment:
       RabbitMq__HostName: rabbitmq
       RabbitMq__Port: 5672
@@ -35,6 +37,7 @@ services:
       RabbitMq__VHost: "/"
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
+      Redis__ConnectionString: "catp-redis:6379"
       ConnectionStrings__DefaultConnection: "Host=catp-postgres;Database=asset_tracking;Username=admin;Password=password123"
     ports:
       - "5073:80"

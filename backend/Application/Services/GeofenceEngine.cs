@@ -6,7 +6,7 @@ using NetTopologySuite.Geometries;
 
 namespace CriticalAssetTracking.Application.Services
 {
-    public class GeofenceEngine
+    public class GeofenceEngine: IGeofenceEngine
     {
         private readonly IGeofenceRepository _geofenceRepository;
         private readonly IGeofenceStateService _stateService;

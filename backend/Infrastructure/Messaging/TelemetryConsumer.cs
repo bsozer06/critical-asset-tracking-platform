@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace CriticalAssetTracking.Infrastructure.Messaging
 {
-    public class TelemetryConsumer : IDisposable
+    public class TelemetryConsumer : ITelemetryProcessor, IDisposable
     {
         private readonly IChannel _channel;
         private readonly ITelemetryProcessor _processor;
@@ -150,6 +150,11 @@ namespace CriticalAssetTracking.Infrastructure.Messaging
         {
             _channel?.CloseAsync();
             _channel?.Dispose();
+        }
+
+        public Task ProcessAsync(TelemetryEnvelope message, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }
