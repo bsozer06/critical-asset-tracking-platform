@@ -91,17 +91,16 @@ using (var scope = app.Services.CreateScope())
     var logger = services.GetRequiredService<ILogger<Program>>();
     var context = services.GetRequiredService<ApplicationDbContext>();
 
-    // Postgres'in ayaða kalkmasý için 30 saniye boyunca deneme yapacak
+    // Postgres'in ayaï¿½a kalkmasï¿½ iï¿½in 30 saniye boyunca deneme yapacak
     int retryCount = 0;
     while (retryCount < 5)
     {
         try
         {
-            logger.LogInformation("Veritabanýna baðlanýlýyor ve migration uygulanýyor... (Deneme: {Count})", retryCount + 1);
+            logger.LogInformation("Veritabanï¿½na baï¿½lanï¿½lï¿½yor ve migration uygulanï¿½yor... (Deneme: {Count})", retryCount + 1);
 
-            // Migration uygula
-            //context.Database.Migrate();
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
+            // context.Database.EnsureCreated();
 
             // Seed Data
             if (!context.Geofences.Any())
@@ -110,7 +109,7 @@ using (var scope = app.Services.CreateScope())
                 context.Geofences.Add(new Geofence
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Ankara Test Bölgesi",
+                    Name = "Ankara Test Bolgesi",
                     Description = "Docker Seed Data",
                     IsActive = true,
                     Boundary = gf.CreatePolygon(new[]
@@ -123,15 +122,15 @@ using (var scope = app.Services.CreateScope())
                     })
                 });
                 context.SaveChanges();
-                logger.LogInformation("Seed verisi baþarýyla eklendi.");
+                logger.LogInformation("Seed verisi basariyla eklendi.");
             }
 
-            break; // Baþarýlýysa döngüden çýk
+            break; // Baï¿½arï¿½lï¿½ysa dï¿½ngï¿½den ï¿½ï¿½k
         }
         catch (Exception ex)
         {
             retryCount++;
-            logger.LogWarning("Veritabaný henüz hazýr deðil, bekleniyor... (Hata: {Message})", ex.Message);
+            logger.LogWarning("Veritabanï¿½ henï¿½z hazï¿½r deï¿½il, bekleniyor... (Hata: {Message})", ex.Message);
             Thread.Sleep(5000); // 5 saniye bekle ve tekrar dene
         }
     }
@@ -144,13 +143,13 @@ using (var scope = app.Services.CreateScope())
 //    {
 //        var context = services.GetRequiredService<ApplicationDbContext>();
 
-//        // 1. Önce bekleyen migration'larý uygula (Tablolarý oluþturur)
+//        // 1. ï¿½nce bekleyen migration'larï¿½ uygula (Tablolarï¿½ oluï¿½turur)
 //        if (context.Database.GetPendingMigrations().Any())
 //        {
 //            context.Database.Migrate();
 //        }
 
-//        // 2. Tablo oluþtuktan sonra eðer içinde hiç veri yoksa Mock Data ekle
+//        // 2. Tablo oluï¿½tuktan sonra eï¿½er iï¿½inde hiï¿½ veri yoksa Mock Data ekle
 //        if (!context.Geofences.Any())
 //        {
 //            var gf = new NetTopologySuite.Geometries.GeometryFactory(new NetTopologySuite.Geometries.PrecisionModel(), 4326);
@@ -177,13 +176,13 @@ using (var scope = app.Services.CreateScope())
 //            context.SaveChanges();
 
 //            var logger = services.GetRequiredService<ILogger<Program>>();
-//            logger.LogInformation("Mock Geofence verisi baþarýyla oluþturuldu.");
+//            logger.LogInformation("Mock Geofence verisi baï¿½arï¿½yla oluï¿½turuldu.");
 //        }
 //    }
 //    catch (Exception ex)
 //    {
 //        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "Veritabaný iþlemleri sýrasýnda bir hata oluþtu.");
+//        logger.LogError(ex, "Veritabanï¿½ iï¿½lemleri sï¿½rasï¿½nda bir hata oluï¿½tu.");
 //    }
 //}
 app.Run();
