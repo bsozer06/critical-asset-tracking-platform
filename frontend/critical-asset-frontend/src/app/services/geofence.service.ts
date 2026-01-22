@@ -11,8 +11,8 @@ export class GeofenceService {
   private _assetStates: Map<string, Map<string, AssetGeofenceState>> = new Map();
   private _violations: GeofenceViolation[] = [];
 
-  private geofencesSubject = new BehaviorSubject<Geofence[]>([]);
-  public geofences$ = this.geofencesSubject.asObservable();
+  private _geofencesSubject = new BehaviorSubject<Geofence[]>([]);
+  public geofences$ = this._geofencesSubject.asObservable();
   
   constructor() {}
 
@@ -111,7 +111,7 @@ export class GeofenceService {
    */
   addGeofence(geofence: Geofence): void {
     this._geofences.set(geofence.id, geofence);
-    this.refresh();
+    this._refresh();
   }
 
   /**
@@ -119,7 +119,7 @@ export class GeofenceService {
    */
   removeGeofence(geofenceId: string): void {
     this._geofences.delete(geofenceId);
-    this.refresh();
+    this._refresh();
   }
 
   /**
@@ -157,7 +157,7 @@ export class GeofenceService {
     this._violations = [];
   }
 
-  private refresh(): void {
-    this.geofencesSubject.next(this.getGeofences());
+  private _refresh(): void {
+    this._geofencesSubject.next(this.getGeofences());
   }
 }
