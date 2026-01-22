@@ -18,16 +18,16 @@ export class GeofencePanelComponent implements OnInit {
   isDrawing: boolean = false;
   isPanelVisible: boolean = false;
 
-  private geofenceService = inject(GeofenceService)
+  private _geofenceService = inject(GeofenceService)
 
-  private handler: Cesium.ScreenSpaceEventHandler | null = null;
-  private tempPoints: Cesium.Cartesian3[] = [];
-  private floatingPoint: Cesium.Entity | null = null;
-  private activeShapePoints: Cesium.Cartesian3[] = [];
-  private activeShape: Cesium.Entity | null = null;
+  private _handler: Cesium.ScreenSpaceEventHandler | null = null;
+  private _tempPoints: Cesium.Cartesian3[] = [];
+  private _floatingPoint: Cesium.Entity | null = null;
+  private _activeShapePoints: Cesium.Cartesian3[] = [];
+  private _activeShape: Cesium.Entity | null = null;
 
   ngOnInit(): void {
-    this.geofenceService.geofences$.subscribe(fences => {
+    this._geofenceService.geofences$.subscribe(fences => {
       this.renderAllGeofences(fences);
     });
     this.loadGeofences();
@@ -38,16 +38,16 @@ export class GeofencePanelComponent implements OnInit {
   }
 
   loadGeofences() {
-    this.geofences = this.geofenceService.getGeofences();
+    this.geofences = this._geofenceService.getGeofences();
   }
 
   toggleGeofenceEnabled(geofence: Geofence) {
     geofence.enabled = !geofence.enabled;
-    this.geofenceService.addGeofence(geofence);
+    this._geofenceService.addGeofence(geofence);
   }
 
   deleteGeofence(id: string) {
-    this.geofenceService.removeGeofence(id);
+    this._geofenceService.removeGeofence(id);
     this.loadGeofences();
     // TODO: Haritadan da silme event'i tetiklenecek
   }
@@ -64,30 +64,30 @@ export class GeofencePanelComponent implements OnInit {
 
   prepareDrawing() {
     const viewer = (window as any).viewer;
-    this.handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+    this._handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
 
     // Add a point
-    this.handler.setInputAction((event: any) => {
+    this._handler.setInputAction((event: any) => {
       const earthPosition = viewer.scene.pickPosition(event.position);
       if (Cesium.defined(earthPosition)) {
-        this.tempPoints.push(earthPosition);
-        if (this.tempPoints.length === 1) {
-          this.activeShape = this.createShape(this.tempPoints);
+        this._tempPoints.push(earthPosition);
+        if (this._tempPoints.length === 1) {
+          this._activeShape = this.createShape(this._tempPoints);
         }
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     // Dynamic drawing
-    this.handler.setInputAction((event: any) => {
+    this._handler.setInputAction((event: any) => {
       const newPosition = viewer.scene.pickPosition(event.endPosition);
-      if (Cesium.defined(newPosition) && this.tempPoints.length > 0) {
-        this.floatingPoint = newPosition;
+      if (Cesium.defined(newPosition) && this._tempPoints.length > 0) {
+        this._floatingPoint = newPosition;
         // Cesium Callback Property sayesinde poligon otomatik güncellenecek
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     // Finish drawing
-    this.handler.setInputAction(() => {
+    this._handler.setInputAction(() => {
       this.saveGeofence();
       this.terminateDrawing();
     }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -99,8 +99,8 @@ export class GeofencePanelComponent implements OnInit {
       polygon: {
         hierarchy: new Cesium.CallbackProperty(() => {
           // Mevcut noktalar + mouse'un o anki konumu
-          const positions = this.floatingPoint
-            ? [...points, this.floatingPoint]
+          const positions = this._floatingPoint
+            ? [...points, this._floatingPoint]
             : points;
           return new Cesium.PolygonHierarchy(positions as Cesium.Cartesian3[]);
         }, false),
@@ -113,9 +113,9 @@ export class GeofencePanelComponent implements OnInit {
   }
 
   saveGeofence() {
-    if (this.tempPoints.length < 3) return;
+    if (this._tempPoints.length < 3) return;
 
-    const geoPoints: GeoPoint[] = this.tempPoints.map(cartesian => {
+    const geoPoints: GeoPoint[] = this._tempPoints.map(cartesian => {
       const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
       return {
         latitude: Cesium.Math.toDegrees(cartographic.latitude),
@@ -133,20 +133,20 @@ export class GeofencePanelComponent implements OnInit {
       alertOnExit: true
     };
 
-    this.geofenceService.addGeofence(newFence);
-    this.geofences = this.geofenceService.getGeofences();
+    this._geofenceService.addGeofence(newFence);
+    this.geofences = this._geofenceService.getGeofences();
   }
 
   terminateDrawing() {
     const viewer = (window as any).viewer;
     this.isDrawing = false;
-    this.handler?.destroy();
-    this.handler = null;
-    this.tempPoints = [];
-    this.floatingPoint = null;
-    if (this.activeShape) {
-      viewer.entities.remove(this.activeShape);
-      this.activeShape = null;
+    this._handler?.destroy();
+    this._handler = null;
+    this._tempPoints = [];
+    this._floatingPoint = null;
+    if (this._activeShape) {
+      viewer.entities.remove(this._activeShape);
+      this._activeShape = null;
     }
   }
 

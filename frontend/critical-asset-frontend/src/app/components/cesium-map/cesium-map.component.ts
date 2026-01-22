@@ -45,8 +45,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   geofencePolylines = new Map<string, Cesium.Entity>();
 
   constructor(
-    private signalRService: SignalRService,
-    private geofenceService: GeofenceService
+    private _signalRService: SignalRService,
+    private _geofenceService: GeofenceService
   ) { }
 
   ngAfterViewInit(): void {
@@ -251,7 +251,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private _subscribeTelemetry(): void {
-    this.signalRService.telemetry$
+    this._signalRService.telemetry$
       .pipe(takeUntil(this._destroy$))
       .subscribe(pt => {
         if (!pt) return;
@@ -259,7 +259,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
         this.upsertEntity(pt);
 
         // Check geofence violations
-        const violations = this.geofenceService.checkGeofenceViolations(pt.assetId, pt);
+        const violations = this._geofenceService.checkGeofenceViolations(pt.assetId, pt);
         violations.forEach(violation => {
           this.violationDetected.emit(violation);
         });
