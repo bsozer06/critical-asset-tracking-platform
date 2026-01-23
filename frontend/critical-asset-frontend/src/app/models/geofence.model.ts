@@ -6,12 +6,26 @@ export interface GeoPoint {
 export interface Geofence {
   id: string;
   name: string;
-  polygon: GeoPoint[];
-  createdAt: Date;
-  enabled: boolean;
+  description: string;
+  boundary: {
+    type: string;
+    coordinates: number[][][];
+  };
   alertOnEntry: boolean;
   alertOnExit: boolean;
+  isActive: boolean;
+  polygonPoints?: GeoPoint[]; 
 }
+
+// export interface Geofence {
+//   id: string;
+//   name: string;
+//   polygon: GeoPoint[];
+//   createdAt: Date;
+//   enabled: boolean;
+//   alertOnEntry: boolean;
+//   alertOnExit: boolean;
+// }
 
 export interface GeofenceViolation {
   geofenceId: string;
