@@ -13,7 +13,7 @@ import * as Cesium from 'cesium';
   templateUrl: './geofence-panel.component.html',
   styleUrl: './geofence-panel.component.css',
 })
-export class GeofencePanelComponent implements OnInit {
+export class GeofencePanelComponent {
   // Service Injection
   private _geofenceService = inject(GeofenceService);
 
