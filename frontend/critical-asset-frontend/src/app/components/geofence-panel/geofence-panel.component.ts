@@ -94,6 +94,7 @@ export class GeofencePanelComponent implements OnInit {
     // Çift Tık: Bitir ve Kaydet
     this._handler.setInputAction(() => {
       this.saveGeofence();
+            this.terminateDrawing();
     }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   }
 
@@ -129,16 +130,27 @@ export class GeofencePanelComponent implements OnInit {
 
     // API Payload Hazırlama
     // Servisteki saveGeofence metodun boundary oluşturmayı zaten üstleniyor
-    const fencePayload: Partial<Geofence> = {
+    // const fencePayload: Partial<Geofence> = {
+    //   name: `Zone ${this.geofences().length + 1}`,
+    //   description: "User Defined Area",
+    //   isActive: true,
+    //   alertOnEntry: true,
+    //   alertOnExit: true,
+    //   boundary: {
+    //     type: "Polygon",
+    //     coordinates: [[ ...geoPoints.map(p => [p.longitude, p.latitude]), [geoPoints[0].longitude, geoPoints[0].latitude] ]]
+    //   }
+    // };
+    const fencePayload = {
       name: `Zone ${this.geofences().length + 1}`,
       description: "User Defined Area",
-      isActive: true,
       alertOnEntry: true,
       alertOnExit: true,
-      boundary: {
-        type: "Polygon",
-        coordinates: [[ ...geoPoints.map(p => [p.longitude, p.latitude]), [geoPoints[0].longitude, geoPoints[0].latitude] ]]
-      }
+      // Backend'in beklediği: List<CoordinateDto> { Latitude, Longitude }
+      coordinates: geoPoints.map(p => ({
+        latitude: p.latitude,
+        longitude: p.longitude
+      }))
     };
 
     this._geofenceService.saveGeofence(fencePayload).subscribe({

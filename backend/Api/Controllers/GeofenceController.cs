@@ -50,7 +50,8 @@ namespace CriticalAssetTracking.Api.Controllers
 
             await _repository.AddAsync(geofence);
 
-            return Ok(new { id = geofence.Id, message = "The virtual border has been successfully created." });
+            //return Ok(new { id = geofence.Id, message = "The virtual border has been successfully created." });
+            return Ok(geofence);
         }
 
         [HttpGet]
