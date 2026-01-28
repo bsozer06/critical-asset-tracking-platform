@@ -39,10 +39,6 @@ export class GeofencePanelComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Başlangıç yüklemesi servis constructor'ında loadGeofencesFromApi ile yapılıyor
-  }
-
   togglePanel() {
     this.isPanelVisible = !this.isPanelVisible;
   }
@@ -63,9 +59,13 @@ export class GeofencePanelComponent implements OnInit {
 
   // --- Çizim Mantığı (Cesium) ---
 
-  startNewDrawing() {
+  startNewDrawing(): void {
     this.isDrawing = !this.isDrawing;
-    this.isDrawing ? this.prepareDrawing() : this.terminateDrawing();
+    if (this.isDrawing) {
+      this.prepareDrawing();
+    } else {
+      this.terminateDrawing();
+    }
   }
 
   prepareDrawing() {
@@ -94,7 +94,7 @@ export class GeofencePanelComponent implements OnInit {
     // Çift Tık: Bitir ve Kaydet
     this._handler.setInputAction(() => {
       this.saveGeofence();
-            this.terminateDrawing();
+      this.terminateDrawing();
     }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
   }
 
