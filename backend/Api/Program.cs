@@ -28,6 +28,10 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.AddSignalR();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
+builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 builder.Services.Configure<RabbitMqSettings>(
     builder.Configuration.GetSection("RabbitMq"));
 
@@ -50,10 +54,7 @@ builder.Services.AddHealthChecks()
 
 //builder.Services.AddSingleton<ITelemetryProcessor, DummyTelemetryProcessor>();
 //builder.Services.AddScoped<ITelemetryProcessor, TelemetryProcessor>();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
-builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
-builder.Services.AddHostedService<TelemetryConsumerHostedService>();
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -71,13 +72,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors();
 
 app.UseHttpsRedirection();
 
 // Add Prometheus metrics endpoint
 app.UseMetricServer();
-
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -136,53 +136,4 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    try
-//    {
-//        var context = services.GetRequiredService<ApplicationDbContext>();
-
-//        // 1. �nce bekleyen migration'lar� uygula (Tablolar� olu�turur)
-//        if (context.Database.GetPendingMigrations().Any())
-//        {
-//            context.Database.Migrate();
-//        }
-
-//        // 2. Tablo olu�tuktan sonra e�er i�inde hi� veri yoksa Mock Data ekle
-//        if (!context.Geofences.Any())
-//        {
-//            var gf = new NetTopologySuite.Geometries.GeometryFactory(new NetTopologySuite.Geometries.PrecisionModel(), 4326);
-
-//            context.Geofences.Add(new Geofence
-//            {
-//                Id = Guid.NewGuid(),
-//                Name = "Ankara Test Region",
-//                Description = "Mock initial data for Simulator.",
-//                IsActive = true,
-//                AlertOnEntry = true,
-//                AlertOnExit = true,
-//                CreatedAtUtc = DateTime.UtcNow,
-//                Boundary = gf.CreatePolygon(new[]
-//                {
-//                    new NetTopologySuite.Geometries.Coordinate(32.7, 39.8),
-//                    new NetTopologySuite.Geometries.Coordinate(33.0, 39.8),
-//                    new NetTopologySuite.Geometries.Coordinate(33.0, 40.0),
-//                    new NetTopologySuite.Geometries.Coordinate(32.7, 40.0),
-//                    new NetTopologySuite.Geometries.Coordinate(32.7, 39.8)
-//                })
-//            });
-
-//            context.SaveChanges();
-
-//            var logger = services.GetRequiredService<ILogger<Program>>();
-//            logger.LogInformation("Mock Geofence verisi ba�ar�yla olu�turuldu.");
-//        }
-//    }
-//    catch (Exception ex)
-//    {
-//        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "Veritaban� i�lemleri s�ras�nda bir hata olu�tu.");
-//    }
-//}
 app.Run();

@@ -54,7 +54,8 @@ export class App implements OnInit {
         this.showSnackbar(err);
       }
     });
-    const url = environment.signalRHubUrl;
+    // const url = environment.signalRHubUrl;
+    const url = environment.signalRHubUrl;   // FOR TESTING PURPOSES ! todo REMOVE LATER
     this.signalR.startConnection(url).catch(err => {
       // Hata zaten lastError$ ile yakalanıyor
     });

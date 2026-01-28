@@ -15,8 +15,7 @@ namespace CriticalAssetTracking.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             var redisConnection = Environment.GetEnvironmentVariable("REDIS_URL")
-                          ?? configuration.GetConnectionString("RedisConnection")
-                          ?? "redis:6379";
+                          ?? configuration.GetConnectionString("RedisConnection");
 
             services.AddStackExchangeRedisCache(options =>
             {

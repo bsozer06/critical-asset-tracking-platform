@@ -30,7 +30,7 @@
     </button>
 
     <div class="table-viewport">
-      <div *ngFor="let gf of geofences" class="geofence-card" [class.disabled]="!gf.enabled">
+      <div *ngFor="let gf of geofences()" class="geofence-card" [class.disabled]="!gf.isActive">
         <div class="card-top" (click)="zoomToGeofence(gf)" style="cursor: pointer;" title="Zoom to Area">
           <span class="name">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -43,9 +43,9 @@
 
           <div class="toggles">
             <button class="icon-btn" (click)="toggleGeofenceEnabled(gf); $event.stopPropagation()"
-              [title]="gf.enabled ? 'Disable' : 'Enable'">
+              [title]="gf.isActive ? 'Disable' : 'Enable'">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                [attr.stroke]="gf.enabled ? '#64b5f6' : '#888'" stroke-width="2" stroke-linecap="round"
+                [attr.stroke]="gf.isActive ? '#64b5f6' : '#888'" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
                 <line x1="12" y1="2" x2="12" y2="12"></line>
@@ -63,8 +63,9 @@
         </div>
 
         <div class="card-info">
-          <small>Points: {{ gf.polygon.length }}</small>
-          <small>{{ gf.createdAt | date:'shortTime' }}</small>
+          <small>Points: {{ gf.polygonPoints?.length || 0 }}</small>
+
+          <small>{{ gf.description }}</small>
         </div>
       </div>
 
