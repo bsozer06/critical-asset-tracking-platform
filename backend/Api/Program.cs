@@ -28,6 +28,10 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.AddSignalR();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
+builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 builder.Services.Configure<RabbitMqSettings>(
     builder.Configuration.GetSection("RabbitMq"));
 
@@ -50,10 +54,7 @@ builder.Services.AddHealthChecks()
 
 //builder.Services.AddSingleton<ITelemetryProcessor, DummyTelemetryProcessor>();
 //builder.Services.AddScoped<ITelemetryProcessor, TelemetryProcessor>();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
-builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
-builder.Services.AddHostedService<TelemetryConsumerHostedService>();
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -62,15 +63,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.AddOpenApi();
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:4200") 
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
 
 var app = builder.Build();
 
@@ -80,13 +72,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseCors();
 
 app.UseHttpsRedirection();
 
 // Add Prometheus metrics endpoint
 app.UseMetricServer();
-
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -144,5 +135,5 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-app.UseCors(); 
+
 app.Run();
