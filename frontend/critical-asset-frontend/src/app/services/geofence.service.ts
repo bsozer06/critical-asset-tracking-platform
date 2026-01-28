@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, retry, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { 
   GeoPoint, Geofence, GeofenceViolation, AssetGeofenceState 
@@ -39,6 +39,7 @@ export class GeofenceService {
 
   loadGeofencesFromApi(): Observable<Geofence[]> {
     return this.http.get<Geofence[]>(environment.geofenceUrl).pipe(
+      retry({ count: 3, delay: 3000 }),
       tap(data => {
         const transformed = data.map(g => this.transformGeofence(g));
         this.geofences.set(transformed);
