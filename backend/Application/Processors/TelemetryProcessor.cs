@@ -56,7 +56,16 @@ namespace CriticalAssetTracking.Application.Processors
                     envelope.Message.Header.TimestampUtc
                 );
 
-                await _geofenceEngine.ProcessTelemetryAsync(message);
+                //await _geofenceEngine.ProcessTelemetryAsync(message);
+                _ = Task.Run(async () => {
+                    try
+                    {
+                        await _geofenceEngine.ProcessTelemetryAsync(message);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }, ct);
             }
             catch (Exception)
             {
