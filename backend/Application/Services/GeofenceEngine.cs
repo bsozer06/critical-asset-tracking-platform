@@ -29,11 +29,16 @@ namespace CriticalAssetTracking.Application.Services
         {
             var currentPoint = _geometryFactory.CreatePoint(new Coordinate(telemetry.Longitude, telemetry.Latitude));
 
-            // 2. PostGIS üzerinden "bu nokta şu an hangi poligonların içinde?" sorgusu (Infrastructure)
-            var currentlyInsideGeofences = await _geofenceRepository.GetIntersectingGeofencesAsync(currentPoint);
+            // 1. Redis'ten geofence listesini çek
+            var geofences = await _stateService.GetAllGeofencesAsync();
+
+            // 2. NetTopologySuite ile intersection kontrolü
+            var currentlyInsideGeofences = geofences
+                .Where(g => g.IsActive && g.Boundary != null && g.Boundary.Contains(currentPoint))
+                .ToList();
             var currentlyInsideIds = currentlyInsideGeofences.Select(g => g.Id).ToHashSet();
 
-            // 3. Redis üzerinden "bu varlık az önce hangi poligonların içindeydi?" sorgusu (Infrastructure)
+            // 3. Redis üzerinden "bu varlık az önce hangi poligonların içindeydi?" sorgusu
             var previouslyInsideIds = await _stateService.GetAssetCurrentGeofencesAsync(telemetry.AssetId);
 
             // --- KARAR MEKANİZMASI (Entry/Exit Detection) ---
@@ -57,7 +62,7 @@ namespace CriticalAssetTracking.Application.Services
             foreach (var geofenceId in exits)
             {
                 // Çıkış uyarısı aktif mi kontrolü için geofence detayına bakılabilir
-                var geofence = await _geofenceRepository.GetByIdAsync(geofenceId);
+                var geofence = geofences.FirstOrDefault(g => g.Id == geofenceId);
                 if (geofence != null && geofence.AlertOnExit)
                 {
                     await CreateViolationRecord(telemetry, geofenceId, "EXIT", currentPoint);

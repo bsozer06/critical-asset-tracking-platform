@@ -12,11 +12,13 @@ namespace CriticalAssetTracking.Api.Controllers
     public class GeofenceController : ControllerBase
     {
         private readonly IGeofenceRepository _repository;
+        private readonly IGeofenceStateService _stateService;
         private readonly GeometryFactory _geometryFactory;
 
-        public GeofenceController(IGeofenceRepository repository)
+        public GeofenceController(IGeofenceRepository repository, IGeofenceStateService stateService)
         {
             _repository = repository;
+            _stateService = stateService;
             _geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         }
 
@@ -49,17 +51,62 @@ namespace CriticalAssetTracking.Api.Controllers
             };
 
             await _repository.AddAsync(geofence);
+            // Repository'de değişiklik olunca Redis güncelle
+            await _stateService.AddOrUpdateGeofenceAsync(geofence);
 
-            //return Ok(new { id = geofence.Id, message = "The virtual border has been successfully created." });
             return Ok(geofence);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var geofences = await _repository.GetAllAsync();
-            // Not: Burada NTS Geometry'yi GeoJSON formatında dönmek için ek bir kütüphane gerekebilir
+            // Önce Redis'ten dene
+            var geofences = await _stateService.GetAllGeofencesAsync();
+            if (geofences == null || geofences.Count == 0)
+            {
+                // Redis boşsa repository'den çekip Redis'e yaz
+                geofences = await _repository.GetAllAsync();
+                await _stateService.SetAllGeofencesAsync(geofences);
+            }
             return Ok(geofences);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] CreateGeofenceRequestDto request)
+        {
+            var coordinates = request.Coordinates
+                .Select(c => new Coordinate(c.Longitude, c.Latitude))
+                .ToList();
+            if (coordinates.First() != coordinates.Last())
+            {
+                coordinates.Add(coordinates.First());
+            }
+            var polygon = _geometryFactory.CreatePolygon(coordinates.ToArray());
+
+            var geofence = new Geofence
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Boundary = polygon,
+                AlertOnEntry = request.AlertOnEntry,
+                AlertOnExit = request.AlertOnExit,
+                IsActive = true,
+                CreatedAtUtc = DateTime.UtcNow
+            };
+
+            // Basit bir update için önce silip sonra ekleyebiliriz (veya repository'de update metodu varsa onu kullanın)
+            await _repository.DeleteAsync(id);
+            await _repository.AddAsync(geofence);
+            await _stateService.AddOrUpdateGeofenceAsync(geofence);
+            return Ok(geofence);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _repository.DeleteAsync(id);
+            await _stateService.DeleteGeofenceAsync(id);
+            return NoContent();
         }
     }
 }
