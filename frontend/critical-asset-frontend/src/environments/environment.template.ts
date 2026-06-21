@@ -5,5 +5,5 @@ export const environment = {
   geofenceUrl: 'http://localhost:5073/api/geofence',
   geofenceUrl2: 'https://localhost:7201/api/geofence',
   cesiumBaseUrl: 'assets/cesium', // Angular will serve copied Cesium assets here
-  cesiumIonToken: '' // Put your Cesium Ion token here if you want basemaps
+  cesiumIonToken: 'PUT_YOUR_CESIUM_ION_TOKEN_HERE' // Get a token from https://cesium.com/ion/tokens
 };

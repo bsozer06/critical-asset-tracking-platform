@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-// import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import * as Cesium from 'cesium';
 import { SignalRService } from '../../services/signalr.service';
 import { GeofenceService } from '../../services/geofence.service';
@@ -231,23 +231,22 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   }
 
   private _initViewer(): void {
-    // configure baseUrl for static assets
-    // (Cesium as any).buildModuleUrl.setBaseUrl(environment.cesiumBaseUrl);
+    // World terrain is streamed from Cesium Ion, so the token MUST be set
+    // before the viewer is created — otherwise the terrain request 401s and
+    // Cesium silently falls back to the smooth ellipsoid.
+    if (environment.cesiumIonToken) {
+      Cesium.Ion.defaultAccessToken = environment.cesiumIonToken;
+    }
 
     this.viewer = new Cesium.Viewer(this.cesiumContainer.nativeElement, {
+      terrain: Cesium.Terrain.fromWorldTerrain(),
       timeline: false,
       animation: false,
-      baseLayerPicker: true,
-      shadows: false,
-      terrainProvider: new Cesium.EllipsoidTerrainProvider(),
-      skyAtmosphere: false,
+      baseLayerPicker: false,
+      sceneModePicker: false,
     });
 
-    (window as any).viewer = this.viewer
-    // // optionally set Ion token (if provided)
-    // if (environment.cesiumIonToken) {
-    //   Cesium.Ion.defaultAccessToken = environment.cesiumIonToken;
-    // }
+    (window as any).viewer = this.viewer;
   }
 
   private _subscribeTelemetry(): void {
