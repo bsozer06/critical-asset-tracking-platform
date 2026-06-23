@@ -4,6 +4,7 @@ using CriticalAssetTracking.Api.HealthChecks;
 using CriticalAssetTracking.Api.Hubs;
 using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
+using CriticalAssetTracking.Api.Adapters;
 using CriticalAssetTracking.Application;
 using CriticalAssetTracking.Infrastructure;
 using Prometheus;
@@ -31,6 +32,7 @@ builder.Services.AddSignalR();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddScoped<ITelemetryPublisher, SignalRTelemetryPublisher>();
+builder.Services.AddScoped<IViolationPublisher, SignalRViolationPublisher>();
 builder.Services.AddHostedService<TelemetryConsumerHostedService>();
 builder.Services.Configure<RabbitMqSettings>(
     builder.Configuration.GetSection("RabbitMq"));

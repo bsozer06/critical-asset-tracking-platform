@@ -11,16 +11,19 @@ namespace CriticalAssetTracking.Application.Services
         private readonly IGeofenceRepository _geofenceRepository;
         private readonly IGeofenceStateService _stateService;
         private readonly IViolationRepository _violationRepository;
+        private readonly IViolationPublisher _violationPublisher;
         private readonly GeometryFactory _geometryFactory;
 
         public GeofenceEngine(
             IGeofenceRepository geofenceRepository,
             IGeofenceStateService stateService,
-            IViolationRepository violationRepository)
+            IViolationRepository violationRepository,
+            IViolationPublisher violationPublisher)
         {
             _geofenceRepository = geofenceRepository;
             _stateService = stateService;
             _violationRepository = violationRepository;
+            _violationPublisher = violationPublisher;
 
             _geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         }
@@ -87,8 +90,13 @@ namespace CriticalAssetTracking.Application.Services
 
             await _violationRepository.AddAsync(violation);
 
-            // Not: Burada opsiyonel olarak bir SignalR servisini tetikleyip 
-            // tarayıcıya "Anlık Bildirim" gönderebiliriz.
+            var dto = new GeofenceViolationDto(
+                telemetry.AssetId,
+                geofenceId,
+                type,
+                telemetry.TimestampUtc
+            );
+            await _violationPublisher.PublishAsync(dto);
         }
     }
 }

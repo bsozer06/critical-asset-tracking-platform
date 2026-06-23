@@ -9,9 +9,8 @@
 
 	<div class="main-layout">
 		<div class="map-area" style="position:relative;">
-			<app-cesium-map 
-				(geofenceCreated)="onGeofenceCreated($event)"
-				(violationDetected)="onViolationDetected($event)">
+			<app-cesium-map
+				(geofenceCreated)="onGeofenceCreated($event)">
 			</app-cesium-map>
 			<!-- Floating Draw Geofence Button -->
 			<!-- <button *ngIf="!isDrawingGeofence" 

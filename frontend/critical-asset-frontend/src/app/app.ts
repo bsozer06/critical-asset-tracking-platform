@@ -54,11 +54,11 @@ export class App implements OnInit {
         this.showSnackbar(err);
       }
     });
-    // const url = environment.signalRHubUrl;
-    const url = environment.signalRHubUrl;   // FOR TESTING PURPOSES ! todo REMOVE LATER
-    this.signalR.startConnection(url).catch(err => {
-      // Hata zaten lastError$ ile yakalanıyor
+    this.signalR.violation$.subscribe(violation => {
+      if (violation) this.onViolationDetected(violation);
     });
+    const url = environment.signalRHubUrl;
+    this.signalR.startConnection(url).catch(_err => {});
   }
 
   onAssetSelected(asset: TelemetryPoint) {

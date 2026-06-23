@@ -3,12 +3,15 @@ import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { TelemetryPoint } from '../models/telemetry-point.model';
+import { GeofenceViolation } from '../models/geofence.model';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
 
   private _telemetrySubject = new BehaviorSubject<TelemetryPoint | null>(null);
   public telemetry$ = this._telemetrySubject.asObservable();
+  private _violationSubject = new BehaviorSubject<GeofenceViolation | null>(null);
+  public violation$ = this._violationSubject.asObservable();
   private _connectionStatusSubject = new BehaviorSubject<'connected' | 'disconnected' | 'reconnecting' | 'error'>('disconnected');
   public connectionStatus$ = this._connectionStatusSubject.asObservable();
   private _lastErrorSubject = new BehaviorSubject<string | null>(null);
@@ -27,6 +30,12 @@ export class SignalRService {
     this._hubConnection.on('telemetry-received', (data: any) => {
       this.ngZone.run(() => {
         this._telemetrySubject.next(data as TelemetryPoint);
+      });
+    });
+
+    this._hubConnection.on('violation-detected', (data: any) => {
+      this.ngZone.run(() => {
+        this._violationSubject.next(data as GeofenceViolation);
       });
     });
 

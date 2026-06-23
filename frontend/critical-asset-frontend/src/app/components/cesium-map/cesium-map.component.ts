@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, Output, Eve
 import { environment } from '../../../environments/environment';
 import * as Cesium from 'cesium';
 import { SignalRService } from '../../services/signalr.service';
-import { GeofenceService } from '../../services/geofence.service';
 import { CesiumViewerService } from '../../services/cesium-viewer.service';
 import { TelemetryPoint } from '../../models/telemetry-point.model';
 import { Geofence } from '../../models/geofence.model';
@@ -26,7 +25,6 @@ interface AssetState {
 export class CesiumMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cesiumContainer', { static: true }) cesiumContainer!: ElementRef<HTMLDivElement>;
   @Output() geofenceCreated = new EventEmitter<Geofence>();
-  @Output() violationDetected = new EventEmitter<any>();
 
   viewer?: Cesium.Viewer;
   trailsVisible = true;
@@ -38,7 +36,6 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private _signalRService: SignalRService,
-    private _geofenceService: GeofenceService,
     private _cesiumViewerService: CesiumViewerService
   ) { }
 
@@ -213,9 +210,6 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
         if (!pt) return;
 
         this.upsertEntity(pt);
-
-        const violations = this._geofenceService.checkGeofenceViolations(pt.assetId, pt);
-        violations.forEach(violation => this.violationDetected.emit(violation));
 
         if (!this._initialZoomDone && this._assets.size > 0) {
           this.zoomToFitAll();
