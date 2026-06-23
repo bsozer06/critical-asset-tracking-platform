@@ -173,3 +173,80 @@
 .header-main svg {
   margin-right: 4px;
 }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+}
+
+.modal-box {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.98) 0%, rgba(22, 33, 62, 0.98) 100%);
+    border: 1px solid rgba(255, 82, 82, 0.4);
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+
+    .modal-icon { margin-bottom: 14px; }
+
+    .modal-title {
+        color: #ffffff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 8px;
+    }
+
+    .modal-subtitle {
+        color: #aaaaaa;
+        font-size: 0.85rem;
+        margin: 0 0 22px;
+        strong { color: #64b5f6; }
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+}
+
+.btn-modal-cancel {
+    flex: 1;
+    padding: 9px 0;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: #cccccc;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover { background: rgba(255, 255, 255, 0.13); }
+}
+
+.btn-modal-delete {
+    flex: 1;
+    padding: 9px 0;
+    background: #d32f2f;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+
+    &:hover { background: #b71c1c; }
+}

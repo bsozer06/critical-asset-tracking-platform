@@ -20,6 +20,7 @@ export class GeofencePanelComponent {
 
   isDrawing = false;
   isPanelVisible = false;
+  geofenceToDelete: Geofence | null = null;
 
   public geofences: Signal<Geofence[]> = this._geofenceService.geofences;
 
@@ -40,12 +41,31 @@ export class GeofencePanelComponent {
   }
 
   toggleGeofenceEnabled(geofence: Geofence): void {
-    const updatePayload = { ...geofence, isActive: !geofence.isActive };
-    this._geofenceService.saveGeofence(updatePayload).subscribe();
+    this._geofenceService.toggleGeofenceActive(geofence.id, !geofence.isActive).subscribe();
   }
 
-  deleteGeofence(_id: string): void {
-    // this._geofenceService.removeGeofence(id);
+  openDeleteConfirm(geofence: Geofence): void {
+    this.geofenceToDelete = geofence;
+  }
+
+  cancelDelete(): void {
+    this.geofenceToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.geofenceToDelete) return;
+    const id = this.geofenceToDelete.id;
+    this._geofenceService.deleteGeofence(id).subscribe({
+      next: () => {
+        const viewer = this._cesiumViewerService.getViewer();
+        if (viewer) {
+          const entity = viewer.entities.getById(id);
+          if (entity) viewer.entities.remove(entity);
+        }
+        this.geofenceToDelete = null;
+      },
+      error: (err) => console.error('Delete failed:', err)
+    });
   }
 
   startNewDrawing(): void {

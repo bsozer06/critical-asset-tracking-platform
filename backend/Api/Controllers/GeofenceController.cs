@@ -101,6 +101,18 @@ namespace CriticalAssetTracking.Api.Controllers
             await _stateService.AddOrUpdateGeofenceAsync(geofence);
             return Ok(geofence);
         }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] PatchGeofenceRequestDto request)
+        {
+            var geofence = await _repository.GetByIdAsync(id);
+            if (geofence == null) return NotFound();
+
+            geofence.IsActive = request.IsActive;
+            await _repository.UpdateAsync(geofence);
+            await _stateService.AddOrUpdateGeofenceAsync(geofence);
+            return Ok(geofence);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

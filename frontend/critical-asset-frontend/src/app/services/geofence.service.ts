@@ -56,6 +56,25 @@ export class GeofenceService {
     );
   }
 
+  toggleGeofenceActive(id: string, isActive: boolean): Observable<Geofence> {
+    return this._http.patch<Geofence>(`${environment.geofenceUrl}/${id}`, { isActive }).pipe(
+      tap(updated => {
+        const transformed = this._transformGeofence(updated);
+        this.geofences.update(current =>
+          current.map(g => g.id === id ? transformed : g)
+        );
+      })
+    );
+  }
+
+  deleteGeofence(id: string): Observable<void> {
+    return this._http.delete<void>(`${environment.geofenceUrl}/${id}`).pipe(
+      tap(() => {
+        this.geofences.update(current => current.filter(g => g.id !== id));
+      })
+    );
+  }
+
   // --- Logic Methods ---
 
   /**
