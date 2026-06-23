@@ -8,6 +8,7 @@ import { Geofence } from '../../models/geofence.model';
 import { Subject, takeUntil } from 'rxjs';
 import { CesiumUtility } from '../../utilities/cesium.utility';
 import { CesiumHelper } from '../../helpers/cesium.helper';
+import { AssetType } from '../../enums/asset-type.enum';
 
 interface AssetState {
   entity: Cesium.Entity;
@@ -155,19 +156,26 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     if (!this.viewer) throw new Error('Cesium Viewer is not initialized');
 
     const id = pt.assetId;
+    const assetType = CesiumUtility.parseAssetType(pt.assetType);
+    const isGroundAsset = assetType === AssetType.LandVehicle || assetType === AssetType.Ship;
+
     return this.viewer.entities.add({
       id,
       position,
       orientation: new Cesium.ConstantProperty(orientation),
       model: {
-        uri: CesiumUtility.getModelUri(CesiumUtility.parseAssetType(pt.assetType)),
-        scale: 2,
-        minimumPixelSize: 64
+        uri: CesiumUtility.getModelUri(assetType),
+        scale: 1,
+        minimumPixelSize: 28,
+        maximumScale: isGroundAsset ? 5000 : 20000,
+        // Ground assets clamp to terrain surface — prevents position jumping as terrain tiles load at different resolutions
+        heightReference: isGroundAsset ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE,
       },
       polyline: {
         positions: new Cesium.CallbackProperty(() => this._assets.get(id)?.trail ?? [], false),
         width: 2,
-        material: CesiumUtility.getTrailColor(CesiumUtility.parseAssetType(pt.assetType)),
+        material: CesiumUtility.getTrailColor(assetType),
+        clampToGround: isGroundAsset,
         show: new Cesium.ConstantProperty(this.trailsVisible)
       },
       label: {
