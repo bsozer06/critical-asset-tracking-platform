@@ -22,5 +22,10 @@ namespace CriticalAssetTracking.Application.Metrics
         public static readonly Gauge ActiveSignalRConnections = global::Prometheus.Metrics
             .CreateGauge("catp_signalr_connections_active",
                 "Current number of active SignalR connections");
+
+        public static readonly Counter GeofenceProcessingFailures = global::Prometheus.Metrics
+            .CreateCounter("catp_geofence_processing_failures_total",
+                "Total number of geofence engine processing failures",
+                new[] { "asset_type" });
     }
 }
