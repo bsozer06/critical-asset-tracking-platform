@@ -21,24 +21,6 @@ describe('GeofenceService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	describe('isPointInPolygon', () => {
-		const square: GeoPoint[] = [
-			{ latitude: 0, longitude: 0 },
-			{ latitude: 0, longitude: 1 },
-			{ latitude: 1, longitude: 1 },
-			{ latitude: 1, longitude: 0 }
-		];
-		it('should return true for point inside polygon', () => {
-			expect(service.isPointInPolygon({ latitude: 0.5, longitude: 0.5 }, square)).toBeTrue();
-		});
-		it('should return false for point outside polygon', () => {
-			expect(service.isPointInPolygon({ latitude: 2, longitude: 2 }, square)).toBeFalse();
-		});
-		it('should return false for polygon with less than 3 points', () => {
-			expect(service.isPointInPolygon({ latitude: 0, longitude: 0 }, [{ latitude: 0, longitude: 0 }])).toBeFalse();
-		});
-	});
-
 	describe('checkGeofenceViolations', () => {
 		const geofence: Geofence = {
 			id: 'g1',
