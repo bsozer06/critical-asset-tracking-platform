@@ -52,5 +52,11 @@ namespace CriticalAssetTracking.Infrastructure.Persistance.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateAsync(Geofence geofence)
+        {
+            _context.Geofences.Update(geofence);
+            await _context.SaveChangesAsync();
+        }
     }
 }

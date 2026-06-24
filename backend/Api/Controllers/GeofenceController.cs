@@ -72,35 +72,42 @@ namespace CriticalAssetTracking.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] CreateGeofenceRequestDto request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGeofenceRequestDto request)
         {
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+
             var coordinates = request.Coordinates
                 .Select(c => new Coordinate(c.Longitude, c.Latitude))
                 .ToList();
             if (coordinates.First() != coordinates.Last())
-            {
                 coordinates.Add(coordinates.First());
-            }
+
             var polygon = _geometryFactory.CreatePolygon(coordinates.ToArray());
 
-            var geofence = new Geofence
-            {
-                Id = id,
-                Name = request.Name,
-                Description = request.Description,
-                Boundary = polygon,
-                AlertOnEntry = request.AlertOnEntry,
-                AlertOnExit = request.AlertOnExit,
-                IsActive = true,
-                CreatedAtUtc = DateTime.UtcNow
-            };
+            existing.Name = request.Name;
+            existing.Description = request.Description;
+            existing.Boundary = polygon;
+            existing.AlertOnEntry = request.AlertOnEntry;
+            existing.AlertOnExit = request.AlertOnExit;
+            existing.IsActive = request.IsActive;
 
-            // Basit bir update için önce silip sonra ekleyebiliriz (veya repository'de update metodu varsa onu kullanın)
-            await _repository.DeleteAsync(id);
-            await _repository.AddAsync(geofence);
+            await _repository.UpdateAsync(existing);
+            await _stateService.AddOrUpdateGeofenceAsync(existing);
+            return Ok(existing);
+        }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] PatchGeofenceRequestDto request)
+        {
+            var geofence = await _repository.GetByIdAsync(id);
+            if (geofence == null) return NotFound();
+
+            geofence.IsActive = request.IsActive;
+            await _repository.UpdateAsync(geofence);
             await _stateService.AddOrUpdateGeofenceAsync(geofence);
             return Ok(geofence);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

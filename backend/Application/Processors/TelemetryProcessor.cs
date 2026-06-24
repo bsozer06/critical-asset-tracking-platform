@@ -4,6 +4,7 @@ using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Application.Metrics;
 using CriticalAssetTracking.Application.Services;
 using CriticalAssetTracking.Domain.Models;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace CriticalAssetTracking.Application.Processors
@@ -12,11 +13,16 @@ namespace CriticalAssetTracking.Application.Processors
     {
         private readonly ITelemetryPublisher _publisher;
         private readonly IGeofenceEngine _geofenceEngine;
+        private readonly ILogger<TelemetryProcessor> _logger;
 
-        public TelemetryProcessor(ITelemetryPublisher publisher, IGeofenceEngine geofenceEngine)
+        public TelemetryProcessor(
+            ITelemetryPublisher publisher,
+            IGeofenceEngine geofenceEngine,
+            ILogger<TelemetryProcessor> logger)
         {
             _publisher = publisher;
             _geofenceEngine = geofenceEngine;
+            _logger = logger;
         }
 
         public async Task ProcessAsync(
@@ -64,6 +70,9 @@ namespace CriticalAssetTracking.Application.Processors
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError(ex, "GeofenceEngine failed for asset {AssetId} ({AssetType})",
+                            message.AssetId, assetType);
+                        TelemetryMetrics.GeofenceProcessingFailures.Labels(assetType).Inc();
                     }
                 }, ct);
             }

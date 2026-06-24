@@ -32,12 +32,5 @@ export interface GeofenceViolation {
   assetId: string;
   violationType: 'ENTRY' | 'EXIT';
   timestamp: Date;
-  location: GeoPoint;
-}
-
-export interface AssetGeofenceState {
-  assetId: string;
-  geofenceId: string;
-  isInside: boolean;
-  lastUpdate: Date;
+  location?: GeoPoint;
 }

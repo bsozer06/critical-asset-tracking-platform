@@ -10,5 +10,6 @@ namespace CriticalAssetTracking.Application.Interfaces
         Task<Geofence> GetByIdAsync(Guid id);
         Task<List<Geofence>> GetAllAsync();
         Task DeleteAsync(Guid id);
+        Task UpdateAsync(Geofence geofence);
     }
 }

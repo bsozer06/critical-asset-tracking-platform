@@ -21,12 +21,12 @@
         "HeadingDegrees": 90.0
       },
       "LandVehicle": {
-        "AltitudeMeters": 0,
+        "AltitudeMeters": 1100,
         "SpeedMetersPerSecond": 25,
         "HeadingDegrees": 90.0
       },
       "Drone": {
-        "AltitudeMeters": 500,
+        "AltitudeMeters": 1600,
         "SpeedMetersPerSecond": 20,
         "HeadingDegrees": 0.0
       },
