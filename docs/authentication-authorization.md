@@ -267,7 +267,7 @@ curl -s -c cookies.txt -X POST http://localhost:5073/api/auth/login \
 curl -X POST http://localhost:5073/api/auth/register \
   -H "Authorization: Bearer <accessToken>" \
   -H "Content-Type: application/json" \
-  -d '{"email":"operator@catp.local","password":"Op@123!","role":"Operator"}'
+  -d '{"email":"operator@catp.local","password":"Op@12345!","role":"Operator"}'
 ```
 
 ---

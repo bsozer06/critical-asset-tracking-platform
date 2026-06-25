@@ -49,5 +49,31 @@ public static class AdminSeeder
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
+
+        var operatorEmail = configuration["Auth:DefaultOperatorEmail"] ?? "operator@catp.local";
+        var operatorPassword = configuration["Auth:DefaultOperatorPassword"]
+            ?? throw new InvalidOperationException("Auth:DefaultOperatorPassword is not configured.");
+
+        if (await userManager.FindByEmailAsync(operatorEmail) is null)
+        {
+            var operatorUser = new ApplicationUser
+            {
+                UserName = operatorEmail,
+                Email = operatorEmail,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(operatorUser, operatorPassword);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(operatorUser, "Operator");
+                logger.LogInformation("Default operator user seeded: {Email}", operatorEmail);
+            }
+            else
+            {
+                logger.LogError("Failed to seed operator user: {Errors}",
+                    string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
     }
 }
