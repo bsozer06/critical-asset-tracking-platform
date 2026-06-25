@@ -34,6 +34,7 @@ export const authInterceptor: HttpInterceptorFn = (
 };
 
 function addToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+// eslint-disable-next-line @typescript-eslint/naming-convention
   return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
 }
 

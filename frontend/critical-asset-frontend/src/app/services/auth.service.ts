@@ -17,7 +17,7 @@ export interface CurrentUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly authUrl = environment.authUrl;
+  private readonly _authUrl = environment.authUrl;
   private _accessToken: string | null = null;
   private _currentUser$ = new BehaviorSubject<CurrentUser | null>(null);
 
@@ -28,26 +28,26 @@ export class AuthService {
 
   login(email: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.authUrl}/login`, { email, password }, { withCredentials: true })
-      .pipe(tap(res => this.setSession(res)));
+      .post<AuthResponse>(`${this._authUrl}/login`, { email, password }, { withCredentials: true })
+      .pipe(tap(res => this._setSession(res)));
   }
 
   register(email: string, password: string, role: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.authUrl}/register`, { email, password, role }, { withCredentials: true })
-      .pipe(tap(res => this.setSession(res)));
+      .post<AuthResponse>(`${this._authUrl}/register`, { email, password, role }, { withCredentials: true })
+      .pipe(tap(res => this._setSession(res)));
   }
 
   refresh(): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.authUrl}/refresh`, {}, { withCredentials: true })
-      .pipe(tap(res => this.setSession(res)));
+      .post<AuthResponse>(`${this._authUrl}/refresh`, {}, { withCredentials: true })
+      .pipe(tap(res => this._setSession(res)));
   }
 
   logout(): Observable<void> {
     return this.http
-      .post<void>(`${this.authUrl}/logout`, {}, { withCredentials: true })
-      .pipe(tap(() => this.clearSession()));
+      .post<void>(`${this._authUrl}/logout`, {}, { withCredentials: true })
+      .pipe(tap(() => this._clearSession()));
   }
 
   tryRestoreSession(): Observable<AuthResponse> {
@@ -62,12 +62,12 @@ export class AuthService {
     return this._currentUser$.value?.role === 'Admin';
   }
 
-  private setSession(res: AuthResponse): void {
+  private _setSession(res: AuthResponse): void {
     this._accessToken = res.accessToken;
     this._currentUser$.next({ email: res.email, role: res.role });
   }
 
-  private clearSession(): void {
+  private _clearSession(): void {
     this._accessToken = null;
     this._currentUser$.next(null);
   }
