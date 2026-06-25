@@ -1,3 +1,5 @@
+@let isAdmin = (isAdmin$ | async) === true;
+
 <button type="button" class="panel-toggle-btn shadow" (click)="togglePanel()" [class.active]="isPanelVisible"
   title="Open Geofence Control">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -25,13 +27,15 @@
     </div>
 
     <div class="panel-body">
-      <button type="button" class="btn btn-draw-main"
-        [class.btn-primary]="!isDrawing()"
-        [class.btn-danger]="isDrawing()"
-        (click)="startNewDrawing()">
-        <i class="fas" [class.fa-plus]="!isDrawing()" [class.fa-times]="isDrawing()"></i>
-        {{ isDrawing() ? 'Cancel Drawing' : 'Create New Area' }}
-      </button>
+      @if (isAdmin) {
+        <button type="button" class="btn btn-draw-main"
+          [class.btn-primary]="!isDrawing()"
+          [class.btn-danger]="isDrawing()"
+          (click)="startNewDrawing()">
+          <i class="fas" [class.fa-plus]="!isDrawing()" [class.fa-times]="isDrawing()"></i>
+          {{ isDrawing() ? 'Cancel Drawing' : 'Create New Area' }}
+        </button>
+      }
 
       <div class="table-viewport">
         @for (gf of geofences(); track gf.id) {
@@ -46,27 +50,29 @@
                 {{ gf.name }}
               </span>
 
-              <div class="toggles">
-                <button type="button" class="icon-btn"
-                  (click)="toggleGeofenceEnabled(gf); $event.stopPropagation()"
-                  [title]="gf.isActive ? 'Disable' : 'Enable'">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    [attr.stroke]="gf.isActive ? '#64b5f6' : '#888'" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                    <line x1="12" y1="2" x2="12" y2="12"></line>
-                  </svg>
-                </button>
+              @if (isAdmin) {
+                <div class="toggles">
+                  <button type="button" class="icon-btn"
+                    (click)="toggleGeofenceEnabled(gf); $event.stopPropagation()"
+                    [title]="gf.isActive ? 'Disable' : 'Enable'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      [attr.stroke]="gf.isActive ? '#64b5f6' : '#888'" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                      <line x1="12" y1="2" x2="12" y2="12"></line>
+                    </svg>
+                  </button>
 
-                <button type="button" class="icon-btn"
-                  (click)="openDeleteConfirm(gf); $event.stopPropagation()" title="Delete">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
-              </div>
+                  <button type="button" class="icon-btn"
+                    (click)="openDeleteConfirm(gf); $event.stopPropagation()" title="Delete">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              }
             </div>
 
             <div class="card-info">
@@ -93,7 +99,7 @@
   </div>
 }
 
-@if (geofenceToDelete) {
+@if (isAdmin && geofenceToDelete) {
   <div class="modal-overlay">
     <div class="modal-box">
       <div class="modal-icon">

@@ -1,0 +1,84 @@
+<div class="login-container">
+  <div class="bg-grid"></div>
+
+  <div class="login-card">
+    <div class="brand-header">
+      <div class="brand-icon">
+        <mat-icon>track_changes</mat-icon>
+      </div>
+      <h1 class="login-title">Critical Asset Tracking</h1>
+      <p class="login-subtitle">Sign in to access the platform</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email address</mat-label>
+        <mat-icon matPrefix class="field-icon">alternate_email</mat-icon>
+        <input matInput type="email" formControlName="email" autocomplete="email" />
+        @if (form.get('email')?.hasError('required')) {
+          <mat-error>Email is required.</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Enter a valid email.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <mat-icon matPrefix class="field-icon">lock_outline</mat-icon>
+        <input matInput [type]="showPassword ? 'text' : 'password'"
+               formControlName="password" autocomplete="current-password" />
+        <button mat-icon-button matSuffix type="button"
+                (click)="togglePassword()" [attr.aria-label]="'Toggle password visibility'">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.hasError('required')) {
+          <mat-error>Password is required.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (error) {
+        <div class="error-message">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <button
+        mat-flat-button
+        type="submit"
+        class="full-width login-button"
+        [disabled]="form.invalid || loading">
+        @if (loading) {
+          <mat-spinner diameter="20" class="spinner"></mat-spinner>
+        } @else {
+          <ng-container>
+            <mat-icon class="btn-icon">login</mat-icon>
+            Sign In
+          </ng-container>
+        }
+      </button>
+    </form>
+
+    <p class="platform-badge">
+      <mat-icon class="badge-icon">shield</mat-icon>
+      Secure · Real-time · 3D Visualization
+    </p>
+
+    <div class="demo-hint">
+      <mat-icon class="demo-icon">info_outline</mat-icon>
+      <div class="demo-credentials">
+        <span class="demo-label">Admin:</span>
+        <span class="demo-value">admin&#64;catp.local</span>
+        <span class="demo-sep">/</span>
+        <span class="demo-value">Admin@123!</span>
+      </div>
+      <div class="demo-credentials">
+        <span class="demo-label">Operator:</span>
+        <span class="demo-value">operator&#64;catp.local</span>
+        <span class="demo-sep">/</span>
+        <span class="demo-value">Op@12345!</span>
+      </div>
+    </div>
+  </div>
+</div>

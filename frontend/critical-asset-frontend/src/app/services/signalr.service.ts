@@ -1,9 +1,9 @@
-
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { TelemetryPoint } from '../models/telemetry-point.model';
 import { GeofenceViolation } from '../models/geofence.model';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
@@ -18,12 +18,14 @@ export class SignalRService {
   public lastError$ = this._lastErrorSubject.asObservable();
   private _hubConnection!: signalR.HubConnection;
 
-  constructor(private ngZone: NgZone) { }
-
+  constructor(private ngZone: NgZone, private authService: AuthService) { }
 
   public async startConnection(hubUrl: string) {
     this._hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(hubUrl) // e.g. http://localhost:5000/hubs/telemetry
+      .withUrl(hubUrl, {
+        // SignalR uses accessTokenFactory for WebSocket; the token is sent as ?access_token= query param
+        accessTokenFactory: () => this.authService.getAccessToken() ?? ''
+      })
       .withAutomaticReconnect()
       .build();
 

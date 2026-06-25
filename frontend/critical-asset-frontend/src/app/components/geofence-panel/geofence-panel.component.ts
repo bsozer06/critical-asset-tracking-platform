@@ -1,8 +1,10 @@
 import { Component, inject } from '@angular/core';
+import { map } from 'rxjs';
 import { Geofence } from '../../models/geofence.model';
 import { GeofenceService } from '../../services/geofence.service';
 import { GeofenceDrawingService } from '../../services/geofence-drawing.service';
 import { GeofenceRendererService } from '../../services/geofence-renderer.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 
@@ -17,6 +19,8 @@ export class GeofencePanelComponent {
   private _geofenceService = inject(GeofenceService);
   private _drawingService = inject(GeofenceDrawingService);
   private _rendererService = inject(GeofenceRendererService);
+  private _authService = inject(AuthService);
+  readonly isAdmin$ = this._authService.currentUser$.pipe(map(u => u?.role === 'Admin'));
 
   isPanelVisible = false;
   geofenceToDelete: Geofence | null = null;
