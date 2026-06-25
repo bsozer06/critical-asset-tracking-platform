@@ -1,7 +1,8 @@
-
-import { Component, OnInit, ViewChild, signal } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { SignalRService } from './services/signalr.service';
+import { AuthService, CurrentUser } from './services/auth.service';
 import { environment } from '../environments/environment';
 import { CesiumMapComponent } from "./components/cesium-map/cesium-map.component";
 import { ConnectionStatusBadgeComponent } from './components/connection-status-badge/connection-status-badge.component';
@@ -17,7 +18,6 @@ import { GeofencePanelComponent } from "./components/geofence-panel/geofence-pan
     CommonModule,
     CesiumMapComponent,
     ConnectionStatusBadgeComponent,
-    NgIf,
     TelemetryPanelComponent,
     GeofenceAlertComponent,
     GeofencePanelComponent
@@ -31,20 +31,28 @@ export class App implements OnInit {
 
   connectionStatus: 'connected' | 'disconnected' | 'reconnecting' | 'error' = 'disconnected';
   lastError: string | null = null;
+  currentUser: CurrentUser | null = null;
 
   snackbarVisible = false;
   snackbarMessage = '';
   snackbarTimeout: any;
 
-  // Geofence properties
   activeViolations: GeofenceViolation[] = [];
   showGeofenceAlert = false;
   isDrawingGeofence = false;
   geofences: Geofence[] = [];
 
-  constructor(private signalR: SignalRService) { }
+  constructor(
+    private signalR: SignalRService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+
     this.signalR.connectionStatus$.subscribe(status => {
       this.connectionStatus = status;
     });
@@ -57,58 +65,42 @@ export class App implements OnInit {
     this.signalR.violation$.subscribe(violation => {
       if (violation) this.onViolationDetected(violation);
     });
-    const url = environment.signalRHubUrl;
-    this.signalR.startConnection(url).catch(_err => {});
+
+    // Only start SignalR after authentication is confirmed
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) {
+        this.signalR.startConnection(environment.signalRHubUrl).catch(_err => {});
+      } else {
+        this.signalR.stopConnection();
+      }
+    });
+  }
+
+  onLogout(): void {
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
+    });
   }
 
   onAssetSelected(asset: TelemetryPoint) {
-    // Zoom to the selected asset on the map
     if (this.cesiumMapComponent) {
       this.cesiumMapComponent.zoomToAsset(asset.assetId);
     }
   }
 
-  /**
-   * Start drawing a new geofence
-   */
-  // startDrawingGeofence() {
-  //   if (this.cesiumMapComponent) {
-  //     this.isDrawingGeofence = true;
-  //     this.cesiumMapComponent.startDrawingGeofence();
-  //   }
-  // }
-
-  // /**
-  //  * Cancel current geofence drawing
-  //  */
-  // cancelGeofenceDrawing() {
-  //   if (this.cesiumMapComponent) {
-  //     this.cesiumMapComponent.cancelDrawing();
-  //     this.isDrawingGeofence = false;
-  //   }
-  // }
-
-  /**
-   * Handle new geofence created
-   */
   onGeofenceCreated(geofence: Geofence) {
     this.geofences.push(geofence);
     this.isDrawingGeofence = false;
     this.showSnackbar(`Geofence '${geofence.name}' created successfully`);
   }
 
-  /**
-   * Handle geofence violation detected
-   */
   onViolationDetected(violation: GeofenceViolation) {
-    // Add to active violations
     this.activeViolations.push(violation);
     this.showGeofenceAlert = true;
 
-    // Play alert sound if available
     this._playAlertSound();
 
-    // Auto-remove after 15 seconds
     setTimeout(() => {
       const index = this.activeViolations.indexOf(violation);
       if (index > -1) {
@@ -117,16 +109,12 @@ export class App implements OnInit {
     }, 15000);
   }
 
-  /**
-   * Handle alert dismissed
-   */
   onAlertDismissed() {
     this.showGeofenceAlert = false;
     this.activeViolations = [];
   }
 
   private _playAlertSound() {
-    // Create a simple beep sound
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gain = audioContext.createGain();

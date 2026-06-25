@@ -1,6 +1,7 @@
 ﻿using CriticalAssetTracking.Application.Dtos;
 using CriticalAssetTracking.Application.Interfaces;
 using CriticalAssetTracking.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
@@ -9,6 +10,7 @@ namespace CriticalAssetTracking.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GeofenceController : ControllerBase
     {
         private readonly IGeofenceRepository _repository;
@@ -23,6 +25,7 @@ namespace CriticalAssetTracking.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateGeofenceRequestDto request)
         {
             var coordinates = request.Coordinates
@@ -72,6 +75,7 @@ namespace CriticalAssetTracking.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGeofenceRequestDto request)
         {
             var existing = await _repository.GetByIdAsync(id);
@@ -97,6 +101,7 @@ namespace CriticalAssetTracking.Api.Controllers
             return Ok(existing);
         }
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Patch(Guid id, [FromBody] PatchGeofenceRequestDto request)
         {
             var geofence = await _repository.GetByIdAsync(id);
@@ -109,6 +114,7 @@ namespace CriticalAssetTracking.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _repository.DeleteAsync(id);

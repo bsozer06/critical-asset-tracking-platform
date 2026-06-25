@@ -1,8 +1,10 @@
 ﻿using CriticalAssetTracking.Application.Metrics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CriticalAssetTracking.Api.Hubs
 {
+    [Authorize]
     public class TelemetryHub : Hub
     {
         public override async Task OnConnectedAsync()

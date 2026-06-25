@@ -4,14 +4,14 @@ using CriticalAssetTracking.Api.HealthChecks;
 using CriticalAssetTracking.Api.Hubs;
 using CriticalAssetTracking.Api.Settings;
 using CriticalAssetTracking.Application.Interfaces;
-using CriticalAssetTracking.Api.Adapters;
 using CriticalAssetTracking.Application;
 using CriticalAssetTracking.Infrastructure;
+using CriticalAssetTracking.Infrastructure.Auth;
+using CriticalAssetTracking.Infrastructure.Persistance.Repositories;
+using CriticalAssetTracking.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using RabbitMQ.Client;
-using CriticalAssetTracking.Infrastructure.Persistance.Repositories;
-using Microsoft.EntityFrameworkCore;
-using CriticalAssetTracking.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,31 +80,29 @@ app.UseHttpsRedirection();
 // Add Prometheus metrics endpoint
 app.UseMetricServer();
 app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapHub<TelemetryHub>("/hubs/telemetry");
 
-// Program.cs
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     var context = services.GetRequiredService<ApplicationDbContext>();
 
-    // Postgres'in aya�a kalkmas� i�in 30 saniye boyunca deneme yapacak
     int retryCount = 0;
     while (retryCount < 5)
     {
         try
         {
-            logger.LogInformation("Veritaban�na ba�lan�l�yor ve migration uygulan�yor... (Deneme: {Count})", retryCount + 1);
+            logger.LogInformation("Connecting to database and applying migrations... (Attempt: {Count})", retryCount + 1);
 
             context.Database.Migrate();
-            // context.Database.EnsureCreated();
 
-            // Seed Data
+            // Seed geofence data
             if (!context.Geofences.Any())
             {
                 var gf = new NetTopologySuite.Geometries.GeometryFactory(new NetTopologySuite.Geometries.PrecisionModel(), 4326);
@@ -124,16 +122,19 @@ using (var scope = app.Services.CreateScope())
                     })
                 });
                 context.SaveChanges();
-                logger.LogInformation("Seed verisi basariyla eklendi.");
+                logger.LogInformation("Geofence seed data added.");
             }
 
-            break; // Ba�ar�l�ysa d�ng�den ��k
+            // Seed admin user and roles
+            await AdminSeeder.SeedAsync(services, app.Configuration);
+
+            break;
         }
         catch (Exception ex)
         {
             retryCount++;
-            logger.LogWarning("Veritaban� hen�z haz�r de�il, bekleniyor... (Hata: {Message})", ex.Message);
-            Thread.Sleep(5000); // 5 saniye bekle ve tekrar dene
+            logger.LogWarning("Database not ready, retrying... (Error: {Message})", ex.Message);
+            Thread.Sleep(5000);
         }
     }
 }

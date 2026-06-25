@@ -4,6 +4,16 @@
 			<connection-status-badge [status]="connectionStatus"></connection-status-badge>
 			<span style="font-weight: bold; font-size: 18px;">Critical Asset Tracking Platform</span>
 		</div>
+		<div style="display: flex; align-items: center; gap: 16px;">
+			@if (currentUser) {
+				<span style="font-size: 13px; color: #aaa;">
+					{{ currentUser.email }} &nbsp;<span style="background:#444; padding: 2px 8px; border-radius: 4px; font-size: 11px;">{{ currentUser.role }}</span>
+				</span>
+				<button (click)="onLogout()" style="background: #c62828; color: #fff; border: none; border-radius: 4px; padding: 6px 14px; cursor: pointer; font-size: 13px;">
+					Sign Out
+				</button>
+			}
+		</div>
 	</div>
 
 	<div class="main-layout">
@@ -18,17 +28,20 @@
 	</div>
 
 	<!-- Geofence Alert -->
-	<app-geofence-alert 
-		*ngIf="showGeofenceAlert"
-		[violations]="activeViolations"
-		[autoHideDuration]="15000"
-		(dismissed)="onAlertDismissed()">
-	</app-geofence-alert>
+	@if (showGeofenceAlert) {
+		<app-geofence-alert
+			[violations]="activeViolations"
+			[autoHideDuration]="15000"
+			(dismissed)="onAlertDismissed()">
+		</app-geofence-alert>
+	}
 
 	<app-geofence-panel></app-geofence-panel>
 
 	<!-- Snackbar -->
-	<div *ngIf="snackbarVisible" style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-		{{ snackbarMessage }}
-	</div>
+	@if (snackbarVisible) {
+		<div style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+			{{ snackbarMessage }}
+		</div>
+	}
 </div>
