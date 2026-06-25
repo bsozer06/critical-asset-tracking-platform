@@ -1,14 +1,16 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, retry, tap } from 'rxjs';
+import { EMPTY, Observable, retry, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { GeoPoint, Geofence } from '../models/geofence.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeofenceService {
   private _http = inject(HttpClient);
+  private _authService = inject(AuthService);
 
   public geofences = signal<Geofence[]>([]);
 
@@ -19,7 +21,17 @@ export class GeofenceService {
   });
 
   constructor() {
-    this.loadGeofencesFromApi().subscribe();
+    this._authService.currentUser$.pipe(
+      switchMap(user => {
+        if (!user) {
+          this.geofences.set([]);
+          return EMPTY;
+        }
+        return this.loadGeofencesFromApi();
+      })
+    ).subscribe({
+      error: err => console.error('Failed to load geofences:', err)
+    });
   }
 
   loadGeofencesFromApi(): Observable<Geofence[]> {
