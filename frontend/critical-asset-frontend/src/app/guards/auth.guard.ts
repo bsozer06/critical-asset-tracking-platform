@@ -1,15 +1,21 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map, take } from 'rxjs/operators';
+import { map, catchError, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.isAuthenticated$.pipe(
-    take(1),
-    map(isAuth => isAuth || router.createUrlTree(['/login']))
+  // Already authenticated in this session — allow immediately
+  if (authService.getAccessToken()) {
+    return true;
+  }
+
+  // Try to restore session from the HttpOnly refresh-token cookie
+  return authService.tryRestoreSession().pipe(
+    map(() => true),
+    catchError(() => of(router.createUrlTree(['/login'])))
   );
 };
 
@@ -18,7 +24,6 @@ export const adminGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   return authService.currentUser$.pipe(
-    take(1),
     map(user => (user?.role === 'Admin') || router.createUrlTree(['/']))
   );
 };

@@ -1,0 +1,94 @@
+/* Main two-column layout: map left, panel right */
+.app-root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.main-layout {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.map-area {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 100%;
+}
+
+.topbar {
+    height: 42px;
+    box-sizing: border-box;
+}
+
+.panel-area {
+    width: 520px;
+    max-width: 100vw;
+    background: #fff;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+    z-index: 10;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 0.96rem;
+}
+
+.fab-geofence-btn {
+    position: absolute;
+    bottom: 54px;
+    right: 32px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #27dd45 60%, #1678c9 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 16px rgba(33,150,243,0.18), 0 1.5px 4px rgba(76,175,80,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 20;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    outline: none;
+}
+.fab-geofence-btn:hover {
+    background: linear-gradient(135deg, #388E3C 60%, #1976D2 100%);
+    box-shadow: 0 8px 24px rgba(33,150,243,0.28), 0 2px 8px rgba(76,175,80,0.28);
+    transform: scale(1.08);
+}
+.fab-cancel {
+    background: linear-gradient(135deg, #f44336 60%, #ff9800 100%);
+}
+.fab-cancel:hover {
+    background: linear-gradient(135deg, #b71c1c 60%, #ff5722 100%);
+}
+
+.geofence-count {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .panel-area {
+        width: 100vw;
+        min-width: 0;
+    }
+
+    .geofence-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
