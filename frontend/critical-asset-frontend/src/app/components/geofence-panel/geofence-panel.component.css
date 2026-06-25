@@ -168,7 +168,7 @@
 /* ── Toggle button (overlaid on map) ── */
 .panel-toggle-btn {
     position: absolute;
-    top: 64px;
+    top: 70px;
     left: 140px;
     z-index: 30;
     display: flex;
