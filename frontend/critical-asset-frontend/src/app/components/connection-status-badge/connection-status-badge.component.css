@@ -1,61 +1,108 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 6px 14px;
+  gap: 8px;
+  padding: 5px 12px 5px 10px;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  margin-right: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border: 1px solid transparent;
+  backdrop-filter: blur(6px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  letter-spacing: 0.3px;
 }
 
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.status-text {
+  line-height: 1;
+}
+
+/* ── Connected ── */
 .connected {
-  background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+  color: var(--success);
+  background: rgba(45, 211, 111, 0.10);
+  border-color: rgba(45, 211, 111, 0.35);
+}
+
+.connected .status-dot {
+  animation: dot-pulse-success 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .connected:hover {
-  box-shadow: 0 4px 12px rgba(67, 160, 71, 0.3);
-  transform: translateY(-1px);
+  background: rgba(45, 211, 111, 0.16);
+  border-color: rgba(45, 211, 111, 0.55);
 }
 
+/* ── Disconnected ── */
 .disconnected {
-  background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+  color: var(--danger);
+  background: rgba(255, 71, 87, 0.10);
+  border-color: rgba(255, 71, 87, 0.35);
+}
+
+.disconnected .status-dot {
+  box-shadow: 0 0 6px rgba(255, 71, 87, 0.7);
 }
 
 .disconnected:hover {
-  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
-  transform: translateY(-1px);
+  background: rgba(255, 71, 87, 0.16);
+  border-color: rgba(255, 71, 87, 0.55);
 }
 
+/* ── Reconnecting ── */
 .reconnecting {
-  background: linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
-  color: #1a237e;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  color: var(--warning);
+  background: rgba(255, 211, 42, 0.10);
+  border-color: rgba(255, 211, 42, 0.35);
+}
+
+.reconnecting .status-dot {
+  animation: dot-pulse-warning 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .reconnecting:hover {
-  box-shadow: 0 4px 12px rgba(251, 192, 45, 0.3);
-  transform: translateY(-1px);
+  background: rgba(255, 211, 42, 0.16);
+  border-color: rgba(255, 211, 42, 0.55);
 }
 
+/* ── Error ── */
 .error {
-  background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
+  color: #c98bff;
+  background: rgba(142, 36, 170, 0.14);
+  border-color: rgba(142, 36, 170, 0.45);
+}
+
+.error .status-dot {
+  box-shadow: 0 0 6px rgba(201, 139, 255, 0.7);
 }
 
 .error:hover {
-  box-shadow: 0 4px 12px rgba(142, 36, 170, 0.3);
-  transform: translateY(-1px);
+  background: rgba(142, 36, 170, 0.22);
+  border-color: rgba(142, 36, 170, 0.65);
 }
 
-@keyframes pulse {
+@keyframes dot-pulse-success {
   0%, 100% {
-    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(45, 211, 111, 0.55);
   }
-  50% {
-    opacity: 0.7;
+  70% {
+    box-shadow: 0 0 0 6px rgba(45, 211, 111, 0);
+  }
+}
+
+@keyframes dot-pulse-warning {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 211, 42, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 211, 42, 0);
   }
 }

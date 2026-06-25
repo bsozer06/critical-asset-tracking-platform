@@ -1,8 +1,14 @@
 <div class="app-root">
 	<header class="topbar">
 		<div class="topbar-left">
+			<div class="brand">
+				<div class="brand-logo">CATP</div>
+				<div class="brand-text">
+					<span class="brand-title">Critical Asset Tracking</span>
+					<span class="brand-sub">Platform</span>
+				</div>
+			</div>
 			<connection-status-badge [status]="connectionStatus"></connection-status-badge>
-			<span class="topbar-title">Critical Asset Tracking Platform</span>
 		</div>
 		<div class="topbar-right">
 			@if (currentUser) {

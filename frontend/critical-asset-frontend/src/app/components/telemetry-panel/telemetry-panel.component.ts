@@ -128,7 +128,7 @@ export class TelemetryPanelComponent implements OnInit {
       'person': 'person',
       'ship': 'directions_boat'
     };
-    return iconMap[assetType ?? ''] || 'location_on';
+    return iconMap[assetType?.toLowerCase() ?? ''] || 'location_on';
   }
 
   getAssetTypeColor(assetType?: string): string {
@@ -139,6 +139,6 @@ export class TelemetryPanelComponent implements OnInit {
       'person': '#388e3c',
       'ship': '#0097a7'
     };
-    return colorMap[assetType ?? ''] || '#757575';
+    return colorMap[assetType?.toLowerCase() ?? ''] || '#757575';
   }
 }
