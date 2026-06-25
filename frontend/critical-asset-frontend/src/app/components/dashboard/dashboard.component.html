@@ -1,33 +1,29 @@
 <div class="app-root">
-	<div class="topbar" style="display: flex; align-items: center; padding: 8px 16px; background: #222; color: #fff; gap: 16px; justify-content: space-between;">
-		<div style="display: flex; align-items: center; gap: 16px;">
+	<header class="topbar">
+		<div class="topbar-left">
 			<connection-status-badge [status]="connectionStatus"></connection-status-badge>
-			<span style="font-weight: bold; font-size: 18px;">Critical Asset Tracking Platform</span>
+			<span class="topbar-title">Critical Asset Tracking Platform</span>
 		</div>
-		<div style="display: flex; align-items: center; gap: 16px;">
+		<div class="topbar-right">
 			@if (currentUser) {
-				<span style="font-size: 13px; color: #aaa;">
-					{{ currentUser.email }} &nbsp;<span style="background:#444; padding: 2px 8px; border-radius: 4px; font-size: 11px;">{{ currentUser.role }}</span>
-				</span>
-				<button (click)="onLogout()" style="background: #c62828; color: #fff; border: none; border-radius: 4px; padding: 6px 14px; cursor: pointer; font-size: 13px;">
-					Sign Out
-				</button>
+				<div class="user-info">
+					<span class="user-email">{{ currentUser.email }}</span>
+					<span class="user-role-badge">{{ currentUser.role }}</span>
+				</div>
+				<button class="signout-btn" (click)="onLogout()">Sign Out</button>
 			}
 		</div>
-	</div>
+	</header>
 
 	<div class="main-layout">
-		<div class="map-area" style="position:relative;">
-			<app-cesium-map
-				(geofenceCreated)="onGeofenceCreated($event)">
-			</app-cesium-map>
+		<div class="map-area">
+			<app-cesium-map (geofenceCreated)="onGeofenceCreated($event)"></app-cesium-map>
 		</div>
 		<div class="panel-area">
 			<app-telemetry-panel (assetSelected)="onAssetSelected($event)"></app-telemetry-panel>
 		</div>
 	</div>
 
-	<!-- Geofence Alert -->
 	@if (showGeofenceAlert) {
 		<app-geofence-alert
 			[violations]="activeViolations"
@@ -38,10 +34,7 @@
 
 	<app-geofence-panel></app-geofence-panel>
 
-	<!-- Snackbar -->
 	@if (snackbarVisible) {
-		<div style="position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); background: #e53935; color: #fff; padding: 12px 32px; border-radius: 8px; font-size: 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-			{{ snackbarMessage }}
-		</div>
+		<div class="snackbar">{{ snackbarMessage }}</div>
 	}
 </div>

@@ -1,6 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global design tokens */
+:root {
+  --bg-base:        #0b1120;
+  --bg-surface:     #111827;
+  --bg-elevated:    #1a2440;
+  --bg-card:        #1e2847;
+  --bg-card-hover:  #253057;
 
-/* You can add global styles to this file, and also import other style files */
+  --accent:         #4a9eff;
+  --accent-dim:     #2d7dd2;
+  --accent-glow:    rgba(74, 158, 255, 0.18);
+  --border-subtle:  rgba(74, 158, 255, 0.12);
+  --border-medium:  rgba(74, 158, 255, 0.28);
+
+  --text-primary:   #e2eaf5;
+  --text-secondary: #8896b0;
+  --text-muted:     #4e5d78;
+
+  --success:        #2dd36f;
+  --danger:         #ff4757;
+  --warning:        #ffd32a;
+
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md:  0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg:  0 10px 36px rgba(0, 0, 0, 0.6);
+
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  color-scheme: dark;
+}
+
+/* Global dark scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-elevated) transparent;
+}
+*::-webkit-scrollbar       { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--bg-card-hover); }

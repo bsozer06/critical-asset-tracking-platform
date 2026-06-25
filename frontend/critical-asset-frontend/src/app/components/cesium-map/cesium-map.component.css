@@ -16,30 +16,30 @@
 /* Trail Toggle Button */
 .trail-toggle-btn {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 12px;
+  left: 12px;
   z-index: 30;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  background: rgba(48, 48, 48, 0.9);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 7px 14px;
+  background: rgba(27, 38, 60, 0.92);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
   border-radius: 20px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow-sm);
 }
 
 .trail-toggle-btn:hover {
-  background: rgba(66, 66, 66, 0.95);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(40, 56, 90, 0.95);
+  border-color: var(--border-medium);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .trail-toggle-btn:active {

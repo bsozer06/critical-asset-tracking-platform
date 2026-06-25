@@ -1,11 +1,92 @@
-/* Main two-column layout: map left, panel right */
 .app-root {
     height: 100vh;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    background: var(--bg-base);
 }
 
+/* ── Topbar ── */
+.topbar {
+    height: 52px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.topbar-left,
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.topbar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-email {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.user-role-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    box-sizing: border-box;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid var(--border-medium);
+    padding: 0 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.signout-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    box-sizing: border-box;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0 13px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.signout-btn:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+    background: rgba(255, 71, 87, 0.08);
+}
+
+/* ── Main layout ── */
 .main-layout {
     display: flex;
     flex-direction: row;
@@ -18,18 +99,15 @@
     flex: 1 1 0;
     min-width: 0;
     height: 100%;
-}
-
-.topbar {
-    height: 42px;
-    box-sizing: border-box;
+    position: relative;
 }
 
 .panel-area {
     width: 520px;
     max-width: 100vw;
-    background: #fff;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.3);
     z-index: 10;
     height: 100%;
     overflow-y: auto;
@@ -37,6 +115,29 @@
     font-size: 0.96rem;
 }
 
+/* ── Snackbar ── */
+.snackbar {
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%);
+    background: var(--danger);
+    color: #fff;
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+    animation: snackbarIn 0.25s ease-out;
+}
+
+@keyframes snackbarIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── FAB geofence button (rendered inside map-area) ── */
 .fab-geofence-btn {
     position: absolute;
     bottom: 54px;
@@ -47,19 +148,19 @@
     background: linear-gradient(135deg, #27dd45 60%, #1678c9 100%);
     color: #fff;
     border: none;
-    box-shadow: 0 4px 16px rgba(33,150,243,0.18), 0 1.5px 4px rgba(76,175,80,0.18);
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.2), 0 1.5px 4px rgba(76, 175, 80, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
     cursor: pointer;
     z-index: 20;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    transition: background var(--transition), box-shadow var(--transition), transform 0.15s;
     outline: none;
 }
 .fab-geofence-btn:hover {
-    background: linear-gradient(135deg, #388E3C 60%, #1976D2 100%);
-    box-shadow: 0 8px 24px rgba(33,150,243,0.28), 0 2px 8px rgba(76,175,80,0.28);
+    background: linear-gradient(135deg, #388e3c 60%, #1976d2 100%);
+    box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3), 0 2px 8px rgba(76, 175, 80, 0.3);
     transform: scale(1.08);
 }
 .fab-cancel {
@@ -69,26 +170,12 @@
     background: linear-gradient(135deg, #b71c1c 60%, #ff5722 100%);
 }
 
-.geofence-count {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 500;
-}
-
 @media (max-width: 600px) {
     .panel-area {
         width: 100vw;
         min-width: 0;
     }
-
-    .geofence-controls {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .btn {
-        width: 100%;
+    .topbar-title {
+        font-size: 14px;
     }
 }
