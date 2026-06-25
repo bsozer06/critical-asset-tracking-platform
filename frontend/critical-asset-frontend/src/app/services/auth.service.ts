@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface AuthResponse {
@@ -45,9 +45,11 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
+    // Clear the local session regardless of the server response so the
+    // in-memory access token never survives a sign-out (even on error).
     return this.http
       .post<void>(`${this._authUrl}/logout`, {}, { withCredentials: true })
-      .pipe(tap(() => this._clearSession()));
+      .pipe(finalize(() => this._clearSession()));
   }
 
   tryRestoreSession(): Observable<AuthResponse> {

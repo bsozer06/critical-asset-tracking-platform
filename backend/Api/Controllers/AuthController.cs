@@ -1,6 +1,7 @@
 using CriticalAssetTracking.Application.Dtos.Auth;
 using CriticalAssetTracking.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CriticalAssetTracking.Api.Controllers;
@@ -66,14 +67,21 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> Logout(CancellationToken ct)
     {
         var refreshToken = Request.Cookies["refreshToken"];
         if (!string.IsNullOrEmpty(refreshToken))
             await _authService.LogoutAsync(refreshToken, ct);
 
-        Response.Cookies.Delete("refreshToken");
+        // Delete options must match how the cookie was set, otherwise the
+        // browser keeps the original cookie and refresh still succeeds.
+        Response.Cookies.Delete("refreshToken", new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        });
         return NoContent();
     }
 }
