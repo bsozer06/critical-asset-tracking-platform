@@ -9,3 +9,13 @@
   <span class="trail-icon">〰️</span>
   <span class="trail-label">{{ trailsVisible ? 'Trails On' : 'Trails Off' }}</span>
 </button>
+
+<!-- Label Toggle Button -->
+<button
+  class="label-toggle-btn"
+  (click)="toggleLabels()"
+  [class.trails-off]="!labelsVisible"
+  [attr.title]="labelsVisible ? 'Hide asset labels' : 'Show asset labels'">
+  <span class="trail-icon">🏷️</span>
+  <span class="trail-label">{{ labelsVisible ? 'Labels On' : 'Labels Off' }}</span>
+</button>

@@ -29,6 +29,7 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
 
   viewer?: Cesium.Viewer;
   trailsVisible = true;
+  labelsVisible = true;
 
   private _destroy$ = new Subject<void>();
   private _assets = new Map<string, AssetState>();
@@ -119,6 +120,15 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  toggleLabels(): void {
+    this.labelsVisible = !this.labelsVisible;
+    this._assets.forEach(state => {
+      if (state.entity.label) {
+        state.entity.label.show = new Cesium.ConstantProperty(this.labelsVisible);
+      }
+    });
+  }
+
   private _computeOrientation(
     pt: TelemetryPoint,
     position: Cesium.Cartesian3,
@@ -184,7 +194,8 @@ export class CesiumMapComponent implements AfterViewInit, OnDestroy {
         pixelOffset: new Cesium.Cartesian2(0, -40),
         fillColor: Cesium.Color.WHITE,
         outlineColor: Cesium.Color.BLACK,
-        outlineWidth: 2
+        outlineWidth: 2,
+        show: new Cesium.ConstantProperty(this.labelsVisible)
       }
     });
   }
